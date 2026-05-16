@@ -15,7 +15,7 @@ import { useSite } from "../../context/SiteContext"
 import { URL } from "../../utils/constants"
 import { useGames } from "../../context/GameContext"
 
-const GameSection = ({ title, games, id }) => {
+const GameSection = ({ title, games, id, layout = "slider" }) => {
   const COLORS = useColors()
   const { setShowLogin, refreshSiteData } = useSite()
   const [preloadedImages, setPreloadedImages] = useState([])
@@ -109,6 +109,8 @@ const GameSection = ({ title, games, id }) => {
       setShowLogin(true)
       return
     }
+    // Update hash without scrolling yet, so it's in the history
+    window.history.replaceState(null, null, `#${sectionId}`);
     setConfirmPopup({ show: true, game, error: null })
   }
 
@@ -210,7 +212,8 @@ const GameSection = ({ title, games, id }) => {
             {title}
           </h2>
         </div>
-        <div className="flex items-center space-x-3">
+        {layout !== "grid" && (
+          <div className="flex items-center space-x-3">
           <div className="hidden md:flex items-center bg-gray-100 dark:bg-white/5 rounded-full p-1 backdrop-blur-sm border border-black/10 dark:border-white/10">
             <button
               className={`nav-button prev-${sectionId} w-9 h-9 flex items-center justify-center rounded-full text-black/70 dark:text-white/70 hover:text-black dark:text-white hover:bg-gray-100 dark:bg-white/10 transition-all duration-300`}
@@ -240,61 +243,107 @@ const GameSection = ({ title, games, id }) => {
             <span className="whitespace-nowrap">See All</span>
           </button>
         </div>
+        )}
       </div>
 
-      <Swiper
-        modules={[Navigation]}
-        spaceBetween={10}
-        slidesPerView={3.5}
-        loop={games && games.length > 0}
-        navigation={{
-          prevEl: `.prev-${sectionId}`,
-          nextEl: `.next-${sectionId}`,
-        }}
-        breakpoints={{
-          320: { slidesPerView: 3.2, spaceBetween: 8 },
-          480: { slidesPerView: 3.5, spaceBetween: 10 },
-          768: { slidesPerView: 4.5, spaceBetween: 10 },
-          1024: { slidesPerView: 6, spaceBetween: 10 },
-          1280: { slidesPerView: 8, spaceBetween: 10 },
-        }}
-      >
-        {games && Array.isArray(games) && games.map((game, index) => (
-          <SwiperSlide key={index}>
-            <div
-              className="relative group"
+      {layout === "grid" ? (
+        <div className="see-all-grid gap-3 md:gap-6 animate-fadeInUp">
+          {games && Array.isArray(games) && games.map((game, index) => (
+            <div 
+              key={index} 
+              className="flex flex-col group cursor-pointer" 
+              onClick={() => handleGameClick(game)}
               onMouseEnter={() => setHoveredGame(game["Game UID"])}
               onMouseLeave={() => setHoveredGame(null)}
             >
-              <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-gray-100 dark:bg-white/5 border border-black/10 dark:border-white/10 transition-all duration-500 group-hover:scale-[1.03] group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-                <img
-                  className={`w-full h-full object-cover cursor-pointer transition-all duration-500 ${loadingForGames === game["Game UID"] ? "opacity-50 blur-sm" : ""
+              <div className="relative aspect-[4/5] rounded-xl overflow-hidden p-[1px] bg-gradient-to-br from-white/10 via-transparent to-white/5 transition-all duration-500 group-hover:from-brand/50 group-hover:to-brand/20 group-hover:shadow-[0_0_30px_rgba(230,160,0,0.4)] group-hover:-translate-y-1">
+                <div className="relative w-full h-full rounded-[11px] overflow-hidden bg-gray-100 dark:bg-white/5">
+                  <img
+                    className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${
+                      loadingForGames === game["Game UID"] ? "opacity-30 blur-sm" : ""
                     }`}
-                  src={game.icon || "/placeholder.svg"}
-                  alt={game["Game Name"]}
-                  onClick={() => handleGameClick(game)}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-2 sm:p-3 pointer-events-none">
-                  <span className="text-black dark:text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-wider truncate w-full" style={{ fontFamily: FONTS.ui }}>
-                    {game["Game Name"]}
-                  </span>
-                </div>
-              </div>
-              {hoveredGame === game["Game UID"] && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div
-                    className="rounded-full p-2.5 sm:p-5 transform scale-90 group-hover:scale-110 transition-transform duration-300 shadow-xl"
-                    style={{ background: COLORS.brandGradient }}
-                  >
-                    <FaPlay className="text-black dark:text-white ml-0.5 block sm:hidden" size={12} />
-                    <FaPlay className="text-black dark:text-white ml-1 hidden sm:block" size={24} />
+                    src={game.icon || "/placeholder.svg"}
+                    alt={game["Game Name"]}
+                  />
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-white/5 opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div
+                      className="p-3 rounded-full shadow-2xl transform scale-50 group-hover:scale-100 transition-all duration-500 hover:scale-110"
+                      style={{ background: COLORS.brandGradient }}
+                    >
+                      <FaPlay className="text-black dark:text-white ml-0.5" size={12} />
+                    </div>
+                  </div>
+
+                  <div className="absolute bottom-0 left-0 right-0 p-2 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                    <div className="backdrop-blur-md bg-black/10 dark:bg-black/40 rounded-lg p-1.5 border border-black/10 dark:border-white/10 text-center shadow-xl">
+                      <p className="text-[9px] font-black text-black/90 dark:text-white/90 truncate uppercase tracking-tighter">
+                        {game["Game Name"]}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+          ))}
+        </div>
+      ) : (
+        <Swiper
+          modules={[Navigation]}
+          spaceBetween={10}
+          slidesPerView={3.5}
+          loop={games && games.length > 0}
+          navigation={{
+            prevEl: `.prev-${sectionId}`,
+            nextEl: `.next-${sectionId}`,
+          }}
+          breakpoints={{
+            320: { slidesPerView: 3.2, spaceBetween: 8 },
+            480: { slidesPerView: 3.5, spaceBetween: 10 },
+            768: { slidesPerView: 4.5, spaceBetween: 10 },
+            1024: { slidesPerView: 6, spaceBetween: 10 },
+            1280: { slidesPerView: 8, spaceBetween: 10 },
+          }}
+        >
+          {games && Array.isArray(games) && games.map((game, index) => (
+            <SwiperSlide key={index}>
+              <div
+                className="relative group"
+                onMouseEnter={() => setHoveredGame(game["Game UID"])}
+                onMouseLeave={() => setHoveredGame(null)}
+              >
+                <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-gray-100 dark:bg-white/5 border border-black/10 dark:border-white/10 transition-all duration-500 group-hover:scale-[1.03] group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                  <img
+                    className={`w-full h-full object-cover cursor-pointer transition-all duration-500 ${loadingForGames === game["Game UID"] ? "opacity-50 blur-sm" : ""
+                      }`}
+                    src={game.icon || "/placeholder.svg"}
+                    alt={game["Game Name"]}
+                    onClick={() => handleGameClick(game)}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-2 sm:p-3 pointer-events-none">
+                    <span className="text-black dark:text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-wider truncate w-full" style={{ fontFamily: FONTS.ui }}>
+                      {game["Game Name"]}
+                    </span>
+                  </div>
+                </div>
+                {hoveredGame === game["Game UID"] && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div
+                      className="rounded-full p-2.5 sm:p-5 transform scale-90 group-hover:scale-110 transition-transform duration-300 shadow-xl"
+                      style={{ background: COLORS.brandGradient }}
+                    >
+                      <FaPlay className="text-black dark:text-white ml-0.5 block sm:hidden" size={12} />
+                      <FaPlay className="text-black dark:text-white ml-1 hidden sm:block" size={24} />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
 
       {showPopup &&
         createPortal(

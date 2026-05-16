@@ -1529,7 +1529,20 @@ html.light .custom-scrollbar::-webkit-scrollbar-thumb:hover {
 
 @media (min-width: 640px) {
   .see-all-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .see-all-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+    gap: 20px !important;
+  }
+}
+
+@media (min-width: 1440px) {
+  .see-all-grid {
+    grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
   }
 }
 

@@ -9,7 +9,7 @@
 
 import { useState, useEffect } from "react"
 import { FaArrowLeft, FaWallet, FaExpand, FaCompress, FaTrophy, FaTimesCircle, FaPlus } from "react-icons/fa"
-import { useParams, useNavigate } from "react-router-dom"
+import { useParams, useNavigate, useSearchParams } from "react-router-dom"
 import { API_URL } from "@/utils/constants"
 import { useColors } from '../hooks/useColors'
 import { FONTS } from '../constants/theme'
@@ -126,7 +126,7 @@ const GameplayComponent = () => {
   const gameUrl = getDecodedUrl(encodedUrl);
 
   const handleBack = () => setShowExitConfirm(true)
-  const confirmExit = () => navigate("/")
+  const confirmExit = () => navigate(-1)
   const cancelExit = () => setShowExitConfirm(false)
 
 

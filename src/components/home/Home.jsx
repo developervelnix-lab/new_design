@@ -168,6 +168,9 @@ function Home() {
           <div className="mb-3 md:mb-4">
             <GamesDisplay section="slots" />
           </div>
+          <div className="mb-3 md:mb-4" id="fantasy-games">
+            <GamesDisplay section="fantasy" />
+          </div>
           <div className="mb-3 md:mb-4" id="aviator">
             <Turbogames />
           </div>

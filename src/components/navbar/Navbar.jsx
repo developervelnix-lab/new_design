@@ -33,10 +33,7 @@ function Navbar() {
   const [showAppInstallModal, setShowAppInstallModal] = useState(false)
   const navigate = useNavigate()
   const [toast, setToast] = useState(null)
-  const [trendingMatches, setTrendingMatches] = useState([
-    { name: "IPL: MI vs CSK · In Progress", viewers: 0 },
-    { name: "E-Sports: CSGO Major · Live", viewers: 0 },
-  ])
+  const [trendingMatches, setTrendingMatches] = useState([])
   const { theme, toggleTheme } = useTheme()
   const remainingWager = parseFloat(accountInfo?.tbl_requiredplay_balance || 0);
   const activeBonus = parseFloat(accountInfo?.tbl_bonus_balance || 0) + parseFloat(accountInfo?.tbl_sports_bonus || 0);
@@ -65,9 +62,16 @@ function Navbar() {
         if (res.status_code === "success") {
           // Prefer rich `matches` array (has viewer counts)
           if (res.matches?.length > 0) {
-            setTrendingMatches(res.matches.map(m => ({ name: m.name, viewers: m.viewers || 0 })));
+            // Filter out old/dummy data like "2024" as requested
+            const filtered = res.matches
+              .filter(m => !m.name.includes("2024"))
+              .map(m => ({ name: m.name, viewers: m.viewers || 0, type: m.type }));
+            setTrendingMatches(filtered);
           } else if (res.data?.length > 0) {
-            setTrendingMatches(res.data.map(name => ({ name, viewers: 0 })));
+            const filtered = res.data
+              .filter(name => !name.includes("2024"))
+              .map(name => ({ name, viewers: 0 }));
+            setTrendingMatches(filtered);
           }
         }
       } catch (err) {
@@ -116,79 +120,28 @@ function Navbar() {
   }
 
   // Game Categories with icons matching the neon design
+  // Game Categories for the sub-navbar
   const games = [
-    { name: "Cricket", icon: "🏏" },
-    { name: "Football", icon: "⚽" },
-    { name: "Tennis", icon: "🎾" },
-    { name: "Basketball", icon: "🏀" },
-    { name: "Hockey", icon: "🏑" },
-    { name: "Rugby", icon: "🏉" },
-    { name: "Esports", icon: "🎮" },
-    { name: "MMA", icon: "🥋" },
-    { name: "Boxing", icon: "🥊" },
-    { name: "Volleyball", icon: "🏐" },
+    { name: "Roulette", icon: "🎡" },
+    { name: "Blackjack", icon: "🃏" },
+    { name: "Baccarat", icon: "💎" },
+    { name: "Dragon Tiger", icon: "🐯" },
+    { name: "Teen Patti", icon: "🎴" },
+    { name: "Sic Bo", icon: "🎲" },
+    { name: "Poker", icon: "♠️" },
+    { name: "Game Shows", icon: "📺" },
+    { name: "Mega Wheel", icon: "🎡" },
+    { name: "Andar Bahar", icon: "🃏" },
   ]
   const [sportsLoading, setSportsLoading] = useState(false);
 
-  const handleGameSelect = async (index) => {
+  const handleGameSelect = (index) => {
     setSelectedGame(index);
-
-    // Check if user is logged in first
-    if (!authSecretKey) {
-      setShowLogin(true)
-      return
-    }
-
-    setSportsLoading(true);
-    try {
-      const response = await fetch(`${API_URL}?Route=route-play-games&AuthToken=${encodeURIComponent(authSecretKey)}&USER_ID=${encodeURIComponent(userId)}`, {
-        method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          Route: "route-play-games",
-          AuthToken: authSecretKey,
-        },
-        body: JSON.stringify({
-          USER_ID: userId,
-          GAME_NAME: allsport["Game Name"],
-          GAME_UID: allsport["Game UID"],
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const data = await response.json();
-
-      if (data.status_code === "success" && data.data?.game_url) {
-        // Base64 encode the URL to prevent issues with slashes and special characters in the route
-        const encodedUrl = btoa(data.data.game_url);
-        navigate(`/game-url/${encodeURIComponent(encodedUrl)}/${encodeURIComponent(allsport["Game Name"])}`);
-      } else if (data.status_code === "balance_error") {
-        showToast("error", "Minimum balance of ₹100 required to play sports.");
-      } else if (data.status_code === "authorization_error" || data.status_code === "auth_error") {
-        showToast("error", "Session expired. Please login again.");
-        localStorage.removeItem("auth_secret_key");
-        localStorage.removeItem("account_id");
-        refreshSiteData();
-        setShowLogin(true);
-      } else if (data.status_code === "game_off") {
-        showToast("error", "Sports games are currently disabled by the admin.");
-      } else if (data.status_code === "server_error") {
-        showToast("error", "Game server error. Please try again later.");
-      } else if (data.status_code === "account_error") {
-        showToast("error", "Your account is suspended. Contact support.");
-      } else {
-        showToast("error", data.status_code || "Failed to load sports. Please try again.");
-        console.error("Sports error:", data.status_code);
-      }
-    } catch (error) {
-      showToast("error", "Network error. Please check your connection.");
-      console.error("Error loading sports game:", error);
-    } finally {
-      setSportsLoading(false);
+    const game = games[index];
+    if (game.name === "Roulette") {
+      navigate("/roulette");
+    } else {
+      scrollToSection("casino-lobby");
     }
   };
 
@@ -428,42 +381,50 @@ function Navbar() {
               
               <div className="overflow-hidden flex-1 relative h-full flex items-center">
                 <div className="flex items-center gap-8 animate-marquee whitespace-nowrap hover:pause-marquee cursor-default">
-                  {trendingMatches.map((match, idx) => (
-                    <React.Fragment key={idx}>
-                      <div className="topbar-item cursor-pointer hover:text-brand transition-colors flex items-center gap-1.5" onClick={() => handleLiveSportSelect(liveSport[idx % liveSport.length])}>
-                        <span className="font-semibold" style={{ color: idx % 2 === 0 ? COLORS.red : COLORS.brand }}>{idx % 2 === 0 ? 'Live Match' : 'Trending'}</span>
-                        <span className="text-black/80 dark:text-white/80">{match.name}</span>
-                        {match.viewers > 0 && (
-                          <span className="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: `${COLORS.brand}22`, color: COLORS.brand }}>
-                            {idx % 2 === 0 ? '🔴' : '👁'} {match.viewers.toLocaleString()}
-                          </span>
-                        )}
-                      </div>
-                      <div className="topbar-item opacity-10">|</div>
-                    </React.Fragment>
-                  ))}
-                  {/* Duplicate for seamless loop */}
-                  {trendingMatches.map((match, idx) => (
-                    <React.Fragment key={`dup-${idx}`}>
-                      <div className="topbar-item cursor-pointer hover:text-brand transition-colors flex items-center gap-1.5" onClick={() => handleLiveSportSelect(liveSport[idx % liveSport.length])}>
-                        <span className="font-semibold" style={{ color: idx % 2 === 0 ? COLORS.red : COLORS.brand }}>{idx % 2 === 0 ? 'Live Match' : 'Trending'}</span>
-                        <span className="text-black/80 dark:text-white/80">{match.name}</span>
-                        {match.viewers > 0 && (
-                          <span className="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: `${COLORS.brand}22`, color: COLORS.brand }}>
-                            {idx % 2 === 0 ? '🔴' : '👁'} {match.viewers.toLocaleString()}
-                          </span>
-                        )}
-                      </div>
-                      <div className="topbar-item opacity-10">|</div>
-                    </React.Fragment>
-                  ))}
+                  {trendingMatches.length > 0 ? (
+                    <>
+                      {trendingMatches.map((match, idx) => (
+                        <React.Fragment key={idx}>
+                          <div className="topbar-item cursor-pointer hover:text-brand transition-colors flex items-center gap-1.5" onClick={() => handleLiveSportSelect(liveSport[idx % liveSport.length])}>
+                            {match.type && <span className="font-semibold" style={{ color: COLORS.brand }}>{match.type}</span>}
+                            <span className="text-black/80 dark:text-white/80">{match.name}</span>
+                            {match.viewers > 0 && (
+                              <span className="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: `${COLORS.brand}22`, color: COLORS.brand }}>
+                                {idx % 2 === 0 ? '🔴' : '👁'} {match.viewers.toLocaleString()}
+                              </span>
+                            )}
+                          </div>
+                          <div className="topbar-item opacity-10">|</div>
+                        </React.Fragment>
+                      ))}
+                      {/* Duplicate for seamless loop */}
+                      {trendingMatches.map((match, idx) => (
+                        <React.Fragment key={`dup-${idx}`}>
+                          <div className="topbar-item cursor-pointer hover:text-brand transition-colors flex items-center gap-1.5" onClick={() => handleLiveSportSelect(liveSport[idx % liveSport.length])}>
+                            {match.type && <span className="font-semibold" style={{ color: COLORS.brand }}>{match.type}</span>}
+                            <span className="text-black/80 dark:text-white/80">{match.name}</span>
+                            {match.viewers > 0 && (
+                              <span className="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full" style={{ backgroundColor: `${COLORS.brand}22`, color: COLORS.brand }}>
+                                {idx % 2 === 0 ? '🔴' : '👁'} {match.viewers.toLocaleString()}
+                              </span>
+                            )}
+                          </div>
+                          <div className="topbar-item opacity-10">|</div>
+                        </React.Fragment>
+                      ))}
+                    </>
+                  ) : (
+                    <div className="topbar-item text-black/40 dark:text-white/40 italic">Waiting for live updates...</div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="topbar-right shrink-0 ml-4">
-            <div className="topbar-item text-black/70 dark:text-white/70 hover:text-black dark:text-white cursor-pointer transition-colors">🇮🇳 IN</div>
+          <div className="topbar-right shrink-0 ml-4 flex items-center gap-4">
+            <div className="topbar-item flex items-center text-black/70 dark:text-white/70 hover:text-black dark:text-white cursor-pointer transition-colors" title="India">
+              <img src="https://flagcdn.com/w40/in.png" className="w-5 h-auto rounded-[2px] shadow-sm" alt="India" />
+            </div>
             <div className="topbar-item text-black/70 dark:text-white/70 hover:text-black dark:text-white cursor-pointer transition-colors">🌐 EN</div>
             {accountInfo?.service_support_url && (
               <div
@@ -499,10 +460,9 @@ function Navbar() {
 
             <nav className="main-nav">
               <button className="nav-link" onClick={() => scrollToSection("live")} style={{ fontFamily: FONTS.head, background: 'none', border: 'none', cursor: 'pointer' }}>Sports</button>
-              <button className="nav-link nav-live" onClick={() => scrollToSection("live")} style={{ color: COLORS.red, fontFamily: FONTS.head, background: 'none', border: 'none', cursor: 'pointer' }}><span className="dot" style={{ backgroundColor: COLORS.red }}></span>Live</button>
               <button className="nav-link" onClick={() => scrollToSection("casino-lobby")} style={{ fontFamily: FONTS.head, background: 'none', border: 'none', cursor: 'pointer' }}>Casino</button>
               <button className="nav-link" onClick={() => scrollToSection("slots")} style={{ fontFamily: FONTS.head, background: 'none', border: 'none', cursor: 'pointer' }}>Slots</button>
-              <button className="nav-link" onClick={() => scrollToSection("aviator")} style={{ fontFamily: FONTS.head, background: 'none', border: 'none', cursor: 'pointer' }}>Aviator</button>
+              <button className="nav-link" onClick={() => scrollToSection("fantasy-games")} style={{ fontFamily: FONTS.head, background: 'none', border: 'none', cursor: 'pointer' }}>Fantasy Games</button>
               <button className="nav-link" onClick={handlePromotion} style={{ fontFamily: FONTS.head, background: 'none', border: 'none', cursor: 'pointer' }}>Promotions</button>
             </nav>
 

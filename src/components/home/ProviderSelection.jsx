@@ -15,6 +15,8 @@ const providers = [
   { name: '2J', label: '2J', dbName: '2J' },
   { name: 'turbogamesasia', label: 'Turbogames World', dbName: 'turbogamesasia' },
   { name: 'Aura Gaming', label: 'Aura Gaming', dbName: 'Aura Gaming' },
+  { name: 'India Lotto', label: 'Lotto', dbName: 'India Lotto' }
+
 ];
 
 const ProviderSelection = () => {
@@ -36,7 +38,7 @@ const ProviderSelection = () => {
     try {
       const response = await apiGet('route-get-games', { provider: provider.dbName });
       const result = await response.json();
-      
+
       if (result.status_code === 'success') {
         const allGames = Object.values(result.data).flat();
         setProviderGames(allGames);
@@ -52,11 +54,11 @@ const ProviderSelection = () => {
     <div className="provider-selection-wrapper mb-6">
       {/* Header matching site style */}
       <div className="flex items-center gap-3 mb-4 px-1">
-        <div 
-          className="h-5 w-1 rounded-full flex-shrink-0" 
+        <div
+          className="h-5 w-1 rounded-full flex-shrink-0"
           style={{ background: COLORS.brandGradient }}
         ></div>
-        <h2 
+        <h2
           className="text-[14px] xs:text-base font-black text-black dark:text-white tracking-[0.05em] uppercase leading-none"
           style={{ fontFamily: FONTS.head }}
         >
@@ -73,11 +75,11 @@ const ProviderSelection = () => {
             className={`
               relative flex-shrink-0 px-5 py-2.5 rounded-xl text-[10px] md:text-[11px] font-black uppercase tracking-widest transition-all duration-300
               border backdrop-blur-md active:scale-95 group
-              ${selectedProvider === provider.dbName 
-                ? 'text-black shadow-[0_10px_20px_-10px_rgba(230,160,0,0.5)]' 
+              ${selectedProvider === provider.dbName
+                ? 'text-black shadow-[0_10px_20px_-10px_rgba(230,160,0,0.5)]'
                 : 'text-black/60 dark:text-white/60 border-black/10 dark:border-white/10 hover:border-brand/40 hover:text-black dark:hover:text-white'}
             `}
-            style={{ 
+            style={{
               fontFamily: FONTS.ui,
               background: selectedProvider === provider.dbName ? COLORS.brandGradient : 'rgba(255, 255, 255, 0.03)',
               borderColor: selectedProvider === provider.dbName ? 'transparent' : undefined
@@ -104,9 +106,9 @@ const ProviderSelection = () => {
       {/* Display Games if a provider is selected */}
       {selectedProvider && !loading && providerGames && providerGames.length > 0 ? (
         <div className="mt-4 animate-fadeInUp">
-          <GameSection 
-            title={`${providers.find(p => p.dbName === selectedProvider)?.label || selectedProvider} Games`} 
-            games={providerGames} 
+          <GameSection
+            title={`${providers.find(p => p.dbName === selectedProvider)?.label || selectedProvider} Games`}
+            games={providerGames}
             id={`provider-${selectedProvider.toLowerCase().replace(/\s+/g, '-')}`}
           />
         </div>

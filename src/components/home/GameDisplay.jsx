@@ -40,6 +40,10 @@ const GamesDisplay = ({ section }) => {
     return <GameSection id="poker" title="♤ Indian Poker Games" games={poker} />
   }
 
+  if (section === "fantasy") {
+    return <GameSection id="fantasy-games" title="🏆 Fantasy Games" games={poker} />
+  }
+
   // Default: return all in the new requested order if no section specified
   return (
     <div className="games-display space-y-3">

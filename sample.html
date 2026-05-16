@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VeluxPlay365 – Bet. Win. Repeat.</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0D0D0D;
+    --bg-card: #141414;
+    --bg-nav: #080808;
+    --bg-panel: #1A1A1A;
+    --brand: #E6A000;
+    --brand-dark: #B37D00;
+    --brand-glow: rgba(230, 160, 0, 0.35);
+    --brand-gradient: linear-gradient(135deg, #E6A000 0%, #CC5A00 100%);
+    --gold: #FFD700;
+    --gold-light: #F2C200;
+    --blue-acc: #1565ff;
+    --blue-light: #3d8bff;
+    --text: #FFFFFF;
+    --text-muted: #7A7A7A;
+    --border: rgba(255, 255, 255, 0.07);
+    --border-brand: rgba(230, 160, 0, 0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg-deep);
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    overflow-x: hidden;
+  }
+
+  /* ── TOP BAR ── */
+  .top-bar {
+    background: #030810;
+    border-bottom: 1px solid var(--border);
+    padding: 6px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .top-bar .marquee-wrap { flex: 1; overflow: hidden; margin: 0 20px; }
+  .marquee-inner {
+    display: inline-flex;
+    gap: 40px;
+    animation: marquee 30s linear infinite;
+    white-space: nowrap;
+  }
+  .marquee-inner span { color: var(--text-muted); }
+  .marquee-inner .win { color: var(--gold); font-weight: 700; }
+  @keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+  .top-bar-right { display: flex; gap: 16px; align-items: center; }
+  .top-bar-right a { color: var(--text-muted); text-decoration: none; }
+  .top-bar-right a:hover { color: var(--text); }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--bg-nav);
+    border-bottom: 2px solid var(--brand);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.6);
+  }
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 2px;
+    text-decoration: none;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .logo .v { color: var(--brand); }
+  .logo .rest { color: #fff; }
+  .logo .num { color: var(--gold); }
+
+  nav { flex: 1; display: flex; gap: 4px; }
+  nav a {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  nav a:hover, nav a.active {
+    color: #fff;
+    background: rgba(255,255,255,0.06);
+  }
+  nav a.active { color: var(--brand); border-bottom: 2px solid var(--brand); border-radius: 4px 4px 0 0; }
+
+  .header-cta { display: flex; gap: 10px; margin-left: auto; flex-shrink: 0; }
+  .btn {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 9px 22px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+  }
+  .btn-outline {
+    background: transparent;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    color: #fff;
+  }
+  .btn-outline:hover { border-color: #fff; background: rgba(255,255,255,0.06); }
+  .btn-brand {
+    background: var(--brand);
+    color: #fff;
+    box-shadow: 0 0 16px var(--brand-glow);
+  }
+  .btn-brand:hover { background: #f2c200; box-shadow: 0 0 24px rgba(230, 160, 0, 0.5); }
+
+  /* ── CATEGORY NAV ── */
+  .cat-nav {
+    background: var(--bg-panel);
+    border-bottom: 1px solid var(--border);
+  }
+  .cat-nav-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .cat-nav-inner::-webkit-scrollbar { display: none; }
+  .cat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 18px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    min-width: 70px;
+    text-decoration: none;
+    color: var(--text-muted);
+  }
+  .cat-item:hover, .cat-item.active {
+    color: #fff;
+    border-bottom-color: var(--brand);
+  }
+  .cat-item .cat-icon { font-size: 22px; }
+  .cat-item .cat-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .page-wrap {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 16px 20px;
+    display: grid;
+    grid-template-columns: 220px 1fr 260px;
+    gap: 16px;
+  }
+
+  /* ── SIDEBAR LEFT ── */
+  .sidebar-left { display: flex; flex-direction: column; gap: 12px; }
+
+  .side-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .side-title {
+    background: linear-gradient(90deg, var(--brand) 0%, #8b0010 100%);
+    padding: 9px 14px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .side-list { padding: 6px 0; }
+  .side-list a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 14px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 13px;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+  .side-list a:hover {
+    color: #fff;
+    background: rgba(255,255,255,0.04);
+    border-left-color: var(--brand);
+    padding-left: 18px;
+  }
+  .side-list a .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    flex-shrink: 0;
+  }
+  .side-list a:hover .dot { background: var(--brand); }
+  .side-list a .live-badge {
+    margin-left: auto;
+    background: var(--brand);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 0.5px;
+    animation: pulse-badge 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse-badge { 0%,100%{opacity:1} 50%{opacity:0.6} }
+
+  /* ── MAIN CONTENT ── */
+  .main-content { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+
+  /* Hero Banner */
+  .hero-banner {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 260px;
+    background: linear-gradient(135deg, #050a1e 0%, #0d1d3e 40%, #1a0a0a 100%);
+    border: 1px solid var(--border);
+  }
+  .hero-bg-pattern {
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 50%, rgba(230, 160, 0, 0.15) 0%, transparent 50%),
+      radial-gradient(circle at 80% 30%, rgba(21,101,255,0.12) 0%, transparent 50%);
+  }
+  .hero-grid-lines {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .hero-content {
+    position: relative;
+    padding: 32px 36px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 55%;
+  }
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--brand);
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 3px;
+    margin-bottom: 12px;
+    width: fit-content;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    line-height: 1;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+  }
+  .hero-title .accent { color: var(--brand); }
+  .hero-title .gold { color: var(--gold); }
+  .hero-sub {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .hero-btns { display: flex; gap: 10px; }
+
+  .hero-art {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 45%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .hero-art-inner {
+    font-size: 120px;
+    opacity: 0.12;
+    animation: float 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 40px rgba(230, 160, 0, 0.4));
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+  /* Promo Strips */
+  .promo-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .promo-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    color: inherit;
+  }
+  .promo-card:hover {
+    border-color: var(--brand);
+    background: rgba(230, 160, 0, 0.06);
+    transform: translateY(-2px);
+  }
+  .promo-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+    width: 44px; height: 44px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .promo-info .promo-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+  }
+  .promo-info .promo-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 1px;
+    color: var(--gold);
+    line-height: 1.1;
+  }
+  .promo-info .promo-desc { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+  /* Section headers */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 1.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::before {
+    content: '';
+    display: block;
+    width: 4px; height: 20px;
+    background: var(--brand);
+    border-radius: 2px;
+  }
+  .see-all {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    text-decoration: none;
+    display: flex; align-items: center; gap: 4px;
+  }
+  .see-all:hover { color: var(--brand); }
+
+  /* Game grid */
+  .game-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+  }
+  .game-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .game-card:hover {
+    border-color: rgba(230, 160, 0, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+  .game-thumb {
+    height: 100px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 42px;
+    position: relative;
+    overflow: hidden;
+  }
+  .game-thumb-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 40%, var(--bg-card) 100%);
+  }
+  .game-hot {
+    position: absolute; top: 6px; right: 6px;
+    background: var(--brand);
+    color: #fff;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 9px;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.5px;
+  }
+  .game-new {
+    position: absolute; top: 6px; right: 6px;
+    background: var(--gold);
+    color: #000;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 9px;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+  .game-info { padding: 8px 10px 10px; }
+  .game-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: #fff;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .game-provider { font-size: 11px; color: var(--text-muted); }
+
+  /* BG colors for game thumbs */
+  .gt-1 { background: linear-gradient(135deg,#1a0a2e,#380060); }
+  .gt-2 { background: linear-gradient(135deg,#0a1a2e,#003060); }
+  .gt-3 { background: linear-gradient(135deg,#1a0808,#500015); }
+  .gt-4 { background: linear-gradient(135deg,#0a1a12,#003820); }
+  .gt-5 { background: linear-gradient(135deg,#1a1400,#503800); }
+  .gt-6 { background: linear-gradient(135deg,#001535,#002060); }
+  .gt-7 { background: linear-gradient(135deg,#20000a,#600020); }
+  .gt-8 { background: linear-gradient(135deg,#040e20,#081830); }
+  .gt-9 { background: linear-gradient(135deg,#150a1a,#2a0040); }
+  .gt-10 { background: linear-gradient(135deg,#001a10,#003025); }
+
+  /* Live Sports */
+  .live-matches { display: flex; flex-direction: column; gap: 8px; }
+  .match-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    align-items: center;
+    transition: border-color 0.2s;
+    cursor: pointer;
+  }
+  .match-card:hover { border-color: rgba(232,25,44,0.3); }
+  .match-sport {
+    font-size: 20px;
+    width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.04);
+    border-radius: 6px;
+  }
+  .match-body { min-width: 0; }
+  .match-teams {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: #fff;
+    margin-bottom: 3px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .match-meta {
+    display: flex; gap: 8px; align-items: center;
+    font-size: 11px; color: var(--text-muted);
+  }
+  .live-dot {
+    display: flex; align-items: center; gap: 4px;
+    color: var(--brand);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+  }
+  .live-dot::before {
+    content: '';
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--brand);
+    animation: live-pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes live-pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+  .match-odds { display: flex; gap: 6px; }
+  .odd-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 6px 10px;
+    text-align: center;
+    font-family: 'Rajdhani', sans-serif;
+    cursor: pointer;
+    transition: all 0.15s;
+    min-width: 52px;
+  }
+  .odd-btn:hover { background: var(--brand); border-color: var(--brand); }
+  .odd-btn .odd-label { font-size: 10px; color: var(--text-muted); font-weight: 600; display: block; }
+  .odd-btn .odd-val { font-size: 14px; font-weight: 700; color: var(--gold); display: block; line-height: 1.2; }
+  .odd-btn:hover .odd-label { color: rgba(255,255,255,0.8); }
+  .odd-btn:hover .odd-val { color: #fff; }
+
+  /* ── SIDEBAR RIGHT ── */
+  .sidebar-right { display: flex; flex-direction: column; gap: 12px; }
+
+  /* Auth Panel */
+  .auth-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .auth-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: rgba(0,0,0,0.3);
+  }
+  .auth-tab {
+    padding: 11px;
+    text-align: center;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    color: var(--text-muted);
+  }
+  .auth-tab.active { color: #fff; border-bottom-color: var(--brand); background: rgba(230, 160, 0, 0.08); }
+  .auth-body { padding: 16px; }
+  .form-group { margin-bottom: 10px; }
+  .form-label {
+    display: block;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+  }
+  .form-input {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 9px 12px;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus { border-color: var(--brand); background: rgba(230, 160, 0, 0.04); }
+  .form-input::placeholder { color: rgba(255,255,255,0.2); }
+  .btn-full { width: 100%; justify-content: center; padding: 10px; font-size: 14px; border-radius: 5px; }
+  .auth-divider {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 11px;
+    margin: 10px 0;
+    position: relative;
+  }
+  .auth-divider::before, .auth-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 35%;
+    height: 1px;
+    background: var(--border);
+  }
+  .auth-divider::before { left: 0; }
+  .auth-divider::after { right: 0; }
+  .social-login { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .social-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 8px;
+    color: var(--text-muted);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 6px; justify-content: center;
+    transition: all 0.2s;
+  }
+  .social-btn:hover { background: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.15); }
+
+  /* Recent Wins Panel */
+  .wins-list { padding: 0; }
+  .win-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.15s;
+  }
+  .win-item:last-child { border-bottom: none; }
+  .win-item:hover { background: rgba(255,255,255,0.02); }
+  .win-avatar {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .win-info { flex: 1; min-width: 0; }
+  .win-user {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: #fff;
+  }
+  .win-game { font-size: 11px; color: var(--text-muted); }
+  .win-amount {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--gold);
+    flex-shrink: 0;
+  }
+
+  /* App Download */
+  .app-banner {
+    background: linear-gradient(135deg, #0e1b30, #1a0508);
+    border: 1px solid var(--border-brand);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+  }
+  .app-banner .app-icon { font-size: 36px; margin-bottom: 8px; }
+  .app-banner h4 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .app-banner p { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.4; }
+  .app-btns { display: flex; flex-direction: column; gap: 7px; }
+  .app-btn {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 5px;
+    padding: 8px 12px;
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer; color: #fff;
+    transition: all 0.2s;
+  }
+  .app-btn:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.2); }
+  .app-btn span:first-child { font-size: 18px; }
+  .app-btn-text .sub { font-size: 9px; color: var(--text-muted); display: block; text-transform: uppercase; letter-spacing: 0.5px; }
+  .app-btn-text .name { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 13px; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #030810;
+    border-top: 2px solid var(--brand);
+    margin-top: 32px;
+    padding: 32px 20px 20px;
+  }
+  .footer-inner { max-width: 1400px; margin: 0 auto; }
+  .footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 28px;
+  }
+  .footer-brand .logo { display: block; margin-bottom: 12px; font-size: 28px; }
+  .footer-brand p { font-size: 12px; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px; }
+  .footer-social { display: flex; gap: 8px; }
+  .footer-social a {
+    width: 32px; height: 32px;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s;
+  }
+  .footer-social a:hover { border-color: var(--brand); color: #fff; background: rgba(230, 160, 0, 0.1); }
+  .footer-col h5 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .footer-col ul li a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 12px;
+    transition: color 0.15s;
+  }
+  .footer-col ul li a:hover { color: var(--brand); }
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    padding-top: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-bottom p { font-size: 11px; color: var(--text-muted); }
+  .payment-icons { display: flex; gap: 8px; align-items: center; }
+  .pay-icon {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 10px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+  }
+  .age-badge {
+    background: var(--brand);
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1100px) {
+    .page-wrap { grid-template-columns: 200px 1fr; }
+    .sidebar-right { display: none; }
+    .game-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 800px) {
+    .page-wrap { grid-template-columns: 1fr; }
+    .sidebar-left { display: none; }
+    .game-grid { grid-template-columns: repeat(3, 1fr); }
+    .hero-art { display: none; }
+    .hero-content { max-width: 100%; }
+    .hero-title { font-size: 38px; }
+    .promo-strip { grid-template-columns: 1fr 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <span>🔴 LIVE: 342 Active Players</span>
+  <div class="marquee-wrap">
+    <div class="marquee-inner">
+      <span>🏆 <span class="win">Raj***singh</span> won ₹24,500 on Cricket</span>
+      <span>🎰 <span class="win">Anon***87</span> won ₹8,200 on Teen Patti</span>
+      <span>⚽ <span class="win">Mukesh***K</span> won ₹41,000 on IPL Match</span>
+      <span>🃏 <span class="win">Priya***N</span> won ₹5,600 on Roulette</span>
+      <span>🏏 <span class="win">Vijay***35</span> won ₹18,000 on T20 Live</span>
+      <!-- duplicate for seamless loop -->
+      <span>🏆 <span class="win">Raj***singh</span> won ₹24,500 on Cricket</span>
+      <span>🎰 <span class="win">Anon***87</span> won ₹8,200 on Teen Patti</span>
+      <span>⚽ <span class="win">Mukesh***K</span> won ₹41,000 on IPL Match</span>
+      <span>🃏 <span class="win">Priya***N</span> won ₹5,600 on Roulette</span>
+      <span>🏏 <span class="win">Vijay***35</span> won ₹18,000 on T20 Live</span>
+    </div>
+  </div>
+  <div class="top-bar-right">
+    <a href="#">📱 App</a>
+    <a href="#">🇮🇳 EN</a>
+    <a href="#">Help</a>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo"><span class="v">V</span><span class="rest">ELUX</span><span class="v">PLAY</span><span class="num">365</span></a>
+    <nav>
+      <a href="#" class="active">🏠 Home</a>
+      <a href="#">🏏 Cricket</a>
+      <a href="#">⚽ Sports</a>
+      <a href="#">🎰 Casino</a>
+      <a href="#">🃏 Live Casino</a>
+      <a href="#">🎯 Teen Patti</a>
+      <a href="#">🎲 Lottery</a>
+      <a href="#">💰 Promotions</a>
+    </nav>
+    <div class="header-cta">
+      <a href="#" class="btn btn-outline">Log In</a>
+      <a href="#" class="btn btn-brand">Join Now</a>
+    </div>
+  </div>
+</header>
+
+<!-- CATEGORY NAV -->
+<div class="cat-nav">
+  <div class="cat-nav-inner">
+    <a href="#" class="cat-item active">
+      <span class="cat-icon">🔥</span>
+      <span class="cat-label">Popular</span>
+    </a>
+    <a href="#" class="cat-item">
+      <span class="cat-icon">🏏</span>
+      <span class="cat-label">Cricket</span>
+    </a>
+    <a href="#" class="cat-item">
+      <span class="cat-icon">⚽</span>
+      <span class="cat-label">Football</span>
+    </a>
+    <a href="#" class="cat-item">
+      <span class="cat-icon">🎰</span>
+      <span class="cat-label">Slots</span>
+    </a>
+    <a href="#" class="cat-item">
+      <span class="cat-icon">🃏</span>
+      <span class="cat-label">Live Casino</span>
+    </a>
+    <a href="#" class="cat-item">
+      <span class="cat-icon">🎯</span>
+      <span class="cat-label">Teen Patti</span>
+    </a>
+    <a href="#" class="cat-item">
+      <span class="cat-icon">🎲</span>
+      <span class="cat-label">Roulette</span>
+    </a>
+    <a href="#" class="cat-item">
+      <span class="cat-icon">🤑</span>
+      <span class="cat-label">Crash</span>
+    </a>
+    <a href="#" class="cat-item">
+      <span class="cat-icon">🏆</span>
+      <span class="cat-label">Tournaments</span>
+    </a>
+    <a href="#" class="cat-item">
+      <span class="cat-icon">💎</span>
+      <span class="cat-label">VIP</span>
+    </a>
+    <a href="#" class="cat-item">
+      <span class="cat-icon">🎁</span>
+      <span class="cat-label">Bonus</span>
+    </a>
+    <a href="#" class="cat-item">
+      <span class="cat-icon">🃏</span>
+      <span class="cat-label">Andar Bahar</span>
+    </a>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="page-wrap">
+
+  <!-- SIDEBAR LEFT -->
+  <aside class="sidebar-left">
+    <div class="side-section">
+      <div class="side-title">⚽ Sports</div>
+      <div class="side-list">
+        <a href="#"><span class="dot"></span>Cricket <span class="live-badge">LIVE</span></a>
+        <a href="#"><span class="dot"></span>Football <span class="live-badge">LIVE</span></a>
+        <a href="#"><span class="dot"></span>Tennis</a>
+        <a href="#"><span class="dot"></span>Basketball</a>
+        <a href="#"><span class="dot"></span>Kabaddi <span class="live-badge">LIVE</span></a>
+        <a href="#"><span class="dot"></span>Volleyball</a>
+        <a href="#"><span class="dot"></span>Horse Racing</a>
+        <a href="#"><span class="dot"></span>Esports</a>
+      </div>
+    </div>
+    <div class="side-section">
+      <div class="side-title">🎰 Casino Games</div>
+      <div class="side-list">
+        <a href="#"><span class="dot"></span>Live Roulette <span class="live-badge">LIVE</span></a>
+        <a href="#"><span class="dot"></span>Blackjack</a>
+        <a href="#"><span class="dot"></span>Baccarat <span class="live-badge">LIVE</span></a>
+        <a href="#"><span class="dot"></span>Teen Patti</a>
+        <a href="#"><span class="dot"></span>Dragon Tiger</a>
+        <a href="#"><span class="dot"></span>Andar Bahar</a>
+        <a href="#"><span class="dot"></span>Sic Bo</a>
+        <a href="#"><span class="dot"></span>Lucky 7</a>
+      </div>
+    </div>
+    <div class="side-section">
+      <div class="side-title">🎯 Quick Links</div>
+      <div class="side-list">
+        <a href="#"><span class="dot"></span>My Account</a>
+        <a href="#"><span class="dot"></span>Deposit</a>
+        <a href="#"><span class="dot"></span>Withdrawal</a>
+        <a href="#"><span class="dot"></span>Bet History</a>
+        <a href="#"><span class="dot"></span>Promotions</a>
+        <a href="#"><span class="dot"></span>VIP Club</a>
+        <a href="#"><span class="dot"></span>Refer a Friend</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+      <div class="hero-bg-pattern"></div>
+      <div class="hero-grid-lines"></div>
+      <div class="hero-content">
+        <div class="hero-badge">🔥 Welcome Offer</div>
+        <div class="hero-title">
+          GET <span class="gold">₹20,000</span><br>
+          <span class="accent">BONUS</span>
+        </div>
+        <div class="hero-sub">100% First Deposit Bonus + 50 Free Spins<br>on your favourite games</div>
+        <div class="hero-btns">
+          <a href="#" class="btn btn-brand">Claim Bonus</a>
+          <a href="#" class="btn btn-outline">Explore Games</a>
+        </div>
+      </div>
+      <div class="hero-art">
+        <div class="hero-art-inner">🏏</div>
+      </div>
+    </div>
+
+    <!-- Promo Strip -->
+    <div class="promo-strip">
+      <a href="#" class="promo-card">
+        <div class="promo-icon">💰</div>
+        <div class="promo-info">
+          <div class="promo-label">First Deposit</div>
+          <div class="promo-val">100% UP TO</div>
+          <div class="promo-desc">₹20,000 bonus on first deposit</div>
+        </div>
+      </a>
+      <a href="#" class="promo-card">
+        <div class="promo-icon">🎁</div>
+        <div class="promo-info">
+          <div class="promo-label">Reload Bonus</div>
+          <div class="promo-val">20% WEEKLY</div>
+          <div class="promo-desc">Every Monday reload reward</div>
+        </div>
+      </a>
+      <a href="#" class="promo-card">
+        <div class="promo-icon">👥</div>
+        <div class="promo-info">
+          <div class="promo-label">Refer & Earn</div>
+          <div class="promo-val">₹500 PER</div>
+          <div class="promo-desc">Per friend referred & deposited</div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Live Matches -->
+    <div>
+      <div class="section-header">
+        <div class="section-title">⚡ Live Matches</div>
+        <a href="#" class="see-all">View All →</a>
+      </div>
+      <div class="live-matches">
+        <div class="match-card">
+          <div class="match-sport">🏏</div>
+          <div class="match-body">
+            <div class="match-teams">India vs Australia</div>
+            <div class="match-meta">
+              <span class="live-dot">LIVE</span>
+              <span>3rd T20 · Over 14.2</span>
+            </div>
+          </div>
+          <div class="match-odds">
+            <div class="odd-btn"><span class="odd-label">IND</span><span class="odd-val">1.85</span></div>
+            <div class="odd-btn"><span class="odd-label">DRAW</span><span class="odd-val">3.50</span></div>
+            <div class="odd-btn"><span class="odd-label">AUS</span><span class="odd-val">2.10</span></div>
+          </div>
+        </div>
+        <div class="match-card">
+          <div class="match-sport">⚽</div>
+          <div class="match-body">
+            <div class="match-teams">Manchester City vs Arsenal</div>
+            <div class="match-meta">
+              <span class="live-dot">LIVE</span>
+              <span>EPL · 67'</span>
+            </div>
+          </div>
+          <div class="match-odds">
+            <div class="odd-btn"><span class="odd-label">MCI</span><span class="odd-val">1.65</span></div>
+            <div class="odd-btn"><span class="odd-label">DRAW</span><span class="odd-val">4.00</span></div>
+            <div class="odd-btn"><span class="odd-label">ARS</span><span class="odd-val">2.40</span></div>
+          </div>
+        </div>
+        <div class="match-card">
+          <div class="match-sport">🏏</div>
+          <div class="match-body">
+            <div class="match-teams">Mumbai Indians vs CSK</div>
+            <div class="match-meta">
+              <span class="live-dot">LIVE</span>
+              <span>IPL 2026 · Over 18.4</span>
+            </div>
+          </div>
+          <div class="match-odds">
+            <div class="odd-btn"><span class="odd-label">MI</span><span class="odd-val">2.05</span></div>
+            <div class="odd-btn"><span class="odd-label">TIE</span><span class="odd-val">5.50</span></div>
+            <div class="odd-btn"><span class="odd-label">CSK</span><span class="odd-val">1.75</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Popular Games -->
+    <div>
+      <div class="section-header">
+        <div class="section-title">🔥 Popular Games</div>
+        <a href="#" class="see-all">View All →</a>
+      </div>
+      <div class="game-grid">
+        <div class="game-card">
+          <div class="game-thumb gt-1"><span>🎰</span><div class="game-thumb-overlay"></div><div class="game-hot">HOT</div></div>
+          <div class="game-info"><div class="game-name">Gates of Olympus</div><div class="game-provider">Pragmatic Play</div></div>
+        </div>
+        <div class="game-card">
+          <div class="game-thumb gt-3"><span>🃏</span><div class="game-thumb-overlay"></div><div class="game-hot">HOT</div></div>
+          <div class="game-info"><div class="game-name">Teen Patti Gold</div><div class="game-provider">Ezugi</div></div>
+        </div>
+        <div class="game-card">
+          <div class="game-thumb gt-2"><span>🎲</span><div class="game-thumb-overlay"></div><div class="game-new">NEW</div></div>
+          <div class="game-info"><div class="game-name">Live Roulette</div><div class="game-provider">Evolution</div></div>
+        </div>
+        <div class="game-card">
+          <div class="game-thumb gt-5"><span>💣</span><div class="game-thumb-overlay"></div></div>
+          <div class="game-info"><div class="game-name">Mines</div><div class="game-provider">Spribe</div></div>
+        </div>
+        <div class="game-card">
+          <div class="game-thumb gt-4"><span>🚀</span><div class="game-thumb-overlay"></div><div class="game-hot">HOT</div></div>
+          <div class="game-info"><div class="game-name">Aviator</div><div class="game-provider">Spribe</div></div>
+        </div>
+        <div class="game-card">
+          <div class="game-thumb gt-6"><span>🐉</span><div class="game-thumb-overlay"></div></div>
+          <div class="game-info"><div class="game-name">Dragon Tiger</div><div class="game-provider">Ezugi</div></div>
+        </div>
+        <div class="game-card">
+          <div class="game-thumb gt-7"><span>🂡</span><div class="game-thumb-overlay"></div><div class="game-new">NEW</div></div>
+          <div class="game-info"><div class="game-name">Speed Blackjack</div><div class="game-provider">Evolution</div></div>
+        </div>
+        <div class="game-card">
+          <div class="game-thumb gt-8"><span>🎯</span><div class="game-thumb-overlay"></div></div>
+          <div class="game-info"><div class="game-name">Andar Bahar</div><div class="game-provider">Ezugi</div></div>
+        </div>
+        <div class="game-card">
+          <div class="game-thumb gt-9"><span>🎱</span><div class="game-thumb-overlay"></div></div>
+          <div class="game-info"><div class="game-name">Baccarat Live</div><div class="game-provider">Pragmatic</div></div>
+        </div>
+        <div class="game-card">
+          <div class="game-thumb gt-10"><span>🍀</span><div class="game-thumb-overlay"></div><div class="game-new">NEW</div></div>
+          <div class="game-info"><div class="game-name">Mega Lucky 7</div><div class="game-provider">Spribe</div></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- SIDEBAR RIGHT -->
+  <aside class="sidebar-right">
+
+    <!-- Auth Panel -->
+    <div class="auth-panel">
+      <div class="auth-tabs">
+        <div class="auth-tab active">Log In</div>
+        <div class="auth-tab">Register</div>
+      </div>
+      <div class="auth-body">
+        <div class="form-group">
+          <label class="form-label">Username / Mobile</label>
+          <input type="text" class="form-input" placeholder="Enter username">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-input" placeholder="Enter password">
+        </div>
+        <a href="#" class="btn btn-brand btn-full" style="margin-bottom:10px;">Log In</a>
+        <div style="text-align:center;font-size:11px;color:var(--text-muted);margin-bottom:10px;">
+          <a href="#" style="color:var(--text-muted);">Forgot password?</a>
+        </div>
+        <div class="auth-divider">or continue with</div>
+        <div class="social-login" style="margin-top:10px;">
+          <button class="social-btn">📱 WhatsApp</button>
+          <button class="social-btn">📲 OTP</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Winners -->
+    <div class="side-section">
+      <div class="side-title">🏆 Recent Winners</div>
+      <div class="wins-list">
+        <div class="win-item">
+          <div class="win-avatar" style="background:linear-gradient(135deg,#e8192c,#8b0010);">👤</div>
+          <div class="win-info">
+            <div class="win-user">Raj***K</div>
+            <div class="win-game">Cricket Betting</div>
+          </div>
+          <div class="win-amount">+₹24,500</div>
+        </div>
+        <div class="win-item">
+          <div class="win-avatar" style="background:linear-gradient(135deg,#1565ff,#003090);">👤</div>
+          <div class="win-info">
+            <div class="win-user">Anon***87</div>
+            <div class="win-game">Teen Patti</div>
+          </div>
+          <div class="win-amount">+₹8,200</div>
+        </div>
+        <div class="win-item">
+          <div class="win-avatar" style="background:linear-gradient(135deg,#f0a500,#804500);">👤</div>
+          <div class="win-info">
+            <div class="win-user">Mukesh***P</div>
+            <div class="win-game">Gates of Olympus</div>
+          </div>
+          <div class="win-amount">+₹41,000</div>
+        </div>
+        <div class="win-item">
+          <div class="win-avatar" style="background:linear-gradient(135deg,#009900,#004000);">👤</div>
+          <div class="win-info">
+            <div class="win-user">Priya***N</div>
+            <div class="win-game">Live Roulette</div>
+          </div>
+          <div class="win-amount">+₹5,600</div>
+        </div>
+        <div class="win-item">
+          <div class="win-avatar" style="background:linear-gradient(135deg,#990090,#400040);">👤</div>
+          <div class="win-info">
+            <div class="win-user">Vijay***35</div>
+            <div class="win-game">Aviator</div>
+          </div>
+          <div class="win-amount">+₹18,000</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- App Download -->
+    <div class="app-banner">
+      <div class="app-icon">📱</div>
+      <h4>Download the App</h4>
+      <p>Get the full experience on your phone. Faster bets, live scores & instant payouts.</p>
+      <div class="app-btns">
+        <button class="app-btn">
+          <span>🍎</span>
+          <div class="app-btn-text">
+            <span class="sub">Download on</span>
+            <span class="name">App Store</span>
+          </div>
+        </button>
+        <button class="app-btn">
+          <span>🤖</span>
+          <div class="app-btn-text">
+            <span class="sub">Get it on</span>
+            <span class="name">Google Play</span>
+          </div>
+        </button>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="logo"><span class="v">V</span><span class="rest">ELUX</span><span class="v">PLAY</span><span class="num">365</span></a>
+        <p>VeluxPlay365 is a premier online betting and casino platform offering cricket, sports, live casino, slots, and more. Play responsibly. 18+ only.</p>
+        <div class="footer-social">
+          <a href="#">📘</a>
+          <a href="#">📸</a>
+          <a href="#">🐦</a>
+          <a href="#">💬</a>
+          <a href="#">▶️</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Sports</h5>
+        <ul>
+          <li><a href="#">Cricket</a></li>
+          <li><a href="#">Football</a></li>
+          <li><a href="#">Tennis</a></li>
+          <li><a href="#">Kabaddi</a></li>
+          <li><a href="#">Basketball</a></li>
+          <li><a href="#">Esports</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Casino</h5>
+        <ul>
+          <li><a href="#">Live Casino</a></li>
+          <li><a href="#">Slots</a></li>
+          <li><a href="#">Teen Patti</a></li>
+          <li><a href="#">Roulette</a></li>
+          <li><a href="#">Blackjack</a></li>
+          <li><a href="#">Crash Games</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Account</h5>
+        <ul>
+          <li><a href="#">Register</a></li>
+          <li><a href="#">Login</a></li>
+          <li><a href="#">Deposit</a></li>
+          <li><a href="#">Withdrawal</a></li>
+          <li><a href="#">Bet History</a></li>
+          <li><a href="#">VIP Club</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Help</h5>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Promotions</a></li>
+          <li><a href="#">Responsible Gaming</a></li>
+          <li><a href="#">Terms & Conditions</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 VeluxPlay365. All rights reserved. Gambling involves risk. Please play responsibly.</p>
+      <div class="payment-icons">
+        <span class="pay-icon">UPI</span>
+        <span class="pay-icon">PAYTM</span>
+        <span class="pay-icon">VISA</span>
+        <span class="pay-icon">MC</span>
+        <span class="pay-icon">CRYPTO</span>
+        <span class="age-badge">18+</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Tab switching
+  const tabs = document.querySelectorAll('.auth-tab');
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  // Category nav active state
+  document.querySelectorAll('.cat-item').forEach(item => {
+    item.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelectorAll('.cat-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+
+  // Odd buttons click effect
+  document.querySelectorAll('.odd-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      btn.style.background = 'var(--brand)';
+      btn.style.borderColor = 'var(--brand)';
+      setTimeout(() => {
+        btn.style.background = '';
+        btn.style.borderColor = '';
+      }, 600);
+    });
+  });
+
+  // Game card hover - subtle glow
+  document.querySelectorAll('.game-card').forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      card.style.boxShadow = '0 8px 28px rgba(230, 160, 0, 0.2)';
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.boxShadow = '';
+    });
+  });
+</script>
+</body>
+</html>

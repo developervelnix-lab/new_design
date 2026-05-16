@@ -25,6 +25,7 @@ import BonusDetailsPage from './components/pages/BonusDetailsPage';
 import ActiveBonusPage from './components/pages/ActiveBonusPage';
 import BonusPage from './components/pages/BonusPage';
 import NotificationsPage from './components/pages/NotificationsPage';
+import RoulettePage from './components/pages/RoulettePage';
 import NotFound from './components/pages/NotFound';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import ThemeSynchronizer from './constants/ThemeSynchronizer';
@@ -180,6 +181,10 @@ const appRouter = createBrowserRouter([
             <NotificationsPage />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "/roulette",
+        element: <RoulettePage />,
       },
       {
         path: "*",
