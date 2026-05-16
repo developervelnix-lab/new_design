@@ -26,7 +26,7 @@ export const SiteProvider = ({ children }) => {
   ];
 
   const DEFAULT_PROMO_BANNERS = [
-  
+
   ];
 
   // Try to load from cache on initialization to prevent flicker
@@ -41,12 +41,12 @@ export const SiteProvider = ({ children }) => {
   const [promoBanners, setPromoBanners] = useState(() => {
     const cached = typeof window !== 'undefined' ? localStorage.getItem("cached_promo_banners") : null;
     if (cached) {
-      try { 
+      try {
         const parsed = JSON.parse(cached);
         if (parsed.length > 0 && parsed[0].image_path?.includes('unsplash.com')) {
           return DEFAULT_PROMO_BANNERS;
         }
-        return parsed; 
+        return parsed;
       } catch (e) { return DEFAULT_PROMO_BANNERS; }
     }
     return DEFAULT_PROMO_BANNERS;
@@ -55,13 +55,13 @@ export const SiteProvider = ({ children }) => {
   const [heroBanners, setHeroBanners] = useState(() => {
     const cached = typeof window !== 'undefined' ? localStorage.getItem("cached_hero_banners") : null;
     if (cached) {
-      try { 
+      try {
         const parsed = JSON.parse(cached);
         // If cache is old unsplash, use new defaults
         if (parsed.length > 0 && parsed[0].image_path?.includes('unsplash.com')) {
           return DEFAULT_HERO_BANNERS;
         }
-        return parsed; 
+        return parsed;
       } catch (e) { return DEFAULT_HERO_BANNERS; }
     }
     return DEFAULT_HERO_BANNERS;
@@ -85,7 +85,7 @@ export const SiteProvider = ({ children }) => {
   const fetchSiteData = async () => {
     const userId = localStorage.getItem("account_id") || "guest";
     const authSecretKey = localStorage.getItem("auth_secret_key") || "guest";
-    
+
     if (userId !== "guest" && authSecretKey === "guest") {
       logout();
       return;
@@ -94,7 +94,7 @@ export const SiteProvider = ({ children }) => {
     let fetchUrl = "";
     try {
       fetchUrl = `${API_URL}?Route=route-account-info&AuthToken=${encodeURIComponent(authSecretKey)}&USER_ID=${encodeURIComponent(userId)}&_t=${Date.now()}`;
-      
+
       const response = await fetch(fetchUrl, {
         method: "GET",
         mode: "cors",
@@ -112,9 +112,9 @@ export const SiteProvider = ({ children }) => {
       if (result.status_code === "success" && result.data && result.data[0]) {
         const serverData = result.data[0];
         const isLoggedIn = userId !== "guest" && authSecretKey !== "guest";
-        const serverReturnedGuest = !serverData.account_balance || 
+        const serverReturnedGuest = !serverData.account_balance ||
           (serverData.account_username === "Guest" && parseFloat(serverData.account_balance) === 0);
-        
+
         setAccountInfo(prev => {
           const cleanServerData = {};
           Object.keys(serverData).forEach(key => {
@@ -124,13 +124,11 @@ export const SiteProvider = ({ children }) => {
             }
           });
 
-          const mergedInfo = { 
-            ...prev, 
-            ...cleanServerData, 
-            service_site_name: "Velplay365", 
-            service_marquee: "Welcome to Velplay365! Experience world-class betting and gaming. Sign up now to get exclusive bonuses and daily rewards. Minimum deposit ₹100. Fast 24/7 withdrawals."
+          const mergedInfo = {
+            ...prev,
+            ...cleanServerData,
           };
-          
+
           let finalInfo = mergedInfo;
           if (isLoggedIn && serverReturnedGuest) {
             finalInfo = {
@@ -140,14 +138,14 @@ export const SiteProvider = ({ children }) => {
               account_balance: prev.account_balance || "0.00",
             };
           }
-          
+
           localStorage.setItem("cached_site_info", JSON.stringify(finalInfo));
           return finalInfo;
         });
 
         // Merge Backend Banners with Frontend Defaults
         const BASE_URL = API_URL.replace("/api", "");
-        
+
         // Process Hero Banners (slideShowList)
         const backendHero = Array.isArray(result.slideShowList) ? result.slideShowList.map(b => ({
           image_path: b.slider_img,
@@ -175,7 +173,7 @@ export const SiteProvider = ({ children }) => {
         if (result.noticeArr && result.noticeArr.length >= 2) {
           const nTitle = result.noticeArr[0];
           const nMsg = result.noticeArr[1];
-          const nHash = btoa(nTitle + nMsg).substring(0, 32); 
+          const nHash = btoa(nTitle + nMsg).substring(0, 32);
           const acknowledgedNotices = JSON.parse(localStorage.getItem("acknowledged_notices") || "[]");
           const shownToasts = JSON.parse(localStorage.getItem("shown_toasts") || "[]");
           if (!acknowledgedNotices.includes(nHash) && !shownToasts.includes(nHash)) {
@@ -197,7 +195,7 @@ export const SiteProvider = ({ children }) => {
     const interval = setInterval(() => {
       fetchSiteData();
     }, 5000);
-    
+
     const handleStorageChange = (e) => {
       if (e.key === "auth_secret_key" || e.key === "account_id") {
         fetchSiteData();
@@ -210,7 +208,7 @@ export const SiteProvider = ({ children }) => {
 
     window.addEventListener("storage", handleStorageChange);
     window.addEventListener("site-data-refresh", handleCustomRefresh);
-    
+
     return () => {
       clearInterval(interval);
       window.removeEventListener("storage", handleStorageChange);
@@ -219,11 +217,11 @@ export const SiteProvider = ({ children }) => {
   }, []);
 
   return (
-    <SiteContext.Provider value={{ 
-      accountInfo, 
-      promoBanners, 
+    <SiteContext.Provider value={{
+      accountInfo,
+      promoBanners,
       heroBanners,
-      loading, 
+      loading,
       notice,
       setNotice,
       refreshSiteData: fetchSiteData,

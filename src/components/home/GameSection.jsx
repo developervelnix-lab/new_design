@@ -17,7 +17,7 @@ import { useGames } from "../../context/GameContext"
 
 const GameSection = ({ title, games, id, layout = "slider" }) => {
   const COLORS = useColors()
-  const { setShowLogin, refreshSiteData } = useSite()
+  const { setShowLogin, refreshSiteData, accountInfo } = useSite()
   const [preloadedImages, setPreloadedImages] = useState([])
   const [loadingForGames, setLoadingForGames] = useState(null)
   const [showPopup, setShowPopup] = useState(false)
@@ -201,7 +201,7 @@ const GameSection = ({ title, games, id, layout = "slider" }) => {
 
       <div className="flex justify-between items-center mb-4 md:mb-6 gap-2">
         <div className="flex items-center gap-2 md:gap-4 min-w-0">
-          <div 
+          <div
             className="h-3 md:h-5 w-1 rounded-full flex-shrink-0"
             style={{ background: COLORS.brandGradient }}
           ></div>
@@ -214,44 +214,44 @@ const GameSection = ({ title, games, id, layout = "slider" }) => {
         </div>
         {layout !== "grid" && (
           <div className="flex items-center space-x-3">
-          <div className="hidden md:flex items-center bg-gray-100 dark:bg-white/5 rounded-full p-1 backdrop-blur-sm border border-black/10 dark:border-white/10">
+            <div className="hidden md:flex items-center bg-gray-100 dark:bg-white/5 rounded-full p-1 backdrop-blur-sm border border-black/10 dark:border-white/10">
+              <button
+                className={`nav-button prev-${sectionId} w-9 h-9 flex items-center justify-center rounded-full text-black/70 dark:text-white/70 hover:text-black dark:text-white hover:bg-gray-100 dark:bg-white/10 transition-all duration-300`}
+              >
+                <FaChevronLeft size={14} />
+              </button>
+              <div className="w-[1px] h-4 bg-gray-100 dark:bg-white/10 mx-1"></div>
+              <button
+                className={`nav-button next-${sectionId} w-9 h-9 flex items-center justify-center rounded-full text-black/70 dark:text-white/70 hover:text-black dark:text-white hover:bg-gray-100 dark:bg-white/10 transition-all duration-300`}
+              >
+                <FaChevronRight size={14} />
+              </button>
+            </div>
+
             <button
-              className={`nav-button prev-${sectionId} w-9 h-9 flex items-center justify-center rounded-full text-black/70 dark:text-white/70 hover:text-black dark:text-white hover:bg-gray-100 dark:bg-white/10 transition-all duration-300`}
+              onClick={openPopup}
+              className="flex items-center gap-1.5 px-2 py-1 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl text-[9px] sm:text-xs font-bold uppercase transition-all duration-500 shadow-lg hover:shadow-brand/20 active:scale-95 group overflow-hidden relative flex-shrink-0"
+              style={{
+                background: COLORS.brandGradient,
+                fontFamily: FONTS.ui,
+                letterSpacing: "0.05em",
+              }}
+              aria-label="See All"
             >
-              <FaChevronLeft size={14} />
-            </button>
-            <div className="w-[1px] h-4 bg-gray-100 dark:bg-white/10 mx-1"></div>
-            <button
-              className={`nav-button next-${sectionId} w-9 h-9 flex items-center justify-center rounded-full text-black/70 dark:text-white/70 hover:text-black dark:text-white hover:bg-gray-100 dark:bg-white/10 transition-all duration-300`}
-            >
-              <FaChevronRight size={14} />
+              <div className="absolute inset-0 bg-gray-100 dark:bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <FaEye size={10} className="sm:size-[14px] group-hover:scale-110 transition-transform duration-300" />
+              <span className="whitespace-nowrap">See All</span>
             </button>
           </div>
-
-          <button
-            onClick={openPopup}
-            className="flex items-center gap-1.5 px-2 py-1 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl text-[9px] sm:text-xs font-bold uppercase transition-all duration-500 shadow-lg hover:shadow-brand/20 active:scale-95 group overflow-hidden relative flex-shrink-0"
-            style={{
-              background: COLORS.brandGradient,
-              fontFamily: FONTS.ui,
-              letterSpacing: "0.05em",
-            }}
-            aria-label="See All"
-          >
-            <div className="absolute inset-0 bg-gray-100 dark:bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <FaEye size={10} className="sm:size-[14px] group-hover:scale-110 transition-transform duration-300" />
-            <span className="whitespace-nowrap">See All</span>
-          </button>
-        </div>
         )}
       </div>
 
       {layout === "grid" ? (
         <div className="see-all-grid gap-3 md:gap-6 animate-fadeInUp">
           {games && Array.isArray(games) && games.map((game, index) => (
-            <div 
-              key={index} 
-              className="flex flex-col group cursor-pointer" 
+            <div
+              key={index}
+              className="flex flex-col group cursor-pointer"
               onClick={() => handleGameClick(game)}
               onMouseEnter={() => setHoveredGame(game["Game UID"])}
               onMouseLeave={() => setHoveredGame(null)}
@@ -259,9 +259,8 @@ const GameSection = ({ title, games, id, layout = "slider" }) => {
               <div className="relative aspect-[4/5] rounded-xl overflow-hidden p-[1px] bg-gradient-to-br from-white/10 via-transparent to-white/5 transition-all duration-500 group-hover:from-brand/50 group-hover:to-brand/20 group-hover:shadow-[0_0_30px_rgba(230,160,0,0.4)] group-hover:-translate-y-1">
                 <div className="relative w-full h-full rounded-[11px] overflow-hidden bg-gray-100 dark:bg-white/5">
                   <img
-                    className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${
-                      loadingForGames === game["Game UID"] ? "opacity-30 blur-sm" : ""
-                    }`}
+                    className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${loadingForGames === game["Game UID"] ? "opacity-30 blur-sm" : ""
+                      }`}
                     src={game.icon || "/placeholder.svg"}
                     alt={game["Game Name"]}
                   />
@@ -398,9 +397,8 @@ const GameSection = ({ title, games, id, layout = "slider" }) => {
                       <div className="relative aspect-[4/5] rounded-xl overflow-hidden p-[1px] bg-gradient-to-br from-white/10 via-transparent to-white/5 transition-all duration-500 group-hover:from-brand/50 group-hover:to-brand/20 group-hover:shadow-[0_0_30px_rgba(230,160,0,0.4)] group-hover:-translate-y-1">
                         <div className="relative w-full h-full rounded-[11px] overflow-hidden bg-gray-100 dark:bg-white/5">
                           <img
-                            className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${
-                              loadingForGames === game["Game UID"] ? "opacity-30 blur-sm" : ""
-                            }`}
+                            className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${loadingForGames === game["Game UID"] ? "opacity-30 blur-sm" : ""
+                              }`}
                             src={game.icon || "/placeholder.svg"}
                             alt={game["Game Name"]}
                           />
@@ -662,7 +660,7 @@ const GameSection = ({ title, games, id, layout = "slider" }) => {
 
           <div className="mt-8 flex items-center gap-4 opacity-30">
             <div className="h-px w-10 bg-gradient-to-r from-transparent to-white/50"></div>
-            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black dark:text-white">Velplay365 Elite</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black dark:text-white">{accountInfo?.service_site_name || 'Site'} Elite</span>
             <div className="h-px w-10 bg-gradient-to-l from-transparent to-white/50"></div>
           </div>
         </div>,

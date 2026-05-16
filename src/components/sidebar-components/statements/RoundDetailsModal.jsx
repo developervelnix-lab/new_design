@@ -7,7 +7,7 @@ const RoundDetailsModal = ({ isOpen, onClose, transaction }) => {
   const COLORS = useColors();
 
   if (!isOpen || !transaction) return null;
-  
+
   const status = (transaction.r_match_status || "").toLowerCase();
   const isCashout = status === "cashout" || status === "settled_cashout";
   const netProfit = (parseFloat(transaction.r_match_profit || 0) - parseFloat(transaction.r_match_bet || transaction.r_match_amount || 0));
@@ -15,7 +15,7 @@ const RoundDetailsModal = ({ isOpen, onClose, transaction }) => {
   const getDetectedProvider = () => {
     const rawProvider = transaction.r_provider;
     const matchName = (transaction.r_match_name || "").toLowerCase();
-    
+
     if (matchName.includes('saba')) return 'Saba Sports';
     if (matchName.includes('evolution')) return 'Evolution';
     if (matchName.includes('ezugi')) return 'Ezugi';
@@ -26,7 +26,7 @@ const RoundDetailsModal = ({ isOpen, onClose, transaction }) => {
     if (matchName.includes('tada')) return 'Tada';
     if (matchName.includes('kingmaker') || matchName.includes('km')) return 'King Maker';
     if (matchName.includes('turbo')) return 'Turbo Games';
-    
+
     if (rawProvider && rawProvider !== 'Standard' && rawProvider !== 'velplay365') return rawProvider;
     return transaction.r_match_name || 'Velplay365 Official';
   };
@@ -61,8 +61,8 @@ const RoundDetailsModal = ({ isOpen, onClose, transaction }) => {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      
-      <div 
+
+      <div
         className="relative w-[95%] max-w-7xl max-h-[95vh] overflow-hidden rounded-[2.5rem] border border-black/10 dark:border-white/10 shadow-3xl flex flex-col"
         style={{ backgroundColor: COLORS.bg2 }}
       >
@@ -122,13 +122,13 @@ const RoundDetailsModal = ({ isOpen, onClose, transaction }) => {
                 <DetailItem label="Outcome Color" value={transaction.r_outcome_color} icon={Info} />
                 <DetailItem label="Wager" value={`₹${transaction.r_match_bet || transaction.r_match_amount}`} icon={Receipt} />
                 <DetailItem label="Payout" value={`₹${transaction.r_match_profit || '0'}`} icon={Trophy} />
-                
+
                 {isCashout ? (
                   <div className="mt-8 p-6 rounded-[2.5rem] bg-purple-900/10 border border-purple-500/20 flex flex-col items-center justify-center gap-1 overflow-hidden relative group">
                     <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-purple-500/5 to-purple-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
                     <div className="text-[10px] font-black text-purple-400/60 uppercase tracking-[0.2em] mb-1">Cashout Payout</div>
                     <div className="text-4xl font-black text-purple-400 drop-shadow-[0_0_15px_rgba(153,102,255,0.4)]" style={{ fontFamily: FONTS.head }}>
-                      ₹{parseFloat(transaction.r_match_profit || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}
+                      ₹{parseFloat(transaction.r_match_profit || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                     </div>
                     <div className={`mt-2 px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${netProfit < 0 ? 'bg-rose-500/10 text-rose-400' : 'bg-emerald-500/10 text-emerald-400'}`}>
                       {netProfit < 0 ? 'Net Loss' : 'Net Profit'}: ₹{Math.abs(netProfit || 0).toFixed(2)}
@@ -143,11 +143,10 @@ const RoundDetailsModal = ({ isOpen, onClose, transaction }) => {
                   </div>
                 ) : (
                   <div className="mt-10 pt-8 border-t border-black/10 dark:border-white/10 text-center">
-                    <div className={`inline-flex items-center gap-4 px-8 py-4 rounded-full font-black uppercase tracking-[0.2em] text-[10px] ${
-                      netProfit < 0 ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20' : 
-                      'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
-                    }`}>
-                      {netProfit < 0 ? 'Net Loss' : 'Net Profit'}: 
+                    <div className={`inline-flex items-center gap-4 px-8 py-4 rounded-full font-black uppercase tracking-[0.2em] text-[10px] ${netProfit < 0 ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20' :
+                        'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'
+                      }`}>
+                      {netProfit < 0 ? 'Net Loss' : 'Net Profit'}:
                       <span className="text-xl" style={{ fontFamily: FONTS.head }}>₹{Math.abs(netProfit || 0).toFixed(2)}</span>
                     </div>
                   </div>

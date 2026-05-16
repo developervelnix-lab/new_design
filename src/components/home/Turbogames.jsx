@@ -16,7 +16,7 @@ import "swiper/css/navigation"
 
 const GameSection = ({ title, games }) => {
   const COLORS = useColors();
-  const { setShowLogin, refreshSiteData } = useSite();
+  const { setShowLogin, refreshSiteData, accountInfo } = useSite();
   const [preloadedImages, setPreloadedImages] = useState([])
   const [loadingForGames, setLoadingForGames] = useState(null)
   const [showPopup, setShowPopup] = useState(false)
@@ -187,7 +187,7 @@ const GameSection = ({ title, games }) => {
 
       <div className="flex justify-between items-center mb-4 md:mb-6 gap-2">
         <div className="flex items-center gap-2 md:gap-4 min-w-0">
-          <div 
+          <div
             className="h-3 md:h-5 w-1 rounded-full flex-shrink-0"
             style={{ background: COLORS.brandGradient }}
           ></div>
@@ -336,9 +336,8 @@ const GameSection = ({ title, games }) => {
                       <div className="relative aspect-[4/5] rounded-xl overflow-hidden p-[1px] bg-gradient-to-br from-white/10 via-transparent to-white/5 transition-all duration-500 group-hover:from-brand/50 group-hover:to-brand/20 group-hover:shadow-[0_0_30px_rgba(230,160,0,0.4)] group-hover:-translate-y-1">
                         <div className="relative w-full h-full rounded-[11px] overflow-hidden bg-gray-100 dark:bg-white/5">
                           <img
-                            className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${
-                              loadingForGames === game["Game UID"] ? "opacity-30 blur-sm" : ""
-                            }`}
+                            className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${loadingForGames === game["Game UID"] ? "opacity-30 blur-sm" : ""
+                              }`}
                             src={game.icon || "/placeholder.svg"}
                             alt={game["Game Name"]}
                           />
@@ -577,7 +576,7 @@ const GameSection = ({ title, games }) => {
 
           <div className="mt-8 flex items-center gap-4 opacity-30">
             <div className="h-px w-10 bg-gradient-to-r from-transparent to-white/50"></div>
-            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black dark:text-white">Velplay365 Elite</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black dark:text-white">{accountInfo?.service_site_name || 'Site'} Elite</span>
             <div className="h-px w-10 bg-gradient-to-l from-transparent to-white/50"></div>
           </div>
         </div>,
@@ -591,7 +590,7 @@ const Turbogames = () => {
   const { turbo } = useGames();
 
   const excludeProviders = [
-    'MAC88', '18Peaches', 'Veliplay', 'aviatrix', 'InOut Minigames', 
+    'MAC88', '18Peaches', 'Veliplay', 'aviatrix', 'InOut Minigames',
     'Galaxsys', 'Smartsoft', '2J', 'turbogamesasia', 'Aura Gaming', 'India Lotto'
   ];
 

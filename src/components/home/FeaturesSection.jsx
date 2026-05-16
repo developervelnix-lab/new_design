@@ -4,6 +4,7 @@ import { FaRegClock, FaWallet, FaUserPlus, FaRegCheckCircle } from 'react-icons/
 import { useColors } from '../../hooks/useColors';
 import { FONTS } from '../../constants/theme';
 import { ranabook } from '../jsondata/info';
+import { useSite } from "../../context/SiteContext";
 
 const FeatureCard = ({ feature, index }) => {
   const COLORS = useColors();
@@ -131,6 +132,7 @@ const FeatureCard = ({ feature, index }) => {
 
 const FeaturesSection = () => {
   const COLORS = useColors();
+  const { accountInfo } = useSite();
   const features = [
     { title: 'Fast Withdrawal', icon: <FaRegClock /> },
     { title: 'Instant Deposit', icon: <FaWallet /> },
@@ -159,7 +161,7 @@ const FeaturesSection = () => {
 
         <div className="flex flex-col md:flex-row justify-between md:items-end gap-5 md:gap-0 mb-8 md:mb-10 pb-6 border-b border-black/5 dark:border-white/5">
           <div className="flex items-center gap-4 md:gap-6">
-            <div 
+            <div
               className="h-5 md:h-6 w-1.5 rounded-full"
               style={{ background: COLORS.brandGradient }}
             ></div>
@@ -168,7 +170,7 @@ const FeaturesSection = () => {
                 className="text-base sm:text-lg md:text-xl font-black text-black dark:text-white tracking-[0.1em] md:tracking-[0.2em] uppercase leading-none"
                 style={{ fontFamily: FONTS.head }}
               >
-                Why Choose <span style={{ color: COLORS.brand }}>Velplay365</span>?
+                Why Choose <span style={{ color: COLORS.brand }}>{accountInfo?.service_site_name || 'Our Platform'}</span>?
               </h2>
               <p className="text-[8px] sm:text-[9px] md:text-[10px] text-black/30 dark:text-white/30 font-bold uppercase tracking-[0.2em] md:tracking-[0.4em] mt-2 md:mt-3">
                 Why We're Different

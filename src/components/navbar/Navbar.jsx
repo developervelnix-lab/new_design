@@ -755,14 +755,13 @@ function Navbar() {
                     action: () => {
                       setMenuOpen(false);
                       if (isInstalled) {
-                        // launch_handler in manifest routes this to the standalone window
                         window.open(window.location.origin, '_blank');
                       } else if (isInstallable) {
                         installApp();
                       } else if (currentDevice === 'android') {
                         window.open(accountInfo?.service_apk_url || "/velplay.apk", "_blank");
                       } else {
-                        // Fallback: open in new tab, launch_handler may still catch it
+                        // Fallback: trigger whatever browser-native thing might happen
                         window.open(window.location.origin, '_blank');
                       }
                     },

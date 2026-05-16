@@ -16,7 +16,7 @@ import "swiper/css/navigation"
 
 const GameSection = ({ title, games, id }) => {
   const COLORS = useColors()
-  const { setShowLogin, refreshSiteData } = useSite()
+  const { setShowLogin, refreshSiteData, accountInfo } = useSite()
   const [preloadedImages, setPreloadedImages] = useState([])
   const [loadingForGames, setLoadingForGames] = useState(null)
   const [showPopup, setShowPopup] = useState(false)
@@ -308,29 +308,29 @@ const GameSection = ({ title, games, id }) => {
             >
               <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between backdrop-blur-md">
                 <div className="flex items-center gap-6">
-                    <button
-                      onClick={closePopup}
-                      className="flex items-center gap-2 bg-gray-100 dark:bg-white/5 hover:bg-gray-100 dark:bg-white/10 text-black dark:text-white rounded-xl px-4 py-2 transition-all duration-300 border border-black/10 dark:border-white/10 shadow-lg active:scale-95 group"
-                      aria-label="Go Back"
+                  <button
+                    onClick={closePopup}
+                    className="flex items-center gap-2 bg-gray-100 dark:bg-white/5 hover:bg-gray-100 dark:bg-white/10 text-black dark:text-white rounded-xl px-4 py-2 transition-all duration-300 border border-black/10 dark:border-white/10 shadow-lg active:scale-95 group"
+                    aria-label="Go Back"
+                  >
+                    <FaArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+                    <span className="text-[10px] font-black uppercase tracking-widest" style={{ fontFamily: FONTS.ui }}>Back</span>
+                  </button>
+                  <div className="h-8 w-1 rounded-full opacity-80" style={{ background: COLORS.brandGradient }}></div>
+                  <div>
+                    <h2
+                      className="text-lg md:text-xl font-black text-black dark:text-white tracking-[0.1em] uppercase leading-tight"
+                      style={{ fontFamily: FONTS.head }}
                     >
-                      <FaArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-                      <span className="text-[10px] font-black uppercase tracking-widest" style={{ fontFamily: FONTS.ui }}>Back</span>
-                    </button>
-                    <div className="h-8 w-1 rounded-full opacity-80" style={{ background: COLORS.brandGradient }}></div>
-                    <div>
-                      <h2
-                        className="text-lg md:text-xl font-black text-black dark:text-white tracking-[0.1em] uppercase leading-tight"
-                        style={{ fontFamily: FONTS.head }}
-                      >
-                        {title}
-                      </h2>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse"></span>
-                        <span className="text-[8px] md:text-[9px] text-black/40 dark:text-white/40 font-bold uppercase tracking-[0.2em]">
-                          Premium Collection
-                        </span>
-                      </div>
+                      {title}
+                    </h2>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-brand animate-pulse"></span>
+                      <span className="text-[8px] md:text-[9px] text-black/40 dark:text-white/40 font-bold uppercase tracking-[0.2em]">
+                        Premium Collection
+                      </span>
                     </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -605,7 +605,7 @@ const GameSection = ({ title, games, id }) => {
 
           <div className="mt-8 flex items-center gap-4 opacity-30">
             <div className="h-px w-10 bg-gradient-to-r from-transparent to-white/50"></div>
-            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black dark:text-white">Velplay365 Elite</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black dark:text-white">{accountInfo?.service_site_name || 'Site'} Elite</span>
             <div className="h-px w-10 bg-gradient-to-l from-transparent to-white/50"></div>
           </div>
         </div>,
@@ -619,22 +619,22 @@ const CasinoLobby = () => {
   const { casino_lobby, casino, turbo } = useGames()
 
   const excludeProviders = [
-    'MAC88', '18Peaches', 'Veliplay', 'aviatrix', 'InOut Minigames', 
+    'MAC88', '18Peaches', 'Veliplay', 'aviatrix', 'InOut Minigames',
     'Galaxsys', 'Smartsoft', '2J', 'turbogamesasia', 'Aura Gaming', 'India Lotto'
   ];
-  
+
   // Define specific games to include as fallback if they aren't tagged in DB yet
   const specificGames = ["aviator", "go rush", "mines", "trump card"]
-  
+
   // If casino_lobby is empty (e.g. initial load or not migrated), use the manual filter as a smart fallback
-  const allPossibleGames = (casino_lobby && casino_lobby.length > 0) 
-    ? casino_lobby 
+  const allPossibleGames = (casino_lobby && casino_lobby.length > 0)
+    ? casino_lobby
     : [...(casino || []), ...(turbo || [])].filter((game, index, self) => {
-        const name = game["Game Name"]?.toLowerCase() || ""
-        const isLobby = name.includes("lobby")
-        const isSpecific = specificGames.some(sg => name.includes(sg))
-        return (isLobby || isSpecific) && self.findIndex(g => g["Game UID"] === game["Game UID"]) === index
-      })
+      const name = game["Game Name"]?.toLowerCase() || ""
+      const isLobby = name.includes("lobby")
+      const isSpecific = specificGames.some(sg => name.includes(sg))
+      return (isLobby || isSpecific) && self.findIndex(g => g["Game UID"] === game["Game UID"]) === index
+    })
 
   // Final filter by provider
   const displayGames = allPossibleGames.filter(game => {

@@ -173,7 +173,7 @@ function Deposit() {
       return
     }
     if (!utr || utr.trim() === "") { addToast("Transaction UTR is required", "error"); return; }
-    
+
     // Alphanumeric validation (Letters and Numbers only, 12-22 chars)
     const utrRegex = /^[a-zA-Z0-9]{12,22}$/;
     if (!utrRegex.test(utr)) {
@@ -249,7 +249,7 @@ function Deposit() {
             <div className="absolute top-0 right-0 w-24 h-24 bg-brand/5 blur-[40px] rounded-full"></div>
             <div className="flex flex-col items-center text-center gap-6 relative z-10">
               <div className={`w-20 h-20 rounded-full flex items-center justify-center shadow-inner ${notification.type === 'success' ? 'bg-emerald-500/10 text-emerald-500' :
-                  notification.type === 'error' ? 'bg-rose-500/10 text-rose-500' : 'bg-brand/10 text-brand'
+                notification.type === 'error' ? 'bg-rose-500/10 text-rose-500' : 'bg-brand/10 text-brand'
                 }`}>
                 <FontAwesomeIcon icon={notification.type === 'success' ? faCheck : faInfoCircle} className="text-3xl" />
               </div>
@@ -473,8 +473,8 @@ function Deposit() {
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] font-black text-black dark:text-white">₹{r.r_amount}</span>
                     <span className={`px-1.5 py-0.5 rounded text-[6px] font-black uppercase ${r.r_status.toLowerCase() === 'success' ? 'bg-green-500/10 text-green-500' :
-                        r.r_status.toLowerCase() === 'processing' || r.r_status.toLowerCase() === 'pending' ? 'bg-yellow-500/10 text-yellow-500' :
-                          'bg-red-500/10 text-red-500'
+                      r.r_status.toLowerCase() === 'processing' || r.r_status.toLowerCase() === 'pending' ? 'bg-yellow-500/10 text-yellow-500' :
+                        'bg-red-500/10 text-red-500'
                       }`}>
                       {r.r_status}
                     </span>

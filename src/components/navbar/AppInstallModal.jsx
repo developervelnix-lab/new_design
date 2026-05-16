@@ -10,7 +10,7 @@ const AppInstallModal = ({ isOpen, onClose, isInstallable, installApp, isInstall
 
   if (!isOpen) return null;
 
-  const siteName = accountInfo?.service_site_name || "Velplay365 Official Platform";
+  const siteName = accountInfo?.service_site_name || "Official Platform";
   const getSafeLogoUrl = (logoPath) => {
     if (!logoPath || logoPath === "/favicon.png" || logoPath.includes('favicon.png')) return "/app_logo/app_logo.png";
     if (logoPath.startsWith('http') || logoPath.startsWith('data:')) return logoPath;
@@ -161,7 +161,7 @@ const AppInstallModal = ({ isOpen, onClose, isInstallable, installApp, isInstall
 
           {/* Footer Branding */}
           <div className="px-8 py-6 bg-gray-50 dark:bg-[#111] border-t border-black/5 dark:border-white/5 flex items-center justify-between">
-            <span className="text-[10px] font-black text-black/30 dark:text-white/30 uppercase tracking-[0.3em]">Velplay365 Verified</span>
+            <span className="text-[10px] font-black text-black/30 dark:text-white/30 uppercase tracking-[0.3em]">{accountInfo?.service_site_name || 'Site'} Verified</span>
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 rounded-full bg-brand"></div>
               <span className="text-[10px] font-black text-brand uppercase tracking-widest">Secure Installation</span>

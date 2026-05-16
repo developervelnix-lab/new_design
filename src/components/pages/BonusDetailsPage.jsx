@@ -192,7 +192,7 @@ const BonusDetailsPage = () => {
                                         <span className="text-[10px] opacity-50">₹</span>{bonus.min_deposit || 0}
                                     </div>
                                 </div>
-                                
+
                                 <div className={`group p-4 rounded-2xl border transition-all duration-300 ${isDark ? 'bg-white/[0.03] border-white/5 hover:bg-white/[0.07] hover:border-white/10' : 'bg-black/[0.02] border-black/5 hover:bg-black/[0.05]'}`}>
                                     <div className="flex items-center gap-3 mb-2">
                                         <div className="w-6 h-6 rounded-lg bg-brand/10 flex items-center justify-center group-hover:rotate-12 transition-transform" style={{ color: COLORS.brand }}>
@@ -277,7 +277,7 @@ const BonusDetailsPage = () => {
                         <div className={`relative overflow-hidden p-6 md:p-8 rounded-[2rem] border transition-all duration-500 shadow-2xl backdrop-blur-md ${isDark ? 'bg-black/20 border-white/5 shadow-white/[0.02]' : 'bg-white/40 border-black/5 shadow-black/[0.02]'}`}>
                             {/* Decorative Background Element */}
                             <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 rounded-full blur-[80px] opacity-20 pointer-events-none" style={{ backgroundColor: COLORS.brand }}></div>
-                            
+
                             <div className="relative z-10">
                                 <div className="flex items-center justify-between mb-6">
                                     <div className="flex items-center gap-4">
@@ -302,18 +302,18 @@ const BonusDetailsPage = () => {
                                             }
                                             .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: ${COLORS.brand}; }
                                         `}</style>
-                                        
+
                                         {/* Inject some spacing into the content if it's just raw text */}
                                         <div className="space-y-4">
-                                            {bonus.terms_conditions 
+                                            {bonus.terms_conditions
                                                 ? bonus.terms_conditions.split('\n\n').map((para, i) => (
                                                     <p key={i} className="mb-2">{para}</p>
-                                                  ))
+                                                ))
                                                 : "Standard platform terms and conditions apply to this promotion. Please ensure you have read and understood the wagering requirements before claiming."
                                             }
                                         </div>
                                     </div>
-                                    
+
                                     {/* Bottom Fade Effect for Scroll */}
                                     <div className={`absolute bottom-0 left-0 right-0 h-12 pointer-events-none bg-gradient-to-t ${isDark ? 'from-black/10' : 'from-white/10'} to-transparent`}></div>
                                 </div>
@@ -356,13 +356,13 @@ const BonusDetailsPage = () => {
                                         disabled={claiming}
                                         className="w-full py-2.5 rounded-xl font-black uppercase tracking-widest transition-all active:scale-95 shadow-md disabled:opacity-50 flex items-center justify-center gap-2 text-[10px] relative overflow-hidden"
                                         style={{ background: 'linear-gradient(90deg, #ef4444, #b91c1c)', color: 'white' }}
-                                      >
-                                          {claiming ? (
-                                              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                          ) : (
-                                              'Cancel Bonus'
-                                          )}
-                                      </button>
+                                    >
+                                        {claiming ? (
+                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                        ) : (
+                                            'Cancel Bonus'
+                                        )}
+                                    </button>
                                 </div>
                             ) : (
                                 <button

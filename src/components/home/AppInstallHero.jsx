@@ -10,7 +10,7 @@ const AppInstallHero = ({ accountInfo }) => {
   const COLORS = useColors();
   const { isInstallable, installApp, isInstalled, platform } = usePWAInstall();
 
-  const siteName = accountInfo?.service_site_name || "Velplay365 Official Platform";
+  const siteName = accountInfo?.service_site_name || "Official Platform";
   const siteLogo = accountInfo?.service_site_logo
     ? (accountInfo.service_site_logo.startsWith('http')
       ? accountInfo.service_site_logo
@@ -31,7 +31,7 @@ const AppInstallHero = ({ accountInfo }) => {
     <section className="relative py-12 md:py-20 overflow-hidden rounded-[2.5rem] my-8 group">
       {/* Dynamic Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#004d4d] via-[#002d2d] to-black"></div>
-      
+
       {/* Animated Glows */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand/10 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2"></div>
       <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[#99f3ff]/5 blur-[80px] rounded-full translate-y-1/2 -translate-x-1/2"></div>
@@ -56,7 +56,7 @@ const AppInstallHero = ({ accountInfo }) => {
             </p>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -119,19 +119,19 @@ const AppInstallHero = ({ accountInfo }) => {
             <div className="p-6 space-y-5">
               {/* Preview Image in Mock Window - NOW FIRST */}
               <div className="rounded-xl overflow-hidden shadow-inner bg-gray-100 aspect-video relative group/preview">
-                 <img 
-                   src={platform === 'android' || platform === 'ios' ? "/screenshots/app_mobile_image.png" : "/screenshots/app_desktop_image.png"}
-                   className="w-full h-full object-cover grayscale-[0.2] group-hover/preview:grayscale-0 transition-all duration-500"
-                   alt="App Preview"
-                   onError={(e) => { e.target.src = "https://img.freepik.com/free-vector/gradient-casino-landing-page-template_23-2149506692.jpg"; }}
-                 />
-                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                <img
+                  src={platform === 'android' || platform === 'ios' ? "/screenshots/app_mobile_image.png" : "/screenshots/app_desktop_image.png"}
+                  className="w-full h-full object-cover grayscale-[0.2] group-hover/preview:grayscale-0 transition-all duration-500"
+                  alt="App Preview"
+                  onError={(e) => { e.target.src = "https://img.freepik.com/free-vector/gradient-casino-landing-page-template_23-2149506692.jpg"; }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
               </div>
 
               <div className="flex items-center gap-4">
                 <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-sm flex-shrink-0 bg-white border border-black/5">
-                  <img 
-                    src={siteLogo} 
+                  <img
+                    src={siteLogo}
                     alt={siteName}
                     className="w-full h-full object-contain p-1"
                     onError={(e) => { e.target.src = "/app_logo/app_logo.png"; }}

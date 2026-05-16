@@ -202,13 +202,17 @@ const BrandManager = () => {
       if (accountInfo.service_site_name) {
         document.title = accountInfo.service_site_name;
       }
+      const brandingKey = `${accountInfo.service_site_name}|${accountInfo.service_site_logo}|${accountInfo.service_tagline}`;
+      if (window.__lastPwaBranding === brandingKey) return;
+      window.__lastPwaBranding = brandingKey;
+
       if (accountInfo.service_site_logo) {
         const logoPath = accountInfo.service_site_logo;
         const logoUrl = logoPath.startsWith('http') || logoPath.startsWith('data:')
           ? logoPath
           : (logoPath.startsWith('/') ? window.location.origin + logoPath : `${BASE_URL.endsWith('/') ? BASE_URL.slice(0, -1) : BASE_URL}${logoPath.startsWith('/') ? logoPath : `/${logoPath}`}`);
 
-        console.log("PWA Branding - Logo URL:", logoUrl);
+        console.log("PWA Branding - Updating Manifest:", brandingKey);
 
         // Update Favicon and Apple Touch Icon with cache buster
         const cacheBuster = `?v=${Date.now()}`;
@@ -222,41 +226,36 @@ const BrandManager = () => {
 
         // Dynamically update Manifest to ensure the browser's install prompt uses the backend logo
         const manifest = {
-          name: accountInfo.service_site_name || "Velplay365 Official Platform",
-          short_name: (accountInfo.service_site_name || "Velplay365").split(' ')[0],
-          description: accountInfo.service_tagline?.replace(/<[^>]*>/g, '') || "Velplay365 Gaming & Sports Betting Platform.",
+          id: "/",
+          name: accountInfo.service_site_name || "Official Gaming Platform",
+          short_name: (accountInfo.service_site_name || "Gaming").split(' ')[0],
+          description: accountInfo.service_tagline?.replace(/<[^>]*>/g, '') || "Premium Gaming & Sports Betting Platform.",
           start_url: window.location.origin + "/",
           display: "standalone",
           background_color: "#000000",
           theme_color: "#E49C16",
           icons: [
             {
-              src: logoUrl,
+              src: window.location.origin + "/pwa-192x192.png",
               sizes: "192x192",
               type: "image/png",
               purpose: "any"
             },
             {
-              src: logoUrl,
+              src: window.location.origin + "/pwa-512x512.png",
               sizes: "512x512",
               type: "image/png",
               purpose: "any"
             },
             {
-              src: logoUrl,
+              src: window.location.origin + "/pwa-512x512.png",
               sizes: "512x512",
               type: "image/png",
               purpose: "maskable"
             },
             {
-              src: "/pwa-192x192.png",
-              sizes: "192x192",
-              type: "image/png",
-              purpose: "any"
-            },
-            {
-              src: "/pwa-512x512.png",
-              sizes: "512x512",
+              src: logoUrl,
+              sizes: "192x192 512x512",
               type: "image/png",
               purpose: "any"
             }
@@ -265,7 +264,6 @@ const BrandManager = () => {
 
         const blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
         const manifestURL = window.URL.createObjectURL(blob);
-        console.log("PWA Branding - Manifest Blob URL:", manifestURL);
 
         const manifestLink = document.querySelector('link[rel="manifest"]');
         if (manifestLink) {

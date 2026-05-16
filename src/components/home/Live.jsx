@@ -16,7 +16,7 @@ import "swiper/css/navigation"
 
 const GameSection = ({ title, games, id }) => {
   const COLORS = useColors()
-  const { setShowLogin, refreshSiteData } = useSite()
+  const { setShowLogin, refreshSiteData, accountInfo } = useSite()
   const [preloadedImages, setPreloadedImages] = useState([])
   const [loadingForGames, setLoadingForGames] = useState(null)
   const [showPopup, setShowPopup] = useState(false)
@@ -571,7 +571,7 @@ const GameSection = ({ title, games, id }) => {
           </div>
           <div className="mt-8 flex items-center gap-4 opacity-30">
             <div className="h-px w-10 bg-gradient-to-r from-transparent to-white/50"></div>
-            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black dark:text-white">Velplay365 Elite</span>
+            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black dark:text-white">{accountInfo?.service_site_name || 'Site'} Elite</span>
             <div className="h-px w-10 bg-gradient-to-l from-transparent to-white/50"></div>
           </div>
         </div>,
@@ -585,7 +585,7 @@ const Live = () => {
   const { live } = useGames();
 
   const excludeProviders = [
-    'MAC88', '18Peaches', 'Veliplay', 'aviatrix', 'InOut Minigames', 
+    'MAC88', '18Peaches', 'Veliplay', 'aviatrix', 'InOut Minigames',
     'Galaxsys', 'Smartsoft', '2J', 'turbogamesasia', 'Aura Gaming', 'India Lotto'
   ];
 
