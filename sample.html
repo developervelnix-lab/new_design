@@ -39,12 +39,12 @@
   .top-bar {
     background: #030810;
     border-bottom: 1px solid var(--border);
-    padding: 6px 20px;
+    padding: 4px 20px; /* Reduced padding */
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-family: 'Rajdhani', sans-serif;
-    font-size: 12px;
+    font-size: 11px; /* Smaller font */
     color: var(--text-muted);
   }
   .top-bar .marquee-wrap { flex: 1; overflow: hidden; margin: 0 20px; }
@@ -74,15 +74,15 @@
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 20px;
-    height: 64px;
+    height: 48px; /* Further reduced height */
     display: flex;
     align-items: center;
-    gap: 32px;
+    gap: 16px; /* Reduced gap */
   }
   .logo {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 32px;
-    letter-spacing: 2px;
+    font-size: 24px; /* Smaller logo */
+    letter-spacing: 1.5px;
     text-decoration: none;
     flex-shrink: 0;
     line-height: 1;
@@ -95,12 +95,12 @@
   nav a {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 700;
-    font-size: 13px;
+    font-size: 12px; /* Smaller font */
     text-transform: uppercase;
     letter-spacing: 0.5px;
     color: var(--text-muted);
     text-decoration: none;
-    padding: 8px 12px;
+    padding: 4px 8px; /* Reduced padding */
     border-radius: 4px;
     transition: all 0.2s;
     white-space: nowrap;
@@ -115,10 +115,10 @@
   .btn {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 12px; /* Smaller font */
     letter-spacing: 0.5px;
     text-transform: uppercase;
-    padding: 9px 22px;
+    padding: 5px 14px; /* Reduced padding */
     border-radius: 4px;
     border: none;
     cursor: pointer;
@@ -160,13 +160,13 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
-    padding: 10px 18px;
+    gap: 2px; /* Reduced gap */
+    padding: 6px 12px; /* Reduced padding */
     cursor: pointer;
     border-bottom: 2px solid transparent;
     transition: all 0.2s;
     white-space: nowrap;
-    min-width: 70px;
+    min-width: 60px; /* Reduced min-width */
     text-decoration: none;
     color: var(--text-muted);
   }
@@ -174,11 +174,11 @@
     color: #fff;
     border-bottom-color: var(--brand);
   }
-  .cat-item .cat-icon { font-size: 22px; }
+  .cat-item .cat-icon { font-size: 18px; } /* Smaller icon */
   .cat-item .cat-label {
     font-family: 'Rajdhani', sans-serif;
     font-weight: 600;
-    font-size: 11px;
+    font-size: 10px; /* Smaller font */
     text-transform: uppercase;
     letter-spacing: 0.3px;
   }
@@ -797,6 +797,155 @@
     border-radius: 4px;
   }
 
+  /* ── EXCLUSIVE ELITE OFFERS ── */
+  .elite-offers-section {
+    margin-top: 24px;
+  }
+  .promo-banners-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .promo-banner-card {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 21 / 9;
+    cursor: pointer;
+    background: #000;
+    border: 1px solid var(--border);
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 16px;
+  }
+  .promo-card-1 {
+    background: linear-gradient(135deg, #1f1300 0%, #0d0d0d 100%);
+    box-shadow: inset 0 0 40px rgba(230, 160, 0, 0.15);
+    --card-glow-color: var(--brand);
+    --card-shadow-color: rgba(230, 160, 0, 0.2);
+  }
+  .promo-card-2 {
+    background: linear-gradient(135deg, #051630 0%, #0d0d0d 100%);
+    box-shadow: inset 0 0 40px rgba(21, 101, 255, 0.15);
+    --card-glow-color: var(--blue-acc);
+    --card-shadow-color: rgba(21, 101, 255, 0.25);
+  }
+  .promo-banner-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+    z-index: 2;
+    transition: opacity 0.4s ease;
+  }
+  .promo-banner-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--card-glow-color, var(--brand));
+    box-shadow: 0 10px 24px var(--card-shadow-color, rgba(230, 160, 0, 0.15)), inset 0 0 20px var(--card-shadow-color, rgba(230, 160, 0, 0.15));
+  }
+  .promo-banner-card:hover::before {
+    opacity: 0.85;
+  }
+  .promo-banner-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--text-muted);
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    z-index: 3;
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+  }
+  .promo-banner-card:hover .promo-banner-badge {
+    color: #fff;
+    border-color: var(--card-glow-color, var(--brand));
+    background: rgba(230, 160, 0, 0.1);
+  }
+  .promo-banner-content {
+    position: relative;
+    z-index: 3;
+  }
+  .promo-banner-tag {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 8px;
+    text-transform: uppercase;
+    color: var(--card-glow-color, var(--brand));
+    letter-spacing: 2.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+  .promo-banner-tag::before {
+    content: '';
+    width: 10px;
+    height: 1.5px;
+    background: currentColor;
+    border-radius: 1px;
+  }
+  .promo-banner-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+    color: #fff;
+    text-transform: uppercase;
+    line-height: 1.2;
+    margin-bottom: 2px;
+  }
+  .promo-banner-desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.4;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  }
+  .promo-banner-card:hover .promo-banner-desc {
+    max-height: 50px;
+    opacity: 1;
+    margin-top: 4px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .promo-banner-icon {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    z-index: 3;
+    transition: all 0.4s;
+  }
+  .promo-banner-card:hover .promo-banner-icon {
+    transform: rotate(10deg) scale(1.1);
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--card-glow-color, var(--brand));
+  }
+  .promo-banner-icon svg {
+    width: 16px;
+    height: 16px;
+    fill: var(--card-glow-color, var(--brand));
+  }
+
   /* ── RESPONSIVE ── */
   @media (max-width: 1100px) {
     .page-wrap { grid-template-columns: 200px 1fr; }
@@ -814,6 +963,393 @@
     .footer-top { grid-template-columns: 1fr 1fr; }
     nav { display: none; }
   }
+
+  /* ── SEPARATE SCROLLING FOR SIDEBARS AND MAIN CONTENT ── */
+  @media (min-width: 1101px) {
+    body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .top-bar, header, .cat-nav {
+      flex-shrink: 0;
+    }
+    
+    .page-wrap {
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      padding-top: 12px;
+      padding-bottom: 12px;
+      align-items: stretch;
+    }
+
+    .sidebar-left,
+    .main-content,
+    .sidebar-right {
+      height: 100%;
+      min-height: 0;
+      overflow-y: scroll;
+      overflow-x: hidden;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+    }
+
+    .sidebar-left > *,
+    .main-content > *,
+    .sidebar-right > * {
+      flex-shrink: 0;
+    }
+
+    .sidebar-left::-webkit-scrollbar,
+    .main-content::-webkit-scrollbar,
+    .sidebar-right::-webkit-scrollbar {
+      width: 4px;
+    }
+    .sidebar-left::-webkit-scrollbar-track,
+    .main-content::-webkit-scrollbar-track,
+    .sidebar-right::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .sidebar-left::-webkit-scrollbar-thumb,
+    .main-content::-webkit-scrollbar-thumb,
+    .sidebar-right::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 4px;
+    }
+    .sidebar-left::-webkit-scrollbar-thumb:hover,
+    .main-content::-webkit-scrollbar-thumb:hover,
+    .sidebar-right::-webkit-scrollbar-thumb:hover {
+      background: var(--brand);
+    }
+
+    .sidebar-right {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+  }
+
+  /* ── GAME PROVIDERS ── */x`
+  .providers-section {
+    margin-top: 28px;
+  }
+  .providers-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    overflow: hidden;
+  }
+  .providers-grid.collapsed .provider-card:nth-child(n+9) {
+    display: none;
+  }
+  .provider-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 3 / 2;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .provider-card:hover {
+    border-color: var(--brand);
+    background: rgba(230, 160, 0, 0.04);
+    transform: translateY(-2px);
+  }
+  .provider-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    border-radius: 8px;
+  }
+  .provider-card img {
+    max-width: 85%;
+    max-height: 65%;
+    object-fit: contain;
+    transition: transform 0.2s;
+    z-index: 2;
+  }
+  .provider-card:hover img {
+    transform: scale(1.06);
+  }
+  .provider-card span {
+    position: absolute;
+    bottom: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+    z-index: 2;
+  }
+  .provider-card:hover span {
+    color: var(--brand);
+  }
+
+  /* ── WHY CHOOSE US ── */
+  .why-choose-section {
+    margin-top: 28px;
+  }
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .why-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s;
+  }
+  .why-card:hover {
+    border-color: var(--card-theme-color);
+    box-shadow: 0 8px 20px var(--card-shadow-color);
+    transform: translateY(-2px);
+  }
+  .why-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--card-gradient-wash);
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 1;
+  }
+  .why-card:hover::before {
+    opacity: 1;
+  }
+  .why-number {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 900;
+    font-size: 14px;
+    color: var(--card-theme-color);
+    opacity: 0.2;
+    transition: opacity 0.2s;
+    z-index: 2;
+  }
+  .why-card:hover .why-number {
+    opacity: 0.6;
+  }
+  .why-icon-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    position: relative;
+    transition: transform 0.3s;
+    z-index: 2;
+  }
+  .why-card:hover .why-icon-wrap {
+    transform: scale(1.08);
+  }
+  .why-icon-wrap svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--card-theme-color);
+    filter: drop-shadow(0 0 8px var(--card-theme-color));
+  }
+  .why-card h3 {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    transition: color 0.2s;
+    z-index: 2;
+  }
+  .why-card:hover h3 {
+    color: #fff;
+  }
+  .why-accent-line {
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--card-theme-color), transparent);
+    margin-top: 8px;
+    border-radius: 1px;
+    transition: width 0.3s;
+    z-index: 2;
+  }
+  .why-card:hover .why-accent-line {
+    width: 32px;
+  }
+
+  /* ── FAQ KNOWLEDGE BASE ── */
+  .faq-section {
+    margin-top: 28px;
+    margin-bottom: 16px;
+  }
+  .section-title.center-title::before {
+    display: none;
+  }
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .faq-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.2s;
+  }
+  .faq-item:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+  .faq-item.active {
+    border-color: rgba(230, 160, 0, 0.25);
+    background: rgba(230, 160, 0, 0.01);
+  }
+  .faq-trigger {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 12px 16px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    color: inherit;
+  }
+  .faq-trigger-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+  }
+  .faq-trigger-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .faq-item.active .faq-trigger-dot {
+    background: var(--brand);
+    box-shadow: 0 0 6px var(--brand);
+    transform: scale(1.2);
+  }
+  .faq-question {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    transition: color 0.2s;
+    line-height: 1.3;
+  }
+  .faq-item.active .faq-question {
+    color: #fff;
+  }
+  .faq-icon-box {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  .faq-item.active .faq-icon-box {
+    background: rgba(230, 160, 0, 0.1);
+    border-color: rgba(230, 160, 0, 0.2);
+    color: var(--brand);
+  }
+  .faq-icon-box svg {
+    width: 8px;
+    height: 8px;
+    fill: currentColor;
+    transition: transform 0.2s;
+  }
+  .faq-item.active .faq-icon-box svg {
+    transform: rotate(180deg);
+  }
+  .faq-content {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+  }
+  .faq-item.active .faq-content {
+    max-height: 200px;
+    opacity: 1;
+  }
+  .faq-content-inner {
+    padding: 0 16px 12px 31px;
+    display: flex;
+    gap: 10px;
+  }
+  .faq-line {
+    width: 1px;
+    background: linear-gradient(180deg, var(--brand), transparent);
+    flex-shrink: 0;
+  }
+  .faq-answer {
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--text-muted);
+    text-transform: none;
+  }
+
+  /* ── RESPONSIVE ADAPTATIONS FOR NEW SECTIONS ── */
+  @media (max-width: 900px) {
+    .promo-banners-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .providers-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .why-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (max-width: 600px) {
+    .providers-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .why-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
 </style>
 </head>
 <body>
@@ -828,7 +1364,6 @@
       <span>⚽ <span class="win">Mukesh***K</span> won ₹41,000 on IPL Match</span>
       <span>🃏 <span class="win">Priya***N</span> won ₹5,600 on Roulette</span>
       <span>🏏 <span class="win">Vijay***35</span> won ₹18,000 on T20 Live</span>
-      <!-- duplicate for seamless loop -->
       <span>🏆 <span class="win">Raj***singh</span> won ₹24,500 on Cricket</span>
       <span>🎰 <span class="win">Anon***87</span> won ₹8,200 on Teen Patti</span>
       <span>⚽ <span class="win">Mukesh***K</span> won ₹41,000 on IPL Match</span>
@@ -1120,12 +1655,378 @@
       </div>
     </div>
 
+    <!-- EXCLUSIVE ELITE OFFERS (Moved after Popular Games) -->
+    <section class="elite-offers-section">
+      <div class="section-header" style="margin-bottom: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <div class="section-title">Exclusive Elite Offers</div>
+          <div style="font-size: 10px; color: var(--text-muted); font-family: 'Rajdhani', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding-left: 12px;">Current Promotions & Rewards</div>
+        </div>
+        <a href="#" class="see-all">View All Promotions →</a>
+      </div>
+
+      <div class="promo-banners-grid">
+        <!-- Promotion 1 -->
+        <div class="promo-banner-card promo-card-1">
+          <div class="promo-banner-badge">👑 Promotion 1</div>
+          <div class="promo-banner-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
+          </div>
+          <div class="promo-banner-content">
+            <span class="promo-banner-tag">Featured Offer</span>
+            <h3 class="promo-banner-title">Exclusive Rewards</h3>
+            <p class="promo-banner-desc">Unlock premium rewards, personalized match deals, and custom bonuses weekly.</p>
+          </div>
+        </div>
+
+        <!-- Promotion 2 -->
+        <div class="promo-banner-card promo-card-2">
+          <div class="promo-banner-badge">🎁 Promotion 2</div>
+          <div class="promo-banner-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          </div>
+          <div class="promo-banner-content">
+            <span class="promo-banner-tag">Featured Offer</span>
+            <h3 class="promo-banner-title">Exclusive Rewards</h3>
+            <p class="promo-banner-desc">Earn points for every cricket/sports bet and exchange them for elite cash rewards.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Game Providers -->
+    <section class="providers-section">
+      <div class="section-header" style="margin-bottom: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <div class="section-title">Game Providers</div>
+          <div style="font-size: 10px; color: var(--text-muted); font-family: 'Rajdhani', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding-left: 12px;">Worldwide Partnerships</div>
+        </div>
+        <button id="view-all-partners" class="see-all" style="background: transparent; border: none; cursor: pointer;">View All Partners →</button>
+      </div>
+
+      <div id="providers-grid" class="providers-grid collapsed">
+        <div class="provider-card">
+          <img src="src/components/home/providers/ezugi1.png" alt="Ezugi" onerror="this.src='https://via.placeholder.com/150?text=Ezugi'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/Evolution2.png" alt="Evolution2" onerror="this.src='https://via.placeholder.com/150?text=Evolution2'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/Caleta.png" alt="Caleta" onerror="this.src='https://via.placeholder.com/150?text=Caleta'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/CQ9.png" alt="CQ9" onerror="this.src='https://via.placeholder.com/150?text=CQ9'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/Evoplay.png" alt="Evoplay" onerror="this.src='https://via.placeholder.com/150?text=Evoplay'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/PragmaticPlay.png" alt="Pragmatic" onerror="this.src='https://via.placeholder.com/150?text=Pragmatic'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/sabalogo.png" alt="Saba" onerror="this.src='https://via.placeholder.com/150?text=Saba'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/lucky-sports.png" alt="Lucky Sports" onerror="this.src='https://via.placeholder.com/150?text=Lucky+Sports'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/mac88.png" alt="MAC88" onerror="this.src='https://via.placeholder.com/150?text=MAC88'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/18-preaches.png" alt="18Peaches" onerror="this.src='https://via.placeholder.com/150?text=18Peaches'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/veliplay.png" alt="VeliPlay" onerror="this.src='https://via.placeholder.com/150?text=VeliPlay'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/aviatrix.png" alt="Aviatrix" onerror="this.src='https://via.placeholder.com/150?text=Aviatrix'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/inout-minigames.png" alt="InOut Minigames" onerror="this.src='https://via.placeholder.com/150?text=InOut+Minigames'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/galaxsys.png" alt="Galaxsys" onerror="this.src='https://via.placeholder.com/150?text=Galaxsys'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/Smartsoft.png" alt="Smartsoft" onerror="this.src='https://via.placeholder.com/150?text=Smartsoft'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/2j.png" alt="2J" onerror="this.src='https://via.placeholder.com/150?text=2J'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/turbo-games.png" alt="Turbogames World" onerror="this.src='https://via.placeholder.com/150?text=Turbogames+World'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/aura-gaming.png" alt="Aura Gaming" onerror="this.src='https://via.placeholder.com/150?text=Aura+Gaming'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/india-lotto.png" alt="India Lotto" onerror="this.src='https://via.placeholder.com/150?text=India+Lotto'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/PGSOFT.png" alt="PgsGaming" onerror="this.src='https://via.placeholder.com/150?text=PgsGaming'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/ongaming.png" alt="Odin Cockfighting" onerror="this.src='https://via.placeholder.com/150?text=Odin+Cockfighting'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/Evolution2.png" alt="Evolution2" onerror="this.src='https://via.placeholder.com/150?text=Evolution2'">
+          <span>Official Partner</span>
+        </div>
+        <div class="provider-card">
+          <img src="src/components/home/providers/lucky-sports.png" alt="Lucky Sports" onerror="this.src='https://via.placeholder.com/150?text=Lucky+Sports'">
+          <span>Official Partner</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY CHOOSE US -->
+    <section class="why-choose-section">
+      <div class="section-header" style="margin-bottom: 16px;">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <div class="section-title">Why Choose velplay365?</div>
+          <div style="font-size: 10px; color: var(--text-muted); font-family: 'Rajdhani', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding-left: 12px;">Why We're Different</div>
+        </div>
+      </div>
+
+      <div class="why-grid">
+        <div class="why-card" style="--card-theme-color: #a78bfa; --card-glow-color: rgba(167, 139, 250, 0.4); --card-shadow-color: rgba(167, 139, 250, 0.15); --card-gradient-wash: linear-gradient(135deg, rgba(167, 139, 250, 0.15) 0%, rgba(139, 92, 246, 0.05) 50%, transparent 100%);">
+          <div class="why-number">01</div>
+          <div class="why-icon-wrap">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+          </div>
+          <h3>Fast Withdrawal</h3>
+          <div class="why-accent-line"></div>
+        </div>
+
+        <div class="why-card" style="--card-theme-color: #22d3ee; --card-glow-color: rgba(34, 211, 238, 0.4); --card-shadow-color: rgba(34, 211, 238, 0.15); --card-gradient-wash: linear-gradient(135deg, rgba(34, 211, 238, 0.15) 0%, rgba(6, 182, 212, 0.05) 50%, transparent 100%);">
+          <div class="why-number">02</div>
+          <div class="why-icon-wrap">
+            <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+          </div>
+          <h3>Instant Deposit</h3>
+          <div class="why-accent-line"></div>
+        </div>
+
+        <div class="why-card" style="--card-theme-color: #34d399; --card-glow-color: rgba(52, 211, 153, 0.4); --card-shadow-color: rgba(52, 211, 153, 0.15); --card-gradient-wash: linear-gradient(135deg, rgba(52, 211, 153, 0.15) 0%, rgba(16, 185, 129, 0.05) 50%, transparent 100%);">
+          <div class="why-number">03</div>
+          <div class="why-icon-wrap">
+            <svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          </div>
+          <h3>1-Click Signup</h3>
+          <div class="why-accent-line"></div>
+        </div>
+
+        <div class="why-card" style="--card-theme-color: #fbbf24; --card-glow-color: rgba(251, 191, 36, 0.4); --card-shadow-color: rgba(251, 191, 36, 0.15); --card-gradient-wash: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(245, 158, 11, 0.05) 50%, transparent 100%);">
+          <div class="why-number">04</div>
+          <div class="why-icon-wrap">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+          </div>
+          <h3>Trusted Platform</h3>
+          <div class="why-accent-line"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq-section">
+      <div class="faq-header" style="margin-bottom: 16px; justify-content: center; text-align: center; display: flex; flex-direction: column; gap: 6px;">
+        <div style="font-size: 9px; font-family: 'Rajdhani', sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: 3px; color: var(--brand); background: rgba(230, 160, 0, 0.08); padding: 4px 12px; border-radius: 12px; border: 1px solid var(--border-brand); width: fit-content; margin: 0 auto 4px;">Knowledge Base</div>
+        <div class="section-title center-title" style="justify-content: center; font-size: 22px;">FREQUENTLY ASKED QUESTIONS (FAQ)</div>
+        <div style="width: 40px; height: 3px; background: var(--brand); border-radius: 2px; margin: 4px auto 0;"></div>
+      </div>
+
+      <div class="faq-list">
+        <div class="faq-item active">
+          <button class="faq-trigger">
+            <div class="faq-trigger-left">
+              <div class="faq-trigger-dot"></div>
+              <span class="faq-question">Why is this one of the best online betting sites in India?</span>
+            </div>
+            <div class="faq-icon-box">
+              <svg viewBox="0 0 24 24"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+            </div>
+          </button>
+          <div class="faq-content">
+            <div class="faq-content-inner">
+              <div class="faq-line"></div>
+              <div class="faq-answer">This is a trusted betting platform offering fast transactions and secure gaming experiences.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger">
+            <div class="faq-trigger-left">
+              <div class="faq-trigger-dot"></div>
+              <span class="faq-question">Is online betting legal in India?</span>
+            </div>
+            <div class="faq-icon-box">
+              <svg viewBox="0 0 24 24"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+            </div>
+          </button>
+          <div class="faq-content">
+            <div class="faq-content-inner">
+              <div class="faq-line"></div>
+              <div class="faq-answer">Betting laws vary by state. Always check your local regulations before participating.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger">
+            <div class="faq-trigger-left">
+              <div class="faq-trigger-dot"></div>
+              <span class="faq-question">How do I withdraw my winnings?</span>
+            </div>
+            <div class="faq-icon-box">
+              <svg viewBox="0 0 24 24"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+            </div>
+          </button>
+          <div class="faq-content">
+            <div class="faq-content-inner">
+              <div class="faq-line"></div>
+              <div class="faq-answer">Withdrawals are processed instantly using our secure banking methods. Minimum withdrawal limits apply.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger">
+            <div class="faq-trigger-left">
+              <div class="faq-trigger-dot"></div>
+              <span class="faq-question">Can I ever win in an online casino?</span>
+            </div>
+            <div class="faq-icon-box">
+              <svg viewBox="0 0 24 24"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+            </div>
+          </button>
+          <div class="faq-content">
+            <div class="faq-content-inner">
+              <div class="faq-line"></div>
+              <div class="faq-answer">Yes, you can win in an online casino, but outcomes are based on chance, and games are designed with a house edge, so it's important to play responsibly.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-trigger">
+            <div class="faq-trigger-left">
+              <div class="faq-trigger-dot"></div>
+              <span class="faq-question">Is online casino games a skill or luck?</span>
+            </div>
+            <div class="faq-icon-box">
+              <svg viewBox="0 0 24 24"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+            </div>
+          </button>
+          <div class="faq-content">
+            <div class="faq-content-inner">
+              <div class="faq-line"></div>
+              <div class="faq-answer">Online casino games are generally based on luck, though some games like poker or blackjack may involve elements of skill.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-top">
+          <div class="footer-brand">
+            <a href="#" class="logo"><span class="v">V</span><span class="rest">ELUX</span><span class="v">PLAY</span><span class="num">365</span></a>
+            <p>VeluxPlay365 is a premier online betting and casino platform offering cricket, sports, live casino, slots, and more. Play responsibly. 18+ only.</p>
+            <div class="footer-social">
+              <a href="#">📘</a>
+              <a href="#">📸</a>
+              <a href="#">🐦</a>
+              <a href="#">💬</a>
+              <a href="#">▶️</a>
+            </div>
+          </div>
+          <div class="footer-col">
+            <h5>Sports</h5>
+            <ul>
+              <li><a href="#">Cricket</a></li>
+              <li><a href="#">Football</a></li>
+              <li><a href="#">Tennis</a></li>
+              <li><a href="#">Kabaddi</a></li>
+              <li><a href="#">Basketball</a></li>
+              <li><a href="#">Esports</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h5>Casino</h5>
+            <ul>
+              <li><a href="#">Live Casino</a></li>
+              <li><a href="#">Slots</a></li>
+              <li><a href="#">Teen Patti</a></li>
+              <li><a href="#">Roulette</a></li>
+              <li><a href="#">Blackjack</a></li>
+              <li><a href="#">Crash Games</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h5>Account</h5>
+            <ul>
+              <li><a href="#">Register</a></li>
+              <li><a href="#">Login</a></li>
+              <li><a href="#">Deposit</a></li>
+              <li><a href="#">Withdrawal</a></li>
+              <li><a href="#">Bet History</a></li>
+              <li><a href="#">VIP Club</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h5>Help</h5>
+            <ul>
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Contact</a></li>
+              <li><a href="#">Promotions</a></li>
+              <li><a href="#">Responsible Gaming</a></li>
+              <li><a href="#">Terms & Conditions</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>© 2026 VeluxPlay365. All rights reserved. Gambling involves risk. Please play responsibly.</p>
+          <div class="payment-icons">
+            <span class="pay-icon">UPI</span>
+            <span class="pay-icon">PAYTM</span>
+            <span class="pay-icon">VISA</span>
+            <span class="pay-icon">MC</span>
+            <span class="pay-icon">CRYPTO</span>
+            <span class="age-badge">18+</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+
   </main>
 
   <!-- SIDEBAR RIGHT -->
   <aside class="sidebar-right">
-
-    <!-- Auth Panel -->
     <div class="auth-panel">
       <div class="auth-tabs">
         <div class="auth-tab active">Log In</div>
@@ -1152,7 +2053,6 @@
       </div>
     </div>
 
-    <!-- Recent Winners -->
     <div class="side-section">
       <div class="side-title">🏆 Recent Winners</div>
       <div class="wins-list">
@@ -1199,7 +2099,6 @@
       </div>
     </div>
 
-    <!-- App Download -->
     <div class="app-banner">
       <div class="app-icon">📱</div>
       <h4>Download the App</h4>
@@ -1221,83 +2120,8 @@
         </button>
       </div>
     </div>
-
   </aside>
 </div>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <a href="#" class="logo"><span class="v">V</span><span class="rest">ELUX</span><span class="v">PLAY</span><span class="num">365</span></a>
-        <p>VeluxPlay365 is a premier online betting and casino platform offering cricket, sports, live casino, slots, and more. Play responsibly. 18+ only.</p>
-        <div class="footer-social">
-          <a href="#">📘</a>
-          <a href="#">📸</a>
-          <a href="#">🐦</a>
-          <a href="#">💬</a>
-          <a href="#">▶️</a>
-        </div>
-      </div>
-      <div class="footer-col">
-        <h5>Sports</h5>
-        <ul>
-          <li><a href="#">Cricket</a></li>
-          <li><a href="#">Football</a></li>
-          <li><a href="#">Tennis</a></li>
-          <li><a href="#">Kabaddi</a></li>
-          <li><a href="#">Basketball</a></li>
-          <li><a href="#">Esports</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h5>Casino</h5>
-        <ul>
-          <li><a href="#">Live Casino</a></li>
-          <li><a href="#">Slots</a></li>
-          <li><a href="#">Teen Patti</a></li>
-          <li><a href="#">Roulette</a></li>
-          <li><a href="#">Blackjack</a></li>
-          <li><a href="#">Crash Games</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h5>Account</h5>
-        <ul>
-          <li><a href="#">Register</a></li>
-          <li><a href="#">Login</a></li>
-          <li><a href="#">Deposit</a></li>
-          <li><a href="#">Withdrawal</a></li>
-          <li><a href="#">Bet History</a></li>
-          <li><a href="#">VIP Club</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h5>Help</h5>
-        <ul>
-          <li><a href="#">About Us</a></li>
-          <li><a href="#">Contact</a></li>
-          <li><a href="#">Promotions</a></li>
-          <li><a href="#">Responsible Gaming</a></li>
-          <li><a href="#">Terms & Conditions</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2026 VeluxPlay365. All rights reserved. Gambling involves risk. Please play responsibly.</p>
-      <div class="payment-icons">
-        <span class="pay-icon">UPI</span>
-        <span class="pay-icon">PAYTM</span>
-        <span class="pay-icon">VISA</span>
-        <span class="pay-icon">MC</span>
-        <span class="pay-icon">CRYPTO</span>
-        <span class="age-badge">18+</span>
-      </div>
-    </div>
-  </div>
-</footer>
 
 <script>
   // Tab switching
@@ -1330,13 +2154,73 @@
     });
   });
 
-  // Game card hover - subtle glow
-  document.querySelectorAll('.game-card').forEach(card => {
-    card.addEventListener('mouseenter', () => {
-      card.style.boxShadow = '0 8px 28px rgba(230, 160, 0, 0.2)';
+  // Providers Toggle
+  const viewAllPartnersBtn = document.getElementById('view-all-partners');
+  const providersGrid = document.getElementById('providers-grid');
+  
+  if (viewAllPartnersBtn && providersGrid) {
+    viewAllPartnersBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (providersGrid.classList.contains('collapsed')) {
+        providersGrid.classList.remove('collapsed');
+        viewAllPartnersBtn.textContent = 'Switch to Carousel';
+      } else {
+        providersGrid.classList.add('collapsed');
+        viewAllPartnersBtn.textContent = 'View All Partners';
+      }
     });
-    card.addEventListener('mouseleave', () => {
-      card.style.boxShadow = '';
+  }
+
+  // FAQ Accordion
+  const faqItems = document.querySelectorAll('.faq-item');
+  
+  const initFaq = () => {
+    faqItems.forEach(item => {
+      const content = item.querySelector('.faq-content');
+      if (item.classList.contains('active') && content) {
+        content.style.maxHeight = content.scrollHeight + 'px';
+        content.style.opacity = '1';
+      } else if (content) {
+        content.style.maxHeight = '0';
+        content.style.opacity = '0';
+      }
+    });
+  };
+  
+  window.addEventListener('load', initFaq);
+  window.addEventListener('resize', initFaq);
+  initFaq();
+
+  faqItems.forEach(item => {
+    const trigger = item.querySelector('.faq-trigger');
+    const content = item.querySelector('.faq-content');
+    
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      const isActive = item.classList.contains('active');
+      
+      faqItems.forEach(otherItem => {
+        otherItem.classList.remove('active');
+        const otherContent = otherItem.querySelector('.faq-content');
+        if (otherContent) {
+          otherContent.style.maxHeight = '0';
+          otherContent.style.opacity = '0';
+        }
+      });
+      
+      if (!isActive) {
+        item.classList.add('active');
+        if (content) {
+          content.style.maxHeight = content.scrollHeight + 'px';
+          content.style.opacity = '1';
+        }
+      } else {
+        item.classList.remove('active');
+        if (content) {
+          content.style.maxHeight = '0';
+          content.style.opacity = '0';
+        }
+      }
     });
   });
 </script>

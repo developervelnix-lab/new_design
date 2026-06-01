@@ -27,7 +27,7 @@ const RoundDetailsModal = ({ isOpen, onClose, transaction }) => {
     if (matchName.includes('kingmaker') || matchName.includes('km')) return 'King Maker';
     if (matchName.includes('turbo')) return 'Turbo Games';
 
-    if (rawProvider && rawProvider !== 'Standard' && rawProvider !== 'velplay365') return rawProvider;
+    if (rawProvider && rawProvider !== 'Standard' && rawProvider !== 'ranamatch') return rawProvider;
     return transaction.r_match_name || 'Velplay365 Official';
   };
 

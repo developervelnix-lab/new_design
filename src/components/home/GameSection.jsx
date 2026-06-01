@@ -188,59 +188,46 @@ const GameSection = ({ title, games, id, layout = "slider" }) => {
   return (
     <div
       id={sectionId}
-      className="game-section relative w-full px-4 py-5 rounded-2xl shadow-2xl overflow-hidden transition-all duration-300 border border-black/5 dark:border-white/5 scroll-mt-24 md:scroll-mt-32"
-      style={{
-        backgroundColor: `${COLORS.bg2}EE`,
-        backdropFilter: "blur(10px)",
-      }}
+      className="game-section relative w-full py-4 md:py-6 scroll-mt-24 md:scroll-mt-32"
     >
-      <div
-        className="absolute top-0 left-0 w-1.5 h-full opacity-70"
-        style={{ background: COLORS.brandGradient }}
-      ></div>
-
-      <div className="flex justify-between items-center mb-4 md:mb-6 gap-2">
-        <div className="flex items-center gap-2 md:gap-4 min-w-0">
+      <div className="flex justify-between items-end mb-4 md:mb-5 px-1 md:px-2">
+        <div className="flex items-center gap-2 md:gap-3 min-w-0">
           <div
-            className="h-3 md:h-5 w-1 rounded-full flex-shrink-0"
+            className="h-5 md:h-7 w-1.5 rounded-full flex-shrink-0 shadow-[0_0_10px_rgba(230,160,0,0.5)]"
             style={{ background: COLORS.brandGradient }}
           ></div>
           <h2
-            className="text-[11px] xs:text-sm sm:text-base md:text-lg font-black text-black dark:text-white tracking-[0.05em] uppercase leading-none whitespace-nowrap truncate"
+            className="text-base sm:text-lg md:text-xl lg:text-2xl font-black text-black dark:text-white tracking-[0.02em] uppercase leading-none whitespace-nowrap truncate drop-shadow-sm"
             style={{ fontFamily: FONTS.head }}
           >
             {title}
           </h2>
         </div>
         {layout !== "grid" && (
-          <div className="flex items-center space-x-3">
-            <div className="hidden md:flex items-center bg-gray-100 dark:bg-white/5 rounded-full p-1 backdrop-blur-sm border border-black/10 dark:border-white/10">
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            <div className="hidden md:flex items-center gap-1">
               <button
-                className={`nav-button prev-${sectionId} w-9 h-9 flex items-center justify-center rounded-full text-black/70 dark:text-white/70 hover:text-black dark:text-white hover:bg-gray-100 dark:bg-white/10 transition-all duration-300`}
+                className={`nav-button prev-${sectionId} w-8 h-8 flex items-center justify-center rounded-full bg-black/5 dark:bg-white/5 text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/10 hover:scale-110 transition-all duration-300`}
               >
-                <FaChevronLeft size={14} />
+                <FaChevronLeft size={12} />
               </button>
-              <div className="w-[1px] h-4 bg-gray-100 dark:bg-white/10 mx-1"></div>
               <button
-                className={`nav-button next-${sectionId} w-9 h-9 flex items-center justify-center rounded-full text-black/70 dark:text-white/70 hover:text-black dark:text-white hover:bg-gray-100 dark:bg-white/10 transition-all duration-300`}
+                className={`nav-button next-${sectionId} w-8 h-8 flex items-center justify-center rounded-full bg-black/5 dark:bg-white/5 text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white hover:bg-black/10 dark:hover:bg-white/10 hover:scale-110 transition-all duration-300`}
               >
-                <FaChevronRight size={14} />
+                <FaChevronRight size={12} />
               </button>
             </div>
 
             <button
               onClick={openPopup}
-              className="flex items-center gap-1.5 px-2 py-1 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl text-[9px] sm:text-xs font-bold uppercase transition-all duration-500 shadow-lg hover:shadow-brand/20 active:scale-95 group overflow-hidden relative flex-shrink-0"
+              className="flex items-center gap-1.5 px-3 py-1.5 md:px-5 md:py-2 rounded-full border border-black/10 dark:border-white/10 hover:border-brand/50 bg-transparent hover:bg-black/5 dark:hover:bg-white/5 transition-all duration-300 group"
               style={{
-                background: COLORS.brandGradient,
                 fontFamily: FONTS.ui,
-                letterSpacing: "0.05em",
               }}
               aria-label="See All"
             >
-              <div className="absolute inset-0 bg-gray-100 dark:bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <FaEye size={10} className="sm:size-[14px] group-hover:scale-110 transition-transform duration-300" />
-              <span className="whitespace-nowrap">See All</span>
+              <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-black/80 dark:text-white/80 group-hover:text-brand transition-colors whitespace-nowrap">See All</span>
+              <FaChevronRight size={10} className="text-black/40 dark:text-white/40 group-hover:text-brand group-hover:translate-x-1 transition-all duration-300" />
             </button>
           </div>
         )}
@@ -313,9 +300,9 @@ const GameSection = ({ title, games, id, layout = "slider" }) => {
                 onMouseEnter={() => setHoveredGame(game["Game UID"])}
                 onMouseLeave={() => setHoveredGame(null)}
               >
-                <div className="relative aspect-[4/5] rounded-xl overflow-hidden bg-gray-100 dark:bg-white/5 border border-black/10 dark:border-white/10 transition-all duration-500 group-hover:scale-[1.03] group-hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                <div className="relative aspect-[4/5] rounded-[14px] overflow-hidden bg-black/5 dark:bg-white/5 border border-transparent group-hover:border-brand/30 transition-all duration-500 group-hover:-translate-y-1.5 group-hover:shadow-[0_15px_30px_-10px_rgba(230,160,0,0.3)]">
                   <img
-                    className={`w-full h-full object-cover cursor-pointer transition-all duration-500 ${loadingForGames === game["Game UID"] ? "opacity-50 blur-sm" : ""
+                    className={`w-full h-full object-cover cursor-pointer transition-transform duration-700 group-hover:scale-110 ${loadingForGames === game["Game UID"] ? "opacity-50 blur-sm" : ""
                       }`}
                     src={game.icon || "/placeholder.svg"}
                     alt={game["Game Name"]}

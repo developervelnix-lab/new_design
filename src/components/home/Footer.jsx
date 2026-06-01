@@ -24,7 +24,7 @@ const Footer = () => {
     } else if (isInstallable) {
       installApp();
     } else if (platform === 'android') {
-      window.open(accountInfo?.service_app_download_url || "/velplay.apk", "_blank");
+      window.open(accountInfo?.service_app_download_url || "/ranamatch.apk", "_blank");
     } else {
       window.open(window.location.origin, '_blank');
     }

@@ -25,7 +25,7 @@ const AppInstallModal = ({ isOpen, onClose, isInstallable, installApp, isInstall
 
   const handleInstall = () => {
     if (currentPlatform === 'android' && !isInstalled) {
-      window.location.href = apkUrl || "/velplay.apk";
+      window.location.href = apkUrl || "/ranamatch.apk";
     } else if (isInstallable) {
       installApp();
     } else {

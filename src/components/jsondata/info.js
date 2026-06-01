@@ -1,4 +1,4 @@
 export const ranabook = {
-    "name" : "velplay"
+    "name" : "ranamatch"
 
 }

@@ -419,6 +419,17 @@ function Navbar() {
   };
   const activeIndex = getActiveTabIndex();
 
+  const activeMainTab = (() => {
+    if (location.pathname === '/casino') return 'casino';
+    if (location.pathname === '/promotion') return 'promotions';
+    if (location.pathname === '/') {
+      if (location.hash === '#slots') return 'slots';
+      if (location.hash === '#fantasy-games') return 'fantasy-games';
+      return '';
+    }
+    return '';
+  })();
+
   return (
     <>
       <div className="fixed top-0 left-0 w-full z-[100] custom-header-wrapper shadow-lg">
@@ -509,7 +520,7 @@ function Navbar() {
             </div>
 
             <nav className="main-nav">
-              <button className="nav-link" onClick={() => {
+              <button className={`nav-link ${activeMainTab === 'sports' ? 'active' : ''}`} onClick={() => {
                 const luckSports = liveSport?.find(g => g["Game Name"] === "Luck Sports");
                 if (luckSports) {
                   handleLiveSportSelect(luckSports);
@@ -517,10 +528,10 @@ function Navbar() {
                   scrollToSection("live");
                 }
               }} style={{ fontFamily: FONTS.head, background: 'none', border: 'none', cursor: 'pointer' }}>Sports</button>
-              <button className="nav-link" onClick={() => { setMenuOpen(false); navigate("/casino"); }} style={{ fontFamily: FONTS.head, background: 'none', border: 'none', cursor: 'pointer' }}>Casino</button>
-              <button className="nav-link" onClick={() => scrollToSection("slots")} style={{ fontFamily: FONTS.head, background: 'none', border: 'none', cursor: 'pointer' }}>Slots</button>
-              <button className="nav-link" onClick={() => scrollToSection("fantasy-games")} style={{ fontFamily: FONTS.head, background: 'none', border: 'none', cursor: 'pointer' }}>Fantasy Games</button>
-              <button className="nav-link" onClick={handlePromotion} style={{ fontFamily: FONTS.head, background: 'none', border: 'none', cursor: 'pointer' }}>Promotions</button>
+              <button className={`nav-link ${activeMainTab === 'casino' ? 'active' : ''}`} onClick={() => { setMenuOpen(false); navigate("/casino"); }} style={{ fontFamily: FONTS.head, background: 'none', border: 'none', cursor: 'pointer' }}>Casino</button>
+              <button className={`nav-link ${activeMainTab === 'slots' ? 'active' : ''}`} onClick={() => scrollToSection("slots")} style={{ fontFamily: FONTS.head, background: 'none', border: 'none', cursor: 'pointer' }}>Slots</button>
+              <button className={`nav-link ${activeMainTab === 'fantasy-games' ? 'active' : ''}`} onClick={() => scrollToSection("fantasy-games")} style={{ fontFamily: FONTS.head, background: 'none', border: 'none', cursor: 'pointer' }}>Fantasy Games</button>
+              <button className={`nav-link ${activeMainTab === 'promotions' ? 'active' : ''}`} onClick={handlePromotion} style={{ fontFamily: FONTS.head, background: 'none', border: 'none', cursor: 'pointer' }}>Promotions</button>
             </nav>
 
             <div className="header-cta">
@@ -667,6 +678,11 @@ function Navbar() {
         {!isCasinoPage && (
           <div className="sport-tabs-bar" style={{ backgroundColor: COLORS.bg2, borderBottom: `1px solid ${COLORS.bg4}` }}>
             <div className="sport-tabs-inner">
+              <style>{`
+                .sport-tab.active::after, .nav-link.active::after { background: ${COLORS.brand} !important; transform: scaleX(1) !important; }
+                .sport-tab:hover::after, .nav-link:hover::after { background: ${COLORS.brand} !important; transform: scaleX(1) !important; }
+                .sport-tab.active, .nav-link.active { color: ${COLORS.brand} !important; }
+              `}</style>
               {games.map((game, index) => (
                 <button
                   key={index}
@@ -675,14 +691,9 @@ function Navbar() {
                   className={`sport-tab ${activeIndex === index ? "active" : ""} ${sportsLoading ? "opacity-60 cursor-wait" : ""}`}
                   style={{
                     fontFamily: FONTS.head,
-                    color: activeIndex === index ? COLORS.brand : '',
                     borderRight: `1px solid ${COLORS.bg4}`
                   }}
                 >
-                  <style>{`
-                    .sport-tab.active::after { background: ${COLORS.brand}; transform: scaleX(1); }
-                    .sport-tab:hover::after { background: ${COLORS.brand}; }
-                  `}</style>
                   {sportsLoading && activeIndex === index ? (
                     <span className="tab-icon animate-spin">⏳</span>
                   ) : (
@@ -928,7 +939,7 @@ function Navbar() {
                       } else if (isInstallable) {
                         installApp();
                       } else if (currentDevice === 'android') {
-                        window.open(accountInfo?.service_apk_url || "/velplay.apk", "_blank");
+                        window.open(accountInfo?.service_apk_url || "/ranamatch.apk", "_blank");
                       } else {
                         // Fallback: trigger whatever browser-native thing might happen
                         window.open(window.location.origin, '_blank');

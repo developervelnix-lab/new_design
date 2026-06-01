@@ -53,6 +53,7 @@ const CasinoPage = () => {
   const [activeType, setActiveType] = useState('all');
   const [activeProvider, setActiveProvider] = useState('all');
   const [providerSearch, setProviderSearch] = useState("");
+  const [gameSearch, setGameSearch] = useState("");
 
   const [loadingForGames, setLoadingForGames] = useState(null);
   const [confirmPopup, setConfirmPopup] = useState({ show: false, game: null, error: null });
@@ -129,19 +130,24 @@ const CasinoPage = () => {
   }, [providerCounts]);
 
   const filteredGames = useMemo(() => {
-    if (activeType === 'all' && activeProvider === 'all') return allGames;
-
-    return allGames.filter(g => {
-      const typeMatch = activeType === 'all' || g.computedType === activeType;
-      const provMatch = activeProvider === 'all' || g.providerName === activeProvider;
-      return typeMatch && provMatch;
-    });
-  }, [allGames, activeType, activeProvider]);
+    let filtered = allGames;
+    if (activeType !== 'all') {
+      filtered = filtered.filter(g => g.computedType === activeType);
+    }
+    if (activeProvider !== 'all') {
+      filtered = filtered.filter(g => g.providerName === activeProvider);
+    }
+    if (gameSearch.trim() !== '') {
+      const query = gameSearch.toLowerCase();
+      filtered = filtered.filter(g => (g["Game Name"] || "").toLowerCase().includes(query));
+    }
+    return filtered;
+  }, [allGames, activeType, activeProvider, gameSearch]);
 
   // Performance: Reset display limit when filters change
   useEffect(() => {
     setDisplayLimit(48);
-  }, [activeType, activeProvider]);
+  }, [activeType, activeProvider, gameSearch]);
 
   // Performance: Intersection Observer for Infinite Scroll
   useEffect(() => {
@@ -239,7 +245,7 @@ const CasinoPage = () => {
   return (
     <div className="w-full flex flex-col bg-gray-50 dark:bg-transparent min-h-screen md:h-[100dvh] overflow-y-auto md:overflow-hidden">
       <Navbar />
-      <div className="flex-1 max-w-[1920px] mx-auto w-full px-4 pt-2 pb-24 md:pb-6 flex flex-col md:flex-row gap-4 md:gap-6 min-h-0">
+      <div className="flex-1 max-w-[1920px] mx-auto w-full px-4 pt-1 pb-24 md:pb-6 flex flex-col md:flex-row gap-3 md:gap-4 min-h-0">
 
         {/* Sidebar for Providers */}
         <div className="hidden md:flex flex-col w-[260px] shrink-0 rounded-2xl border border-black/10 dark:border-white/10 overflow-hidden shadow-lg h-full" style={{ backgroundColor: `${COLORS.bg2}` }}>
@@ -296,7 +302,7 @@ const CasinoPage = () => {
         <div className="flex-1 flex flex-col min-w-0 h-auto md:h-full overflow-visible md:overflow-hidden">
 
           {/* Premium Segmented Game Types Bar */}
-          <div className="shrink-0 relative mb-5 md:mb-6 w-full max-w-full">
+          <div className="shrink-0 relative mb-3 md:mb-4 w-full max-w-full">
             <style>{`
               .game-tabs-scroll::-webkit-scrollbar { height: 3px; }
               .game-tabs-scroll::-webkit-scrollbar-track { background: transparent; margin: 0 16px; }
@@ -340,7 +346,7 @@ const CasinoPage = () => {
           </div>
 
           {/* Mobile Providers Selector (hidden on desktop) */}
-          <div className="shrink-0 md:hidden mb-4 relative">
+          <div className="shrink-0 md:hidden mb-2 relative">
             <select
               value={activeProvider}
               onChange={(e) => setActiveProvider(e.target.value)}
@@ -356,15 +362,30 @@ const CasinoPage = () => {
           </div>
 
           {/* Result Bar */}
-          <div className="shrink-0 flex items-center justify-between mb-4 px-2">
-            <span className="text-[13px] text-black/60 dark:text-white/60 font-medium" style={{ fontFamily: FONTS.ui }}>
+          <div className="shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2 px-2">
+            <span className="text-[13px] text-black/60 dark:text-white/60 font-medium hidden sm:block" style={{ fontFamily: FONTS.ui }}>
               Showing <strong className="text-black dark:text-white font-black">{filteredGames.length}</strong> games for <strong className="text-brand font-bold">{activeProvider === 'all' ? 'All Providers' : activeProvider}</strong>
             </span>
+            <div className="relative w-full sm:w-auto sm:min-w-[250px] lg:min-w-[300px]">
+              <input
+                type="text"
+                placeholder="Search Games..."
+                value={gameSearch}
+                onChange={e => setGameSearch(e.target.value)}
+                className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl py-2 px-4 pl-10 text-xs font-medium outline-none focus:border-brand transition-colors text-black dark:text-white"
+              />
+              <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-black/40 dark:text-white/40" size={14} />
+              {gameSearch && (
+                <button onClick={() => setGameSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white">
+                  <FaTimes size={14} />
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Grid */}
           <div className="flex-1 overflow-y-visible md:overflow-y-auto custom-scrollbar pr-1 md:pr-2 pb-28 md:pb-10 relative">
-            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-4 md:gap-5">
+            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
               {filteredGames.length === 0 ? (
                 <div className="col-span-full py-32 flex flex-col items-center justify-center text-center">
                   <FaGamepad className="text-6xl text-black/10 dark:text-white/10 mb-6" />

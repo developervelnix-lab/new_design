@@ -19,7 +19,7 @@ const AppInstallHero = ({ accountInfo }) => {
 
   const handleInstall = () => {
     if (platform === 'android' && !isInstalled) {
-      window.open(accountInfo?.service_apk_url || "/velplay.apk", "_blank");
+      window.open(accountInfo?.service_apk_url || "/ranamatch.apk", "_blank");
     } else if (isInstallable) {
       installApp();
     } else {

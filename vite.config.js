@@ -13,9 +13,9 @@ export default defineConfig({
       },
       includeAssets: ['favicon.png', 'app_logo/app_logo_192.png', 'app_logo/app_logo_512.png', 'screenshots/*.png', 'logo192.png', 'logo512.png'],
       manifest: {
-        name: 'Velplay365 Official Platform',
-        short_name: 'Velplay365',
-        description: 'Velplay365 Gaming & Sports Betting Platform. High odds, fast withdrawals, and exclusive promotions.',
+        name: 'Ranamatch Official Platform',
+        short_name: 'Ranamatch',
+        description: 'Ranamatch Gaming & Sports Betting Platform. High odds, fast withdrawals, and exclusive promotions.',
         theme_color: '#E49C16',
         background_color: '#000000',
         display: 'standalone',
@@ -69,7 +69,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://velplay365.com',
+        target: 'https://ranamatch.com',
         changeOrigin: true,
         secure: true,
       }

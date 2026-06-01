@@ -168,7 +168,7 @@ function Deposit() {
   const handleDeposit = async () => {
     if (!amount || parseFloat(amount) < 100) { addToast("Min. ₹100 required", "error"); return; }
     if (mode === "CasyPay") {
-      const paymentURL = "https://pay.velplay365.com/gateapi/payments/gateways1/initialisation/casypay.php"
+      const paymentURL = "https://pay.ranamatch.com/gateapi/payments/gateways1/initialisation/casypay.php"
       window.location.href = `${paymentURL}?amount=${amount}&user_id=${userId}`
       return
     }
