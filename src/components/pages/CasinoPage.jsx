@@ -8,7 +8,10 @@ import { useNavigate } from "react-router-dom";
 import { apiPost } from "@/utils/apiFetch";
 import { FaPlay, FaSearch, FaGamepad, FaRocket, FaDiceD20, FaTv, FaTimes } from "react-icons/fa";
 import { GiCardAceSpades, GiCardJoker, GiPokerHand, GiTigerHead } from "react-icons/gi";
-import Navbar from "../navbar/Navbar";
+
+import RanaHeader from "../home/ranamatch/RanaHeader";
+import AuthModalHost from "../common/AuthModalHost";
+import '../../assets/css/ranamatch.css';
 
 const GAME_TYPES = [
   { id: 'all', label: 'All Games', icon: <FaGamepad /> },
@@ -60,11 +63,9 @@ const CasinoPage = () => {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
 
-  // Performance: Infinite Scroll
   const [displayLimit, setDisplayLimit] = useState(48);
   const observerTarget = useRef(null);
 
-  // Drag to scroll functionality for the Game Types Bar
   const scrollRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
@@ -75,25 +76,34 @@ const CasinoPage = () => {
     setStartX(e.pageX - scrollRef.current.offsetLeft);
     setScrollLeft(scrollRef.current.scrollLeft);
   };
-
-  const handleMouseLeave = () => {
-    setIsDragging(false);
-  };
-
-  const handleMouseUp = () => {
-    setIsDragging(false);
-  };
-
+  const handleMouseLeave = () => setIsDragging(false);
+  const handleMouseUp = () => setIsDragging(false);
   const handleMouseMove = (e) => {
     if (!isDragging) return;
     e.preventDefault();
     const x = e.pageX - scrollRef.current.offsetLeft;
-    const walk = (x - startX) * 2; // scroll speed multiplier
+    const walk = (x - startX) * 2;
     scrollRef.current.scrollLeft = scrollLeft - walk;
   };
 
-  // PERFORMANCE CRITICAL: Pre-compute unique games, types, and provider counts in ONE pass.
-  // This prevents running millions of iterations on every render.
+  useEffect(() => {
+    document.body.style.backgroundColor = '#0f0a1a'; // Official ranamatch background
+    document.body.style.color = '#FFFFFF';
+    document.body.style.fontFamily = "var(--font-ui)";
+    document.documentElement.style.height = '100%';
+    document.body.style.height = '100%';
+    document.body.style.margin = '0';
+    document.body.style.padding = '0';
+
+    return () => {
+      document.body.style.backgroundColor = '';
+      document.body.style.color = '';
+      document.body.style.fontFamily = '';
+      document.documentElement.style.height = '';
+      document.body.style.height = '';
+    }
+  }, []);
+
   const { allGames, providerCounts } = useMemo(() => {
     const combined = [
       ...(casino_lobby || []),
@@ -144,12 +154,10 @@ const CasinoPage = () => {
     return filtered;
   }, [allGames, activeType, activeProvider, gameSearch]);
 
-  // Performance: Reset display limit when filters change
   useEffect(() => {
     setDisplayLimit(48);
   }, [activeType, activeProvider, gameSearch]);
 
-  // Performance: Intersection Observer for Infinite Scroll
   useEffect(() => {
     const observer = new IntersectionObserver(
       entries => {
@@ -157,7 +165,7 @@ const CasinoPage = () => {
           setDisplayLimit(prev => prev + 48);
         }
       },
-      { threshold: 0.1, rootMargin: "600px" } // Load 600px before reaching the bottom
+      { threshold: 0.1, rootMargin: "600px" }
     );
 
     if (observerTarget.current) {
@@ -167,7 +175,6 @@ const CasinoPage = () => {
     return () => observer.disconnect();
   }, [filteredGames.length]);
 
-  // Loading simulation effect
   useEffect(() => {
     if (confirmLoading) {
       setLoadingProgress(0);
@@ -243,402 +250,429 @@ const CasinoPage = () => {
   }
 
   return (
-    <div className="w-full flex flex-col bg-gray-50 dark:bg-transparent min-h-screen md:h-[100dvh] overflow-y-auto md:overflow-hidden">
-      <Navbar />
-      <div className="flex-1 max-w-[1920px] mx-auto w-full px-4 pt-1 pb-24 md:pb-6 flex flex-col md:flex-row gap-3 md:gap-4 min-h-0">
+    <div className="rana-layout" style={{ height: 'auto', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <AuthModalHost />
+      <RanaHeader />
+      
+      <div className="page-wrap casino-main-wrap" style={{ padding: '30px', maxWidth: '1800px', margin: '0 auto', width: '100%', flex: 1 }}>
+        <style>{`
+          .casino-main-wrap {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 40px;
+          }
+          @media (max-width: 1024px) {
+            .casino-main-wrap {
+              display: flex;
+              flex-direction: column;
+              padding: 15px;
+            }
+          }
 
-        {/* Sidebar for Providers */}
-        <div className="hidden md:flex flex-col w-[260px] shrink-0 rounded-2xl border border-black/10 dark:border-white/10 overflow-hidden shadow-lg h-full" style={{ backgroundColor: `${COLORS.bg2}` }}>
-          <style>{`
-            .sidebar-scroll::-webkit-scrollbar { width: 4px; }
-            .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
-            .sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.3); border-radius: 10px; }
-            .sidebar-scroll:hover::-webkit-scrollbar-thumb { background: rgba(150, 150, 150, 0.5); }
-          `}</style>
-          <div className="p-5 border-b border-black/10 dark:border-white/10">
-            <h3 className="text-xs font-black uppercase tracking-widest text-black/50 dark:text-white/50 mb-4" style={{ fontFamily: FONTS.head }}>Providers</h3>
-            <div className="relative">
+          /* Neo Glass Sidebar */
+          .neo-sidebar {
+            background: rgba(20, 20, 30, 0.4);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 2px solid rgba(29, 78, 216, 0.3);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(29, 78, 216, 0.05);
+          }
+          .neo-side-title {
+            font-family: var(--font-head);
+            font-size: 16px;
+            font-weight: 800;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+          }
+          .neo-side-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--gold);
+            border-radius: 4px;
+            box-shadow: 0 0 12px var(--gold);
+          }
+          .neo-search-input {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 12px 16px 12px 40px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.3s;
+          }
+          .neo-search-input:focus {
+            border-color: var(--brand);
+            box-shadow: 0 0 15px rgba(29, 78, 216, 0.3);
+          }
+          .neo-prov-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.015);
+            border: 1px solid transparent;
+            color: #999;
+            font-family: var(--font-ui);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+          .neo-prov-item:hover {
+            background: rgba(29, 78, 216, 0.08);
+            border-color: rgba(29, 78, 216, 0.2);
+            color: #fff;
+            transform: translateX(6px);
+          }
+          .neo-prov-item.active {
+            background: var(--brand-gradient);
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(29, 78, 216, 0.4);
+            border-color: rgba(255,255,255,0.1);
+          }
+
+          /* Neo Top Nav */
+          .neo-type-nav {
+            display: flex;
+            gap: 8px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 24px;
+          }
+          .neo-type-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 16px;
+            color: #777;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            font-family: var(--font-head);
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+          }
+          .neo-type-item:hover {
+            color: #fff;
+            background: rgba(255,255,255,0.03);
+          }
+          .neo-type-item.active {
+            color: var(--gold);
+            background: rgba(34, 211, 238, 0.08);
+          }
+          .neo-type-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -21px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 3px;
+            border-radius: 3px;
+            background: var(--gold);
+            box-shadow: 0 -2px 15px var(--gold);
+          }
+          .neo-type-icon { font-size: 20px; margin-bottom: 2px; }
+
+          /* Neo Game Cards */
+          .neo-card {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            background: #111;
+            border: 1px solid rgba(255,255,255,0.04);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+          }
+          .neo-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            border-color: var(--gold);
+            box-shadow: 0 15px 40px rgba(34, 211, 238, 0.2), 0 0 20px rgba(34, 211, 238, 0.15) inset;
+          }
+          .neo-card-img-wrap {
+            position: relative;
+            padding-top: 100%;
+            overflow: hidden;
+          }
+          .neo-card-img-wrap img {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s ease;
+          }
+          .neo-card:hover .neo-card-img-wrap img {
+            transform: scale(1.18) rotate(3deg);
+            filter: brightness(1.1);
+          }
+          .neo-card-info {
+            padding: 16px 14px;
+            background: linear-gradient(180deg, rgba(18,15,28,0.95) 0%, rgba(10,5,15,1) 100%);
+            position: relative;
+            z-index: 2;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+          }
+          .neo-card-title {
+            font-family: var(--font-head);
+            color: #fff;
+            font-size: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            letter-spacing: 1px;
+            width: 100%;
+          }
+          .neo-card-prov {
+            font-family: var(--font-ui);
+            color: var(--brand);
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-top: 6px;
+            letter-spacing: 1.5px;
+            transition: color 0.3s;
+          }
+          .neo-card:hover .neo-card-prov {
+            color: var(--gold);
+          }
+          .neo-play-btn {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.5);
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            background: rgba(29, 78, 216, 0.9);
+            color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 30px var(--brand);
+            z-index: 3;
+            border: 2px solid rgba(255,255,255,0.2);
+          }
+          .neo-card:hover .neo-play-btn {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+          }
+
+          .side-list-scroll::-webkit-scrollbar { width: 4px; }
+          .side-list-scroll::-webkit-scrollbar-track { background: transparent; }
+          .side-list-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+        `}</style>
+        
+        {/* LEFT SIDEBAR */}
+        <div className="hidden lg:flex flex-col">
+          <div className="neo-sidebar flex-1 max-h-[calc(100vh-140px)] flex flex-col sticky top-[100px]">
+            <div className="neo-side-title">
+              Game Providers
+            </div>
+            
+            <div className="relative mb-6">
               <input
                 type="text"
                 placeholder="Search Providers..."
                 value={providerSearch}
                 onChange={e => setProviderSearch(e.target.value)}
-                className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl py-3 px-4 pl-10 text-xs font-medium outline-none focus:border-brand transition-colors text-black dark:text-white"
+                className="neo-search-input"
               />
-              <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-black/40 dark:text-white/40" size={14} />
+              <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" size={14} />
+            </div>
+
+            <div className="side-list-scroll flex-1 overflow-y-auto pr-2">
+              <div onClick={() => setActiveProvider('all')} className={`neo-prov-item ${activeProvider === 'all' ? 'active' : ''}`}>
+                <span className="tracking-wide">All Providers</span>
+                <span className="opacity-80 text-[11px] font-bold bg-black/20 px-2 py-0.5 rounded-full">{allGames.length}</span>
+              </div>
+              {providers.filter(p => p.toLowerCase().includes(providerSearch.toLowerCase())).map(p => (
+                <div key={p} onClick={() => setActiveProvider(p)} className={`neo-prov-item ${activeProvider === p ? 'active' : ''}`}>
+                  <span className="truncate max-w-[150px] tracking-wide" title={p}>{p}</span>
+                  <span className="opacity-80 text-[11px] font-bold bg-black/20 px-2 py-0.5 rounded-full">{providerCounts[p]}</span>
+                </div>
+              ))}
             </div>
           </div>
-          <div className="flex-1 overflow-y-auto sidebar-scroll p-3 space-y-1">
-            <button
-              onClick={() => setActiveProvider('all')}
-              className={`w-full flex items-center justify-between p-3.5 rounded-xl text-xs font-bold transition-all duration-300 ${activeProvider === 'all' ? 'bg-brand/10 text-brand shadow-[inset_2px_0_0_0_var(--tw-shadow-color)] shadow-brand' : 'text-black/70 dark:text-white/70 hover:bg-black/5 dark:hover:bg-white/5'}`}
-            >
-              <div className="flex items-center gap-3">
-                <div className={`w-1.5 h-1.5 rounded-full ${activeProvider === 'all' ? 'bg-brand shadow-[0_0_8px_var(--tw-shadow-color)] shadow-brand' : 'bg-current opacity-50'}`}></div>
-                <span className="tracking-wide">All Providers</span>
-              </div>
-              <span className="text-[10px] bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-full font-bold">{allGames.length}</span>
-            </button>
-            {providers.filter(p => p.toLowerCase().includes(providerSearch.toLowerCase())).map(p => {
-              const count = providerCounts[p];
+        </div>
+
+        {/* MAIN CONTENT */}
+        <div className="min-w-0 flex flex-col">
+          
+          {/* Top Categories */}
+          <div
+            ref={scrollRef}
+            onMouseDown={handleMouseDown}
+            onMouseLeave={handleMouseLeave}
+            onMouseUp={handleMouseUp}
+            onMouseMove={handleMouseMove}
+            className={`neo-type-nav overflow-x-auto ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+            style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: "touch", userSelect: "none" }}
+          >
+            {GAME_TYPES.map(type => {
+              const isActive = activeType === type.id;
               return (
-                <button
-                  key={p}
-                  onClick={() => setActiveProvider(p)}
-                  className={`w-full flex items-center justify-between p-3.5 rounded-xl text-xs font-bold transition-all duration-300 ${activeProvider === p ? 'bg-brand/10 text-brand shadow-[inset_2px_0_0_0_var(--tw-shadow-color)] shadow-brand' : 'text-black/70 dark:text-white/70 hover:bg-black/5 dark:hover:bg-white/5'}`}
+                <div
+                  key={type.id}
+                  onClick={() => !isDragging && setActiveType(type.id)}
+                  className={`neo-type-item ${isActive ? 'active' : ''}`}
                 >
-                  <div className="flex items-center gap-3 overflow-hidden">
-                    <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${activeProvider === p ? 'bg-brand shadow-[0_0_8px_var(--tw-shadow-color)] shadow-brand' : 'bg-current opacity-50'}`}></div>
-                    <span className="truncate tracking-wide">{p}</span>
-                  </div>
-                  <span className="text-[10px] bg-black/5 dark:bg-white/5 px-2.5 py-1 rounded-full font-bold shrink-0">{count}</span>
-                </button>
+                  <span className="neo-type-icon">{type.icon}</span>
+                  {type.label}
+                </div>
               );
             })}
           </div>
-        </div>
 
-        {/* Main Content */}
-        <div className="flex-1 flex flex-col min-w-0 h-auto md:h-full overflow-visible md:overflow-hidden">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+             <div className="text-[14px] text-gray-400 font-medium" style={{ fontFamily: 'var(--font-ui)' }}>
+               Showing <strong className="text-white mx-1">{filteredGames.length}</strong> games for <strong className="text-[var(--brand)] ml-1 tracking-wider uppercase text-xs">{activeProvider === 'all' ? 'All Providers' : activeProvider}</strong>
+             </div>
+             
+             {/* Search */}
+             <div className="relative shrink-0 sm:w-72">
+               <input
+                 type="text"
+                 placeholder="Search games..."
+                 value={gameSearch}
+                 onChange={e => setGameSearch(e.target.value)}
+                 className="neo-search-input"
+                 style={{ borderRadius: '20px', paddingLeft: '44px' }}
+               />
+               <FaSearch className="absolute left-5 top-1/2 -translate-y-1/2 text-white/40" size={14} />
+               {gameSearch && (
+                 <button onClick={() => setGameSearch("")} className="absolute right-5 top-1/2 -translate-y-1/2 text-white/40 hover:text-white">
+                   <FaTimes size={14} />
+                 </button>
+               )}
+             </div>
+          </div>
 
-          {/* Premium Segmented Game Types Bar */}
-          <div className="shrink-0 relative mb-3 md:mb-4 w-full max-w-full">
-            <style>{`
-              .game-tabs-scroll::-webkit-scrollbar { height: 3px; }
-              .game-tabs-scroll::-webkit-scrollbar-track { background: transparent; margin: 0 16px; }
-              .game-tabs-scroll::-webkit-scrollbar-thumb { background: rgba(230, 160, 0, 0.4); border-radius: 10px; cursor: pointer; }
-              .game-tabs-scroll:hover::-webkit-scrollbar-thumb { background: rgba(230, 160, 0, 0.8); }
-              .game-tabs-scroll { scrollbar-width: none; } /* Hide native firefox to use only webkit/custom */
-            `}</style>
-            <div
-              ref={scrollRef}
-              onMouseDown={handleMouseDown}
-              onMouseLeave={handleMouseLeave}
-              onMouseUp={handleMouseUp}
-              onMouseMove={handleMouseMove}
-              className={`flex items-center p-0.5 md:p-1 overflow-x-auto overflow-y-hidden w-full rounded-[12px] md:rounded-[16px] bg-[#1a1a1a] dark:bg-white/[0.02] border border-black/10 dark:border-white/5 shadow-inner game-tabs-scroll ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-              style={{
-                WebkitOverflowScrolling: "touch",
-                userSelect: "none"
-              }}
-            >
-              {GAME_TYPES.map(type => {
-                const isActive = activeType === type.id;
-                return (
-                  <button
-                    key={type.id}
-                    onClick={() => !isDragging && setActiveType(type.id)}
-                    className={`shrink-0 relative flex items-center gap-1.5 md:gap-2 whitespace-nowrap px-3 py-1.5 md:px-4 md:py-2.5 rounded-[9px] md:rounded-[12px] font-bold transition-all duration-300 z-10 select-none ${isActive
-                        ? 'text-black shadow-[0_6px_15px_rgba(230,160,0,0.25)] scale-[1.01] mx-0.5 md:mx-1'
-                        : 'text-black/60 dark:text-white/60 hover:text-black dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/5'
-                      }`}
-                    style={{ fontFamily: FONTS.ui }}
-                  >
-                    {isActive && (
-                      <div className="absolute inset-0 bg-brand rounded-[9px] md:rounded-[12px] -z-10 border border-white/20"></div>
-                    )}
-                    <span className={`text-[13px] md:text-[16px] transition-transform duration-300 ${isActive ? 'text-black scale-105' : 'text-brand grayscale-[20%]'}`}>{type.icon}</span>
-                    <span className="tracking-widest uppercase text-[9px] md:text-[11px] sm:text-[12px]">{type.label}</span>
-                  </button>
-                );
-              })}
+          {/* GAME GRID */}
+          {filteredGames.length === 0 ? (
+            <div className="py-24 flex flex-col items-center justify-center text-center bg-[rgba(20,20,30,0.4)] rounded-3xl border border-[rgba(255,255,255,0.05)] backdrop-blur-sm">
+              <FaGamepad className="text-6xl text-white/10 mb-6" />
+              <h3 className="text-2xl font-bold text-white/80 uppercase tracking-widest mb-3" style={{ fontFamily: 'var(--font-head)' }}>No Games Found</h3>
+              <p className="text-[15px] text-white/40 max-w-md">We couldn't find any games matching your current filters.</p>
+              <button
+                onClick={() => { setActiveType('all'); setActiveProvider('all'); setGameSearch(""); }}
+                className="mt-8 px-8 py-3 rounded-xl font-bold uppercase tracking-widest text-[12px] transition-all bg-[var(--brand-gradient)] text-white hover:scale-105 hover:shadow-[0_0_20px_rgba(29,78,216,0.5)]"
+              >
+                Clear All Filters
+              </button>
             </div>
-          </div>
-
-          {/* Mobile Providers Selector (hidden on desktop) */}
-          <div className="shrink-0 md:hidden mb-2 relative">
-            <select
-              value={activeProvider}
-              onChange={(e) => setActiveProvider(e.target.value)}
-              className="w-full bg-white dark:bg-[#14141E] border border-black/10 dark:border-white/10 rounded-[10px] py-2.5 pl-4 pr-10 text-xs font-bold appearance-none bg-none outline-none text-black dark:text-white shadow-sm"
-              style={{ fontFamily: FONTS.ui, backgroundImage: 'none' }}
-            >
-              <option value="all">All Providers ({allGames.length})</option>
-              {providers.map(p => (
-                <option key={p} value={p}>{p} ({providerCounts[p]})</option>
-              ))}
-            </select>
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-brand text-[10px]">▼</div>
-          </div>
-
-          {/* Result Bar */}
-          <div className="shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2 px-2">
-            <span className="text-[13px] text-black/60 dark:text-white/60 font-medium hidden sm:block" style={{ fontFamily: FONTS.ui }}>
-              Showing <strong className="text-black dark:text-white font-black">{filteredGames.length}</strong> games for <strong className="text-brand font-bold">{activeProvider === 'all' ? 'All Providers' : activeProvider}</strong>
-            </span>
-            <div className="relative w-full sm:w-auto sm:min-w-[250px] lg:min-w-[300px]">
-              <input
-                type="text"
-                placeholder="Search Games..."
-                value={gameSearch}
-                onChange={e => setGameSearch(e.target.value)}
-                className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-xl py-2 px-4 pl-10 text-xs font-medium outline-none focus:border-brand transition-colors text-black dark:text-white"
-              />
-              <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-black/40 dark:text-white/40" size={14} />
-              {gameSearch && (
-                <button onClick={() => setGameSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-black/40 dark:text-white/40 hover:text-black dark:hover:text-white">
-                  <FaTimes size={14} />
-                </button>
-              )}
-            </div>
-          </div>
-
-          {/* Grid */}
-          <div className="flex-1 overflow-y-visible md:overflow-y-auto custom-scrollbar pr-1 md:pr-2 pb-28 md:pb-10 relative">
-            <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 sm:gap-3 md:gap-4">
-              {filteredGames.length === 0 ? (
-                <div className="col-span-full py-32 flex flex-col items-center justify-center text-center">
-                  <FaGamepad className="text-6xl text-black/10 dark:text-white/10 mb-6" />
-                  <h3 className="text-xl font-black text-black/80 dark:text-white/80 uppercase tracking-widest mb-2" style={{ fontFamily: FONTS.head }}>No Games Found</h3>
-                  <p className="text-sm text-black/50 dark:text-white/50 max-w-md">Try selecting a different provider or game category to see available games.</p>
-                  <button
-                    onClick={() => { setActiveType('all'); setActiveProvider('all'); }}
-                    className="mt-6 px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-[10px] transition-all bg-brand/10 text-brand hover:bg-brand hover:text-black"
-                  >
-                    Reset Filters
-                  </button>
-                </div>
-              ) : (
-                filteredGames.slice(0, displayLimit).map((game, idx) => (
-                  <div key={`${game["Game UID"]}-${idx}`} className="flex flex-col group cursor-pointer" onClick={() => handleGameClick(game)}>
-                    <div className="relative aspect-[4/5] rounded-xl overflow-hidden p-[1px] bg-gradient-to-br from-black/10 via-transparent to-black/5 dark:from-white/10 dark:via-transparent dark:to-white/5 transition-all duration-300 group-hover:from-brand/50 group-hover:to-brand/20 group-hover:-translate-y-1">
-                      <div className="relative w-full h-full rounded-[11px] overflow-hidden bg-gray-100 dark:bg-[#1a1a1a]">
-                        <img
-                          loading="lazy"
-                          className={`absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-110 ${loadingForGames === game["Game UID"] ? "opacity-30 blur-sm" : ""}`}
-                          src={game.icon || "/placeholder.svg"}
-                          alt={game["Game Name"]}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <div
-                            className="p-3.5 rounded-full shadow-2xl transform scale-50 group-hover:scale-100 transition-all duration-300 hover:scale-110"
-                            style={{ background: COLORS.brandGradient }}
-                          >
-                            <FaPlay className="text-black dark:text-white ml-0.5" size={14} />
-                          </div>
-                        </div>
-                        <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                          <div className="bg-white/95 dark:bg-black/80 rounded-lg p-2 border border-black/10 dark:border-white/10 text-center shadow-xl">
-                            <p className="text-[10px] sm:text-xs font-black text-black dark:text-white truncate uppercase tracking-tighter" style={{ fontFamily: FONTS.head }}>
-                              {game["Game Name"]}
-                            </p>
-                            <p className="text-[8px] sm:text-[9px] text-brand uppercase font-bold mt-0.5 opacity-80 truncate">{game["Game Provider"] || game.provider || "Casino"}</p>
-                          </div>
-                        </div>
-                      </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-6 sm:gap-8 pb-16">
+              {filteredGames.slice(0, displayLimit).map((game, idx) => (
+                <div key={`${game["Game UID"]}-${idx}`} className="neo-card" onClick={() => handleGameClick(game)}>
+                  <div className="neo-card-img-wrap">
+                    <img
+                      loading="lazy"
+                      src={game.icon || "/placeholder.svg"}
+                      alt={game["Game Name"]}
+                    />
+                    <div className="neo-play-btn">
+                      <FaPlay className="ml-1" size={20} />
                     </div>
                   </div>
-                ))
-              )}
+                  <div className="neo-card-info">
+                    <div className="neo-card-title">{game["Game Name"]}</div>
+                    <div className="neo-card-prov">{game["Game Provider"] || game.provider || "Casino"}</div>
+                  </div>
+                </div>
+              ))}
             </div>
+          )}
 
-            {/* Infinite Scroll Loading Trigger */}
-            {filteredGames.length > displayLimit && (
-              <div ref={observerTarget} className="w-full flex items-center justify-center py-10">
-                <div className="w-8 h-8 border-4 border-brand border-t-transparent rounded-full animate-spin"></div>
-              </div>
-            )}
-          </div>
+          {/* Infinite Scroll Trigger */}
+          {filteredGames.length > displayLimit && (
+            <div ref={observerTarget} className="w-full flex justify-center py-10">
+              <div className="w-8 h-8 border-4 border-[var(--gold)] border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Confirm Popup Modal */}
+      {/* MODALS */}
       {confirmPopup.show && createPortal(
-        <div className="fixed inset-0 flex items-center justify-center bg-black/20 dark:bg-black/60 backdrop-blur-2xl z-[100000] transition-all duration-500 animate-fadeIn">
-          <div
-            className="relative p-10 rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8)] max-w-sm w-full mx-6 animate-fadeInUp border border-black/10 dark:border-white/10 text-center"
-            style={{
-              backgroundColor: `${COLORS.bg2}F2`,
-              backgroundImage: 'radial-gradient(circle at top right, rgba(230, 160, 0, 0.05), transparent 40%)'
-            }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none rounded-[2.5rem]"></div>
-            <div
-              className="absolute -top-10 left-1/2 transform -translate-x-1/2 p-6 rounded-full shadow-2xl animate-bounce-slow"
-              style={{ background: COLORS.brandGradient }}
-            >
-              <FaPlay className="text-black dark:text-white ml-0.5" size={28} />
-            </div>
+        <div className="fixed inset-0 flex items-center justify-center bg-black/80 backdrop-blur-xl z-[100000] p-4 transition-all duration-300">
+          <div className="bg-[rgba(20,20,30,0.9)] border border-[rgba(255,255,255,0.1)] p-10 rounded-[2rem] max-w-md w-full text-center shadow-[0_20px_80px_rgba(0,0,0,0.8)] relative overflow-hidden">
+             <div className="absolute top-0 left-0 w-full h-2 bg-[var(--brand-gradient)]"></div>
+             
+             <div className="w-24 h-24 rounded-2xl overflow-hidden mx-auto mb-6 border-2 border-[var(--brand)] shadow-[0_0_30px_rgba(29,78,216,0.3)]">
+                <img src={confirmPopup.game?.icon || "/placeholder.svg"} alt="Game" className="w-full h-full object-cover" />
+             </div>
 
-            <div className="relative z-10 mt-8 mb-8">
-              {confirmPopup.error === "balance_error" ? (
-                <div className="space-y-3">
-                  <h3 className="text-xl font-black text-brand tracking-tight uppercase" style={{ fontFamily: FONTS.head }}>Insufficient Balance</h3>
-                  <p className="text-black/60 dark:text-white/60 text-sm leading-relaxed px-2">A minimum deposit of <span className="text-black dark:text-white font-bold">₹100</span> is required to access this premium experience.</p>
-                </div>
-              ) : confirmPopup.error === "authorization_error" ? (
-                <div className="space-y-3">
-                  <h3 className="text-xl font-black text-red-500 tracking-tight uppercase" style={{ fontFamily: FONTS.head }}>Session Expired</h3>
-                  <p className="text-black/60 dark:text-white/60 text-sm leading-relaxed px-2">Your session has expired or you are not authorized to play this game. Please try logging in again.</p>
-                </div>
-              ) : confirmPopup.error ? (
-                <div className="space-y-3">
-                  <h3 className="text-xl font-black text-red-500 tracking-tight uppercase" style={{ fontFamily: FONTS.head }}>Game Unavailable</h3>
-                  <p className="text-black/60 dark:text-white/60 text-sm leading-relaxed px-2">This game is currently unavailable ({confirmPopup.error}). Please try another one.</p>
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  <h3 className="text-xl font-black text-black dark:text-white tracking-tight uppercase" style={{ fontFamily: FONTS.head }}>READY TO WIN?</h3>
-                  <p className="text-black/60 dark:text-white/60 text-sm leading-relaxed px-2">You are about to enter <span className="text-black dark:text-white font-bold">{confirmPopup.game?.["Game Name"]}</span>. Good luck!</p>
-                </div>
-              )}
-            </div>
+             <h3 className="text-2xl font-black text-white uppercase tracking-widest mb-3" style={{ fontFamily: 'var(--font-head)' }}>
+               {confirmPopup.error === "balance_error" ? "Insufficient Balance" : 
+                confirmPopup.error === "authorization_error" ? "Session Expired" : 
+                confirmPopup.error ? "Game Unavailable" : 
+                "Ready to Play?"}
+             </h3>
 
-            <div className="flex flex-col gap-3 mt-8">
-              {confirmPopup.error === "balance_error" ? (
-                <button
-                  onClick={() => setConfirmPopup({ show: false, game: null, error: null })}
-                  className="w-full px-6 py-4 rounded-2xl font-bold uppercase tracking-widest transition-all duration-300 shadow-lg active:scale-95 group overflow-hidden relative"
-                  style={{ background: COLORS.brandGradient, fontFamily: FONTS.ui }}
-                >
-                  <div className="absolute inset-0 bg-gray-100 dark:bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <span>Add Funds</span>
-                </button>
-              ) : confirmPopup.error === "authorization_error" ? (
-                <button
-                  onClick={handleAuthError}
-                  className="w-full px-6 py-4 rounded-2xl font-bold uppercase tracking-widest transition-all duration-300 shadow-lg active:scale-95 group overflow-hidden relative text-black dark:text-white"
-                  style={{ background: COLORS.brandGradient, fontFamily: FONTS.ui }}
-                >
-                  <div className="absolute inset-0 bg-gray-100 dark:bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <span>Log In Again</span>
-                </button>
-              ) : confirmPopup.error ? (
-                <button
-                  onClick={() => setConfirmPopup({ show: false, game: null, error: null })}
-                  className="w-full px-6 py-4 rounded-2xl font-bold uppercase tracking-widest transition-all duration-300 shadow-lg active:scale-95 group overflow-hidden relative text-black dark:text-white"
-                  style={{ background: COLORS.brandGradient, fontFamily: FONTS.ui }}
-                >
-                  <div className="absolute inset-0 bg-gray-100 dark:bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <span>Try Other Game</span>
-                </button>
-              ) : (
-                <button
-                  onClick={confirmGameOpen}
-                  className="w-full px-6 py-4 rounded-2xl font-bold uppercase tracking-widest transition-all duration-300 shadow-lg active:scale-95 group overflow-hidden relative text-black dark:text-white"
-                  style={{ background: COLORS.brandGradient, fontFamily: FONTS.ui }}
-                >
-                  <div className="absolute inset-0 bg-gray-100 dark:bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <span>Confirm Play</span>
-                </button>
-              )}
+             <p className="text-[15px] text-gray-400 mb-8 leading-relaxed">
+               {confirmPopup.error === "balance_error" ? "A minimum deposit is required to play this game." :
+                confirmPopup.error === "authorization_error" ? "Please log in again to continue." :
+                confirmPopup.error ? `Error: ${confirmPopup.error}` :
+                `You are about to launch ${confirmPopup.game?.["Game Name"]}.`}
+             </p>
 
-              <button
-                onClick={() => setConfirmPopup({ show: false, game: null, error: null })}
-                className="w-full px-6 py-3 rounded-2xl font-bold uppercase tracking-widest bg-gray-100 dark:bg-white/5 text-black/60 dark:text-white/60 hover:text-black dark:text-white hover:bg-gray-100 dark:bg-white/10 transition-all duration-300 border border-black/5 dark:border-white/5"
-                style={{ fontFamily: FONTS.ui }}
-              >
-                {confirmPopup.error === "balance_error" ? "Close" : "Cancel"}
-              </button>
-            </div>
+             <div className="flex flex-col gap-4">
+                {confirmPopup.error === "balance_error" ? (
+                   <button onClick={() => setConfirmPopup({ show: false, game: null, error: null })} className="bg-[var(--brand-gradient)] text-white font-bold uppercase tracking-widest rounded-xl w-full justify-center py-4 hover:shadow-[0_0_20px_rgba(29,78,216,0.4)] transition-all">Add Funds</button>
+                ) : confirmPopup.error === "authorization_error" ? (
+                   <button onClick={handleAuthError} className="bg-[var(--brand-gradient)] text-white font-bold uppercase tracking-widest rounded-xl w-full justify-center py-4 hover:shadow-[0_0_20px_rgba(29,78,216,0.4)] transition-all">Log In Again</button>
+                ) : confirmPopup.error ? (
+                   <button onClick={() => setConfirmPopup({ show: false, game: null, error: null })} className="bg-transparent border-2 border-[var(--brand)] text-[var(--brand)] font-bold uppercase tracking-widest rounded-xl w-full justify-center py-4 hover:bg-[var(--brand)] hover:text-white transition-all">Try Another</button>
+                ) : (
+                   <button onClick={confirmGameOpen} className="bg-[var(--brand-gradient)] text-white font-bold uppercase tracking-widest rounded-xl w-full justify-center py-4 hover:shadow-[0_0_20px_rgba(29,78,216,0.4)] transition-all">Confirm Play</button>
+                )}
+                <button onClick={() => setConfirmPopup({ show: false, game: null, error: null })} className="text-xs text-gray-500 font-bold uppercase tracking-widest hover:text-white mt-2 transition-colors">Cancel</button>
+             </div>
           </div>
-        </div>,
-        document.body
+        </div>, document.body
       )}
 
-      {/* Loading Modal */}
       {confirmLoading && createPortal(
-        <div className="fixed inset-0 bg-black/25 dark:bg-black/60 backdrop-blur-2xl z-[100000] flex flex-col items-center justify-center transition-all duration-700 animate-fadeIn p-4 overflow-y-auto">
-          <div
-            className="w-[90%] max-w-[340px] md:max-w-md px-5 py-6 md:px-8 md:py-10 rounded-[2rem] md:rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8)] border border-black/10 dark:border-white/10 relative overflow-hidden text-center max-h-[92vh] overflow-y-auto scrollbar-none"
-            style={{
-              backgroundColor: `${COLORS.bg2}F2`,
-              backgroundImage: 'radial-gradient(circle at top right, rgba(230, 160, 0, 0.05), transparent 40%)'
-            }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none"></div>
-
-            <div className="relative z-10 mb-6 md:mb-8">
-              {confirmPopup.game && (
-                <div className="flex flex-col items-center">
-                  <div className="relative mb-4 md:mb-6 group">
-                    <div className="absolute -inset-4 bg-brand/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                    <div className="relative w-20 h-20 md:w-28 md:h-28 rounded-2xl overflow-hidden border-2 border-black/10 dark:border-white/10 shadow-2xl transform transition-transform duration-700 hover:scale-105">
-                      <img
-                        src={confirmPopup.game.icon || "/placeholder.svg"}
-                        alt={confirmPopup.game["Game Name"]}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-                    </div>
-                  </div>
-                  <h3 className="text-xl md:text-2xl font-black text-black dark:text-white mb-1.5 md:mb-2 tracking-wider uppercase" style={{ fontFamily: FONTS.head }}>
-                    {confirmPopup.game["Game Name"]}
-                  </h3>
-                  <div className="flex items-center gap-2 text-brand font-bold text-xs uppercase tracking-[0.2em] animate-pulse">
-                    <span className="w-2 h-2 rounded-full bg-brand shadow-[0_0_10px_rgba(230,160,0,1)]"></span>
-                    Initializing Elite Experience
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="relative z-10 px-2 md:px-4 mb-6 md:mb-10">
-              <div className="w-full bg-gray-200 dark:bg-white/5 rounded-full h-1 overflow-hidden backdrop-blur-sm border border-black/5 dark:border-white/5">
-                <div
-                  className="h-full rounded-full transition-all duration-300 ease-out relative"
-                  style={{
-                    width: `${loadingProgress}%`,
-                    background: COLORS.brandGradient,
-                    boxShadow: `0 0 20px ${COLORS.brand}80`
-                  }}
-                >
-                  <div className="absolute top-0 right-0 w-8 h-full bg-white/40 blur-sm animate-shimmer"></div>
-                </div>
+        <div className="fixed inset-0 bg-black/95 backdrop-blur-xl z-[100000] flex flex-col items-center justify-center p-4">
+           <div className="bg-[rgba(20,20,30,0.8)] border border-[var(--gold)]/30 p-10 rounded-[2rem] max-w-md w-full text-center relative shadow-[0_0_60px_rgba(34,211,238,0.15)]">
+              <div className="mb-8 relative">
+                 <div className="w-24 h-24 rounded-3xl overflow-hidden mx-auto border-2 border-[var(--gold)] relative z-10 shadow-[0_0_30px_rgba(34,211,238,0.3)]">
+                    <img src={confirmPopup.game?.icon || "/placeholder.svg"} alt="Game" className="w-full h-full object-cover" />
+                 </div>
+                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-[var(--gold)] rounded-full blur-[40px] opacity-20"></div>
               </div>
-              <div className="flex justify-between mt-3 px-1">
-                <span className="text-[10px] text-black/40 dark:text-white/40 font-bold uppercase tracking-widest">Connection Status</span>
-                <span className="text-[10px] text-brand font-black italic">{Math.round(loadingProgress)}%</span>
+              <h3 className="text-2xl font-black text-white mb-8 tracking-widest uppercase" style={{ fontFamily: 'var(--font-head)' }}>Launching...</h3>
+              
+              <div className="w-full bg-[rgba(255,255,255,0.05)] rounded-full h-2 overflow-hidden mb-3">
+                 <div className="h-full bg-[var(--brand-gradient)] transition-all duration-300 relative" style={{ width: `${loadingProgress}%` }}>
+                    <div className="absolute top-0 right-0 bottom-0 w-10 bg-white/30 blur-sm"></div>
+                 </div>
               </div>
-            </div>
-
-            {/* Checklist steps */}
-            <div className="relative z-10 space-y-4 px-2 mb-6 md:mb-10 text-left">
-              {[
-                { label: "Establishing Connection", threshold: 30 },
-                { label: "Syncing Game Assets", threshold: 60 },
-                { label: "Optimizing Performance", threshold: 85 }
-              ].map((step, i) => (
-                <div key={i} className="flex justify-between items-center group">
-                  <span className={`text-xs transition-colors duration-500 ${loadingProgress > step.threshold ? "text-black/80 dark:text-white/80" : "text-black/20 dark:text-white/20"}`} style={{ fontFamily: FONTS.ui }}>
-                    {step.label}
-                  </span>
-                  <div className={`w-5 h-5 rounded-full flex items-center justify-center border transition-all duration-700 ${loadingProgress > step.threshold
-                    ? "border-brand/40 bg-brand/10 text-brand scale-110 shadow-[0_0_15px_rgba(230,160,0,0.2)]"
-                    : "border-black/5 dark:border-white/5 bg-gray-100 dark:bg-white/2"
-                    }`}>
-                    {loadingProgress > step.threshold ? (
-                      <span className="text-[10px] font-bold">✓</span>
-                    ) : (
-                      <div className="w-1 h-1 bg-gray-100 dark:bg-white/10 rounded-full animate-ping"></div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Pro Tip Card */}
-            <div className="relative z-10 py-4 px-6 rounded-2xl bg-gray-100 dark:bg-white/5 border border-black/5 dark:border-white/5 backdrop-blur-md group hover:bg-white/[0.08] transition-all duration-500">
-              <div className="flex items-center gap-3 mb-1">
-                <div className="w-5 h-[1px] bg-brand/50"></div>
-                <span className="text-[10px] text-brand/80 font-black uppercase tracking-widest">Pro Tip</span>
-              </div>
-              <p className="text-xs text-black/60 dark:text-white/60 leading-relaxed font-medium italic">
-                "Enable high performance mode in settings for the smoothest gameplay experience."
-              </p>
-            </div>
-          </div>
-
-          {/* Site Elite Signature at bottom of modal page */}
-          <div className="mt-8 flex items-center gap-4 opacity-30 relative z-10">
-            <div className="h-px w-10 bg-gradient-to-r from-transparent to-white/50"></div>
-            <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black dark:text-white">{accountInfo?.service_site_name || 'Site'} Elite</span>
-            <div className="h-px w-10 bg-gradient-to-l from-transparent to-white/50"></div>
-          </div>
-        </div>,
-        document.body
+              <div className="text-[11px] text-[var(--gold)] font-bold tracking-widest uppercase">{Math.round(loadingProgress)}% Loaded</div>
+           </div>
+        </div>, document.body
       )}
+
     </div>
   );
 };

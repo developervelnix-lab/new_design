@@ -660,7 +660,7 @@ function Navbar() {
                   {menuOpen ? (
                     <FaTimes className="text-base md:text-lg" style={{ color: COLORS.brand }} />
                   ) : (
-                    <FaBars className="text-base md:text-lg text-white/80" />
+                    <FontAwesomeIcon icon={faBars} className="text-base md:text-lg text-white/80" />
                   )}
                 </button>
               </div>
