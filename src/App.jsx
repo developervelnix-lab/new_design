@@ -77,6 +77,10 @@ const appRouter = createBrowserRouter([
         element: <BonusDetailsPage />,
       },
       {
+        path: "/bonus-details",
+        element: <BonusDetailsPage />,
+      },
+      {
         path: "/deposit",
         element: (
           <ProtectedRoute>
@@ -301,6 +305,34 @@ const appRouter = createBrowserRouter([
             const t = (g.type || "").toLowerCase();
             const c = n + " " + t;
             return c.includes("andar") && c.includes("bahar");
+          }}
+        />,
+      },
+      {
+        path: "/sic-bo",
+        element: <CategoryGamesPage
+          title="Sic Bo"
+          icon="🎲"
+          sectionId="sic-bo-collection"
+          filterFn={(g) => {
+            const n = (g["Game Name"] || "").toLowerCase();
+            const t = (g.type || "").toLowerCase();
+            const c = n + " " + t;
+            return c.includes("sic bo") || c.includes("sicbo");
+          }}
+        />,
+      },
+      {
+        path: "/lucky-7",
+        element: <CategoryGamesPage
+          title="Lucky 7"
+          icon="🍀"
+          sectionId="lucky-7-collection"
+          filterFn={(g) => {
+            const n = (g["Game Name"] || "").toLowerCase();
+            const t = (g.type || "").toLowerCase();
+            const c = n + " " + t;
+            return c.includes("lucky 7") || c.includes("lucky seven") || c.includes("lucky7");
           }}
         />,
       },

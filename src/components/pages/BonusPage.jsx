@@ -1,15 +1,15 @@
 import React from 'react'
-import Navbar from '../navbar/Navbar'
+import RanaHeader from '../home/ranamatch/RanaHeader'
 import Bonus from '../sidebar-components/Miscellaneous/Bonus'
-import { useColors } from '../../hooks/useColors';
+import '../../assets/css/ranamatch.css';
+
 function BonusPage() {
-  const COLORS = useColors();
   return (
-    <div className="min-h-screen" style={{ backgroundColor: COLORS.bg }}>
-      <Navbar />
-      <div className='pb-10 px-2'>
+    <div className="rana-layout bonus-route min-h-screen">
+      <RanaHeader />
+      <main className="bonus-route-main">
         <Bonus />
-      </div>
+      </main>
     </div>
   )
 }

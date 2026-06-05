@@ -228,96 +228,88 @@ const GameplayComponent = () => {
   }, [refreshSiteData])
 
   return (
-    <div className="fixed inset-0 flex flex-col bg-black overflow-hidden">
+    <div className="gameplay-shell fixed inset-0 flex flex-col overflow-hidden">
       {/* Header - Premium Glassmorphism Design */}
       <div
-        className={`fixed top-0 left-0 right-0 h-[60px] md:h-[70px] flex justify-between items-center px-3 md:px-6 z-[100] transition-all duration-500 ease-in-out border-b border-white/5 backdrop-blur-2xl ${isHeaderVisible ? "translate-y-0" : "-translate-y-full"
+        className={`gameplay-topbar ${isHeaderVisible ? "" : "hidden"
           }`}
-        style={{
-          backgroundColor: 'var(--bg2)',
-          boxShadow: isHeaderVisible ? "0 4px 30px rgba(0, 0, 0, 0.5)" : "none"
-        }}
       >
         {/* Left Side: Back & Branding */}
-        <div className="flex items-center gap-1.5 md:gap-5 flex-1 min-w-0">
+        <div className="gameplay-left">
           <button
             onClick={handleBack}
-            className="group relative flex items-center justify-center hover:opacity-80 w-8 h-8 md:w-11 md:h-11 rounded-lg md:rounded-xl border border-[var(--bg4)] transition-all duration-300 active:scale-95 flex-shrink-0"
+            className="gameplay-back"
             title="Back to games"
-            style={{ backgroundColor: 'var(--bg3)' }}
           >
-            <FaArrowLeft className="transition-colors text-xs md:text-base" style={{ color: 'var(--text)' }} />
+            <FaArrowLeft />
           </button>
 
-          <div className="flex flex-col min-w-0">
+          <div className="gameplay-game-meta">
+            <i className="gameplay-live-dot"></i>
+            <div>
             <h1
-              className="text-xs xs:text-sm md:text-lg font-black uppercase tracking-wider truncate"
-              style={{ fontFamily: FONTS.head, color: 'var(--text)' }}
+              style={{ fontFamily: FONTS.head }}
             >
               {decodeURIComponent(gameName)}
             </h1>
-            <div className="flex items-center gap-1.5 overflow-hidden">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse flex-shrink-0"></span>
+            <span>Live session active</span>
             </div>
           </div>
         </div>
 
         {/* Right Side: Balance and Controls */}
-        <div className="flex items-center gap-1.5 md:gap-4 ml-1.5 flex-shrink-0">
+        <div className="gameplay-right">
           {/* Total exposure across all open bets (sports + casino + live) */}
           {userId !== "guest" && (
-            <div className="flex items-center border border-[var(--bg4)] rounded-lg md:rounded-2xl px-1.5 py-0.5 md:px-4 md:py-2 gap-1 md:gap-3 shadow-inner flex-shrink-0" style={{ backgroundColor: 'var(--bg3)' }} title="Total exposure from all open bets">
-              <div className="flex flex-col items-end">
-                <span className="text-[6px] md:text-[9px] font-black uppercase tracking-widest leading-none text-rose-500/80">Total Exp</span>
-                <span className="text-[9px] xs:text-[10px] md:text-sm font-black tracking-tighter text-rose-500" style={{ fontFamily: FONTS.ui }}>
+            <div className="gameplay-stat-card exposure" title="Total exposure from all open bets">
+              <div>
+                <small>Total Exp</small>
+                <strong style={{ fontFamily: FONTS.ui }}>
                   ₹{parseFloat(accountInfo?.account_exposure || 0).toLocaleString('en-IN')}
-                </span>
+                </strong>
               </div>
-              <div className="hidden xs:flex w-6 h-6 md:w-8 md:h-8 rounded-lg bg-rose-500/10 border border-rose-500/20 items-center justify-center">
-                <FaLock className="text-rose-500 text-[10px] md:text-sm" />
+              <div className="gameplay-stat-icon">
+                <FaLock />
               </div>
             </div>
           )}
 
           {/* Balance Display (Optimized for all screens) */}
-          <div className="flex items-center border border-[var(--bg4)] rounded-lg md:rounded-2xl px-1.5 py-0.5 md:px-4 md:py-2 gap-1 md:gap-3 shadow-inner flex-shrink-0" style={{ backgroundColor: 'var(--bg3)' }}>
-            <div className="flex flex-col items-end">
-              <span className="text-[6px] md:text-[9px] font-black uppercase tracking-widest leading-none" style={{ color: 'var(--muted)' }}>
+          <div className="gameplay-stat-card">
+            <div>
+              <small>
                 {userId === "guest" ? "Demo Balance" : "Balance"}
-              </span>
-              <span className="text-[9px] xs:text-[10px] md:text-sm font-black tracking-tighter" style={{ fontFamily: FONTS.ui, color: 'var(--text)' }}>
+              </small>
+              <strong style={{ fontFamily: FONTS.ui }}>
                 ₹{parseFloat(accountInfo?.account_balance || 0).toLocaleString('en-IN')}
-              </span>
+              </strong>
             </div>
-            <div className="hidden xs:flex w-6 h-6 md:w-8 md:h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 items-center justify-center">
-              <FaWallet className="text-emerald-500 text-[10px] md:text-sm" />
+            <div className="gameplay-stat-icon">
+              <FaWallet />
             </div>
           </div>
 
-          <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
+          <div className="gameplay-right">
             <button
               onClick={handleDeposit}
-              className="relative group flex items-center justify-center gap-1 md:gap-2 w-8 h-8 md:w-auto md:px-5 md:py-2.5 rounded-lg md:rounded-xl font-black uppercase text-[10px] md:text-xs tracking-wider transition-all duration-500 shadow-lg active:scale-95 overflow-hidden flex-shrink-0"
-              style={{ background: 'var(--brand-gradient)', color: 'white' }}
+              className="gameplay-deposit-btn"
             >
-              <div className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              <FaPlus className="text-[10px] md:text-xs" />
-              <span className="hidden md:inline whitespace-nowrap">Deposit</span>
+              <FaPlus />
+              <span>Deposit</span>
             </button>
 
             <button
               onClick={toggleFullscreen}
-              className="flex items-center justify-center hover:opacity-80 w-8 h-8 md:w-11 md:h-11 rounded-lg md:rounded-xl border border-[var(--bg4)] transition-all duration-300 active:scale-95 flex-shrink-0"
+              className="gameplay-icon-btn"
               title={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
-              style={{ backgroundColor: 'var(--bg3)', color: 'var(--text)' }}
             >
-              {isFullscreen ? <FaCompress size={12} className="md:size-4" /> : <FaExpand size={12} className="md:size-4" />}
+              {isFullscreen ? <FaCompress /> : <FaExpand />}
             </button>
           </div>
         </div>
       </div>
 
-      <div className="flex-1 w-full relative pt-[60px] md:pt-[70px]">
+      <div className="gameplay-frame-wrap flex-1 w-full relative">
         {/* Show a hint to move mouse when header is hidden */}
         {mouseIdle && (
           <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-black/80 backdrop-blur-md text-white text-[10px] md:text-xs py-1.5 px-4 rounded-full z-10 animate-pulse border border-white/10 font-black uppercase tracking-widest">

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from '../navbar/Navbar';
+import RanaHeader from '../home/ranamatch/RanaHeader';
+import '../../assets/css/ranamatch.css';
 import { useColors } from '../../hooks/useColors';
 import { useSite } from '../../context/SiteContext';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -33,12 +34,12 @@ const NotificationsPage = () => {
     };
 
     return (
-        <div className="flex flex-col min-h-screen relative overflow-hidden" style={{ backgroundColor: COLORS.bg }}>
+        <div className="rana-layout flex flex-col min-h-screen relative overflow-hidden">
             {/* Background Aesthetics */}
             <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-brand/5 blur-[80px] rounded-full -mr-32 -mt-32 pointer-events-none"></div>
             <div className="absolute bottom-0 left-0 w-[250px] h-[250px] bg-blue-500/5 blur-[70px] rounded-full -ml-32 -mb-32 pointer-events-none"></div>
 
-            <Navbar externalAccountInfo={accountInfo} />
+            <RanaHeader />
             
             <main className="flex-grow py-5 px-4 md:px-8 relative z-10">
                 <div className="max-w-2xl mx-auto">

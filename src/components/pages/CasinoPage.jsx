@@ -5,7 +5,7 @@ import { useSite } from "../../context/SiteContext";
 import { useColors } from "../../hooks/useColors";
 import { FONTS } from "../../constants/theme";
 import { useNavigate } from "react-router-dom";
-import { apiPost } from "@/utils/apiFetch";
+import { apiGet, apiPost } from "@/utils/apiFetch";
 import { FaPlay, FaSearch, FaTimes } from "react-icons/fa";
 
 import RanaHeader from "../home/ranamatch/RanaHeader";
@@ -74,6 +74,8 @@ const CasinoPage = () => {
   const [confirmPopup, setConfirmPopup] = useState({ show: false, game: null, error: null });
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [casinoWins, setCasinoWins] = useState([]);
+  const [casinoWinsLoading, setCasinoWinsLoading] = useState(true);
 
   const [displayLimit, setDisplayLimit] = useState(48);
   const observerTarget = useRef(null);
@@ -85,6 +87,32 @@ const CasinoPage = () => {
       setJpAmount(prev => prev + Math.floor(Math.random() * 900 + 200));
     }, 900);
     return () => clearInterval(jpInterval);
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadCasinoWins = async () => {
+      try {
+        const response = await apiGet("route-big-wins", { SCOPE: "casino", LIMIT: "12" });
+        const result = await response.json();
+
+        if (isMounted) {
+          setCasinoWins(result?.status_code === "success" && Array.isArray(result.data) ? result.data : []);
+        }
+      } catch (error) {
+        console.error("Failed to load casino big wins", error);
+        if (isMounted) setCasinoWins([]);
+      } finally {
+        if (isMounted) setCasinoWinsLoading(false);
+      }
+    };
+
+    loadCasinoWins();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const scrollRef = useRef(null);
@@ -449,17 +477,20 @@ const CasinoPage = () => {
             <div className="wins-label">🎉 Big Wins</div>
             <div className="wins-bar-inner">
               <div className="wins-scroll">
-                <div className="witem"><div className="wavatar">🧑</div><span className="wuser">Vikram_99</span><span className="wgame">Crazy Time</span><span className="wamt">+₹45,200</span></div>
-                <div className="witem"><div className="wavatar">👩</div><span className="wuser">Neha_S</span><span className="wgame">Lightning Roulette</span><span className="wamt">+₹18,500</span></div>
-                <div className="witem"><div className="wavatar">🧑</div><span className="wuser">Amit_K</span><span className="wgame">Aviator</span><span className="wamt">+₹1.2L</span></div>
-                <div className="witem"><div className="wavatar">🧔</div><span className="wuser">Rahul_B</span><span className="wgame">Teen Patti Live</span><span className="wamt">+₹32,000</span></div>
-                <div className="witem"><div className="wavatar">👩</div><span className="wuser">Sana_M</span><span className="wgame">Blackjack</span><span className="wamt">+₹24,800</span></div>
-                <div className="witem"><div className="wavatar">🧑</div><span className="wuser">Arjun_P</span><span className="wgame">Dragon Tiger</span><span className="wamt">+₹67,400</span></div>
-                {/* duplicates for infinite scroll */}
-                <div className="witem"><div className="wavatar">🧑</div><span className="wuser">Vikram_99</span><span className="wgame">Crazy Time</span><span className="wamt">+₹45,200</span></div>
-                <div className="witem"><div className="wavatar">👩</div><span className="wuser">Neha_S</span><span className="wgame">Lightning Roulette</span><span className="wamt">+₹18,500</span></div>
-                <div className="witem"><div className="wavatar">🧑</div><span className="wuser">Amit_K</span><span className="wgame">Aviator</span><span className="wamt">+₹1.2L</span></div>
-                <div className="witem"><div className="wavatar">🧔</div><span className="wuser">Rahul_B</span><span className="wgame">Teen Patti Live</span><span className="wamt">+₹32,000</span></div>
+                {casinoWinsLoading ? (
+                  <div className="witem"><span className="wuser">Loading live wins...</span><span className="wgame">Real backend data</span></div>
+                ) : casinoWins.length > 0 ? (
+                  [...casinoWins, ...casinoWins].map((win, index) => (
+                    <div className="witem" key={`${win.user}-${win.game}-${index}`}>
+                      <div className="wavatar">{win.avatar}</div>
+                      <span className="wuser">{win.user}</span>
+                      <span className="wgame">{win.game}</span>
+                      <span className="wamt">+₹{win.amount}</span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="witem"><span className="wuser">No live wins found</span><span className="wgame">Profitable casino bets will appear here</span></div>
+                )}
               </div>
             </div>
           </div>

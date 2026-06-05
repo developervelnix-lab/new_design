@@ -1,17 +1,16 @@
 import React from 'react'
-import Navbar from '../navbar/Navbar'
+import RanaHeader from '../home/ranamatch/RanaHeader'
 import Withdraw from '../navbar/Withdraw'
+import '../../assets/css/ranamatch.css'
 
 function WithdrawPage() {
   return (
-    <>
-      <Navbar/>
-
-      <div className=''>
-        <Withdraw/>
-      </div>
-
-    </>
+    <div className="finance-route-shell min-h-screen">
+      <RanaHeader />
+      <main className="finance-route-main">
+        <Withdraw />
+      </main>
+    </div>
   )
 }
 

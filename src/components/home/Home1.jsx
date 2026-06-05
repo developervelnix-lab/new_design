@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import FrontScrollableCard from './FrontScrollableCard';
-import Navbar from '../navbar/Navbar';
+import RanaHeader from './ranamatch/RanaHeader';
 import TrendingSlot from './TrendingSlot';
 import GamesDisplay from './GameDisplay';
 import GameProvider from './GameProvider';
@@ -26,7 +26,7 @@ function Home1() {
     <div className="flex flex-col min-h-screen relative">
       {showToast && <ToastMessage onClose={() => setShowToast(false)} />}
 
-      <Navbar />
+      <RanaHeader />
 
       <main className="flex-grow pt-[115px] px-4 md:px-8">
         <div className="mb-3">

@@ -143,39 +143,34 @@ const RanaMainContent = () => {
 
       {/* Elite Offers Section */}
       <section className="mt-7 px-4 md:px-0 w-full">
-        {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-4 px-1 md:px-2">
           <h2 className="section-banner max-w-full" style={{ fontFamily: FONTS.head }}>
             <span>Exclusive Elite Offers</span>
           </h2>
-          <a href="#" className="see-all">
+          <a href="/promotion" className="see-all">
             View All
           </a>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+        <div className="elite-offers-grid">
         {promoBanners && promoBanners.length > 0 ? (
           promoBanners.slice(0, 2).map((promo, index) => (
-            <div key={index} className="elite-offer-card group">
+            <article key={index} className="elite-offer-card group">
               <img
                 src={promo.image_path?.startsWith('http') ? promo.image_path : (promo.image_path?.startsWith('/') ? window.location.origin + promo.image_path : `${BASE_URL}${promo.image_path}`)}
                 alt={promo.title || "Promotion"}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 z-0"
+                className="elite-offer-img"
                 onError={(e) => { e.target.style.display = 'none'; }}
               />
-              {/* Subtle overlay for contrast */}
-              <div className="absolute inset-0 bg-black/30 group-hover:bg-transparent transition-colors duration-300 z-0"></div>
-              {/* Left accent stripe */}
-              <div className="absolute top-0 left-0 w-[3px] h-full z-10 opacity-70 group-hover:opacity-100 transition-opacity duration-300" style={{ background: COLORS.brand }}></div>
-              {/* CTA Button */}
-              <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2">
+              <div className="elite-offer-overlay"></div>
+              <div className="elite-offer-shine"></div>
+              <span className="elite-offer-badge">Elite</span>
+              <div className="elite-offer-action">
                 <button className="elite-offer-btn" onClick={(e) => { e.stopPropagation(); if (!accountInfo?.account_id) { setShowLogin(true); } else { /* TODO: navigate to offer */ } }}>
                   Explore
                 </button>
               </div>
-              {/* Elite badge */}
-              <div className="elite-offer-badge">ELITE</div>
-            </div>
+            </article>
           ))
         ) : (
             <>
@@ -183,17 +178,13 @@ const RanaMainContent = () => {
                 { color: COLORS.brand },
                 { color: '#22d3ee' },
               ].map((card, i) => (
-                <div key={i} className="relative bg-[#141414] border border-white/5 rounded-xl overflow-hidden group transition-all duration-200 aspect-[21/9] flex items-center justify-center cursor-pointer"
-                  style={{ '--hc': card.color }}
-                >
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-xl"
-                    style={{ background: `radial-gradient(ellipse at center, ${card.color}15 0%, transparent 60%)` }}
-                  ></div>
-                  <div className="absolute top-0 left-0 w-[3px] h-full z-10 opacity-60 group-hover:opacity-100 transition-opacity duration-200"
-                    style={{ background: card.color }}
-                  ></div>
-                  <div className="relative z-10 text-white/20 uppercase font-black tracking-widest text-[10px]" style={{ fontFamily: FONTS.ui }}>
-                    PROMOTION BANNER
+                <div key={i} className="elite-offer-card elite-offer-empty" style={{ '--elite-accent': card.color }}>
+                  <div className="elite-offer-empty-glow"></div>
+                  <span className="elite-offer-badge">Elite</span>
+                  <div className="elite-offer-action">
+                    <button className="elite-offer-btn" onClick={() => !accountInfo?.account_id && setShowLogin(true)}>
+                      Explore
+                    </button>
                   </div>
                 </div>
               ))}

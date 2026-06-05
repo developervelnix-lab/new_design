@@ -15,33 +15,26 @@ import {
   faUniversity,
   faHistory,
   faClock,
-  faTrashAlt,
-  faStar,
   faShieldAlt,
   faEye,
-  faEyeSlash
+  faEyeSlash,
 } from "@fortawesome/free-solid-svg-icons"
-import { Toast } from "flowbite-react"
-import { FaCheckCircle, FaExclamationTriangle, FaInfoCircle, FaCoins, FaTableTennis, FaRegStar, FaStar as FaStarSolid, FaTrash } from "react-icons/fa"
+import { FaTrash } from "react-icons/fa"
 import { useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { useSite } from "../../context/SiteContext"
-import { useColors } from '../../hooks/useColors';
-import { FONTS, COLORS as THEME_COLORS } from '../../constants/theme';
-import { apiGet, apiPost } from '@/utils/apiFetch';
+import { FONTS } from "../../constants/theme"
+import { apiGet, apiPost } from "@/utils/apiFetch"
 
 const Withdraw = () => {
-  const COLORS = useColors();
-  const navigate = useNavigate();
+  const navigate = useNavigate()
   const [amount, setAmount] = useState("")
   const [showAddBankPopup, setShowAddBankPopup] = useState(false)
   const [addedBankAccounts, setAddedBankAccounts] = useState([])
   const [selectedAccount, setSelectedAccount] = useState("")
   const [showBankDropdown, setShowBankDropdown] = useState(false)
-  const [accountBalance, setAccountBalance] = useState("0")
   const { accountInfo, logout } = useSite()
   const userId = localStorage.getItem("account_id")
-  const [toasts, setToasts] = useState([])
   const [notification, setNotification] = useState({ isOpen: false, message: "", type: "" })
   const [availableBanks, setAvailableBanks] = useState([])
   const [bankSearch, setBankSearch] = useState("")
@@ -69,11 +62,9 @@ const Withdraw = () => {
 
   const fetchBankCards = async () => {
     try {
-      const response = await apiGet("route-get-bankcards", { PAGE_NUM: 1 });
+      const response = await apiGet("route-get-bankcards", { PAGE_NUM: 1 })
       const result = await response.json()
-      if (result.status_code === "success") {
-        setAddedBankAccounts(result.data)
-      }
+      if (result.status_code === "success") setAddedBankAccounts(result.data)
     } catch (error) {
       console.error("Error fetching bank cards", error)
     }
@@ -81,13 +72,33 @@ const Withdraw = () => {
 
   const fetchBankList = async () => {
     try {
-      const response = await apiGet("route-get-banklist");
+      const response = await apiGet("route-get-banklist")
       const result = await response.json()
       setAvailableBanks(result.data.banklist)
     } catch (error) {
       console.error("Error fetching bank list", error)
     }
   }
+
+  const fetchWithdrawRecords = async () => {
+    if (!userId) return
+    setLoadingHistory(true)
+    try {
+      const response = await apiGet("route-withdraw-records", { PAGE_NUM: 1 })
+      const result = await response.json()
+      setWithdrawRecords(result.data || [])
+    } catch (error) {
+      console.error("Fetch error", error)
+    } finally {
+      setLoadingHistory(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchBankCards()
+    fetchBankList()
+    fetchWithdrawRecords()
+  }, [])
 
   const addBankDetails = async () => {
     if (addedBankAccounts.length >= 3) {
@@ -101,29 +112,25 @@ const Withdraw = () => {
       return
     }
 
-    // Strict IFSC Validation
-    const cleanIFSC = ifscCode.trim().toUpperCase();
-    const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
-    
+    const cleanIFSC = ifscCode.trim().toUpperCase()
+    const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/
     if (cleanIFSC.length !== 11) {
-      addToast("IFSC must be exactly 11 characters", "error");
-      return;
+      addToast("IFSC must be exactly 11 characters", "error")
+      return
     }
-    
     if (!ifscRegex.test(cleanIFSC)) {
-      addToast("Invalid IFSC: First 4 letters, 5th is 0, last 6 Alphanumeric", "error");
-      return;
+      addToast("Invalid IFSC format", "error")
+      return
     }
 
-    // Account Number Validation
-    const cleanAcc = accountNumber.trim();
+    const cleanAcc = accountNumber.trim()
     if (!/^\d+$/.test(cleanAcc)) {
-      addToast("Account number must contain only digits", "error");
-      return;
+      addToast("Account number must contain only digits", "error")
+      return
     }
     if (cleanAcc.length < 9 || cleanAcc.length > 18) {
-      addToast("Account number must be 9 to 18 digits", "error");
-      return;
+      addToast("Account number must be 9 to 18 digits", "error")
+      return
     }
 
     try {
@@ -134,7 +141,7 @@ const Withdraw = () => {
         USER_BANK_IFSC_CODE: cleanIFSC,
         IS_PRIMARY: "true",
         CARD_METHOD: "bank",
-      });
+      })
       const result = await response.json()
       if (result.status_code === "success") {
         addToast("Bank added successfully", "success")
@@ -153,33 +160,16 @@ const Withdraw = () => {
     }
   }
 
-  const setPrimaryBankCard = async (cardId) => {
-    try {
-      const response = await apiGet("route-set-bankcard-primary", { CARD_ID: cardId });
-      const result = await response.json()
-      if (result.status_code === "success") {
-        fetchBankCards()
-        setSelectedAccount(cardId)
-        addToast("Primary account updated", "success")
-      } else if (result.status_code === "authorization_error" || result.status_code === "auth_error") {
-        logout()
-      }
-    } catch (error) {
-      console.error("Error setting primary bank", error)
-    }
-  }
-
   const deleteBankCard = async (cardId) => {
-    if (!window.confirm("Are you sure you want to delete this bank account?")) return;
+    if (!window.confirm("Are you sure you want to delete this bank account?")) return
     try {
-      const response = await apiGet("route-delete-bankcard", { CARD_ID: cardId });
-      let result;
-      const rawResponse = await response.text();
+      const response = await apiGet("route-delete-bankcard", { CARD_ID: cardId })
+      const rawResponse = await response.text()
+      let result
       try {
-        result = JSON.parse(rawResponse);
-      } catch (e) {
-        console.error("Raw response:", rawResponse);
-        throw new Error(`Invalid server response: ${rawResponse.substring(0, 50)}...`);
+        result = JSON.parse(rawResponse)
+      } catch (error) {
+        throw new Error(`Invalid server response: ${rawResponse.substring(0, 50)}...`)
       }
 
       if (result.status_code === "success") {
@@ -196,552 +186,343 @@ const Withdraw = () => {
     }
   }
 
-  useEffect(() => {
-    fetchBankCards()
-    fetchBankList()
-    fetchWithdrawRecords()
-  }, [])
-
-  const fetchWithdrawRecords = async () => {
-    if (!userId) return
-    setLoadingHistory(true)
-    try {
-      const response = await apiGet("route-withdraw-records", { PAGE_NUM: 1 });
-      const result = await response.json()
-      setWithdrawRecords(result.data || [])
-    } catch (error) {
-      console.error("Fetch error", error)
-    } finally {
-      setLoadingHistory(false)
-    }
-  }
-
   const handleWithdrawal = async () => {
-    if (!selectedAccount) { addToast("Select a bank account", "error"); return; }
+    if (!selectedAccount) {
+      addToast("Select a bank account", "error")
+      return
+    }
     if (!amount || parseFloat(amount) < 100 || parseFloat(amount) > 50000) {
-      addToast("Amount: ₹100 - ₹50,000", "error"); return;
+      addToast("Amount must be Rs 100 to Rs 50,000", "error")
+      return
     }
     if (parseFloat(amount) > parseFloat(accountInfo?.account_balance || 0)) {
-      addToast("Insufficient withdrawable balance", "error"); return;
+      addToast("Insufficient withdrawable balance", "error")
+      return
     }
 
     try {
-      const response = await apiPost("route-withdraw-request", { WITHDRAW_AMOUNT: amount });
+      const response = await apiPost("route-withdraw-request", { WITHDRAW_AMOUNT: amount })
       const result = await response.json()
       if (result.status_code === "success") {
-        addToast(`Withdrawal of ₹${amount} initiated!`, "success")
+        addToast(`Withdrawal of Rs ${amount} initiated`, "success")
         setAmount("")
         fetchWithdrawRecords()
       } else if (result.status_code === "gameplay_required") {
-        const req = result.required_play_balance || "a certain amount";
-        addToast(`FAILED: Gameplay of ₹${req} required before withdrawal.`, "error")
+        addToast(`Gameplay of Rs ${result.required_play_balance || "required amount"} required before withdrawal`, "error")
       } else {
-        const msg = result.message || result.status_code;
-        addToast(`Failed: ${msg.replace(/_/g, ' ').toUpperCase()}`, "error")
+        const msg = result.message || result.status_code
+        addToast(`Failed: ${msg.replace(/_/g, " ").toUpperCase()}`, "error")
       }
     } catch (error) {
       addToast("Error processing request", "error")
     }
   }
 
-  const isLoggedIn = !!(accountInfo?.account_id);
+  const isLoggedIn = !!accountInfo?.account_id
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/");
-    }
-  }, [isLoggedIn, navigate]);
+    if (!isLoggedIn) navigate("/")
+  }, [isLoggedIn, navigate])
 
-  if (!isLoggedIn) return null;
+  if (!isLoggedIn) return null
+
+  const selectedBankAccount = addedBankAccounts.find((account) => account.c_bank_id === selectedAccount)
 
   return (
-    <div className="text-black dark:text-white w-[95%] md:w-[90%] mx-auto overflow-hidden rounded-[1.5rem] border border-black/10 dark:border-white/10 shadow-2xl relative mb-10 transition-all duration-500 ease-out"
-      style={{ backgroundColor: COLORS.bg2, color: COLORS.text }}>
-      
-      {/* Subtle Glows */}
-      <div className="absolute inset-0 pointer-events-none opacity-20">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-brand/30 blur-[60px]"></div>
-        <div className="absolute bottom-0 left-0 w-32 h-32 bg-brand/30 blur-[60px]"></div>
-      </div>
-
-      {/* Header */}
-      <div className="p-3.5 border-b border-black/5 dark:border-white/5 flex items-center justify-between relative z-10 bg-white/[0.03]">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-brand shadow-lg">
-            <FontAwesomeIcon icon={faWallet} className="text-black dark:text-white text-base" />
-          </div>
-          <div>
-            <h2 className="text-lg font-black uppercase tracking-tight" style={{ fontFamily: FONTS.head }}>
-              Withdraw <span className="text-brand">Funds</span>
-            </h2>
-          </div>
-        </div>
-      </div>
-
-      {/* Notification Modal */}
+    <div className="finance-v2 finance-withdraw-v2">
       {notification.isOpen && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white dark:bg-[#111] border border-black/10 dark:border-white/10 rounded-[2rem] p-8 w-full max-w-xs shadow-2xl relative overflow-hidden group">
-             <div className="absolute top-0 right-0 w-24 h-24 bg-brand/5 blur-[40px] rounded-full"></div>
-            <div className="flex flex-col items-center text-center gap-6 relative z-10">
-              <div className={`w-20 h-20 rounded-full flex items-center justify-center shadow-inner ${
-                notification.type === 'success' ? 'bg-emerald-500/10 text-emerald-500' : 
-                notification.type === 'error' ? 'bg-rose-500/10 text-rose-500' : 'bg-brand/10 text-brand'
-              }`}>
-                <FontAwesomeIcon icon={notification.type === 'success' ? faCheck : faInfoCircle} className="text-3xl" />
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-xl font-black uppercase tracking-tighter" style={{ fontFamily: FONTS.head }}>
-                  {notification.type === 'success' ? 'Confirmed' : 'Update'}
-                </h3>
-                <p className="text-[10px] font-bold text-black/40 dark:text-white/40 uppercase tracking-widest leading-relaxed">
-                  {notification.message}
-                </p>
-              </div>
-              <button 
-                onClick={() => setNotification({ ...notification, isOpen: false })}
-                className="w-full py-4 rounded-xl bg-brand text-black font-black uppercase tracking-[0.2em] text-[10px] shadow-lg active:scale-95 transition-all hover:shadow-brand/20"
-              >
-                Acknowledge
-              </button>
+        <div className="finance-v2-modal">
+          <div className="finance-v2-notice">
+            <div className={`finance-v2-notice-icon ${notification.type || "info"}`}>
+              <FontAwesomeIcon icon={notification.type === "success" ? faCheck : faInfoCircle} />
             </div>
+            <h3>{notification.type === "success" ? "Request Updated" : "Payout Notice"}</h3>
+            <p>{notification.message}</p>
+            <button type="button" onClick={() => setNotification({ ...notification, isOpen: false })}>Close</button>
           </div>
         </div>
       )}
 
-      {/* Body */}
-      <div className="p-4 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-start">
-          
-          {/* Left Column: Balances & Bank */}
-          <div className="flex flex-col h-full space-y-4">
-            <div className="grid grid-cols-1 gap-1.5">
-              {/* Main Withdrawable Balance */}
-              <div className="bg-white/[0.03] border border-black/5 dark:border-white/5 rounded-xl p-2.5 flex justify-between items-center group transition-all duration-300 hover:bg-white/[0.05]">
-                <div>
-                  <p className="text-[7px] text-black/30 dark:text-white/30 font-black uppercase tracking-widest mb-0.5">Withdrawable Balance</p>
-                  <p className="text-lg font-black text-brand" style={{ fontFamily: FONTS.head }}>₹{parseFloat(accountInfo?.account_balance || 0).toLocaleString('en-IN')}</p>
-                </div>
-                <div className="w-7 h-7 rounded-lg bg-black/20 dark:bg-white/5 flex items-center justify-center group-hover:bg-brand/20 transition-all border border-white/5">
-                   <FontAwesomeIcon icon={faIndianRupeeSign} className="text-black/20 dark:text-white/20 group-hover:text-brand transition-all text-sm" />
-                </div>
-              </div>
+      <section className="finance-v2-top withdraw">
+        <div>
+          <span className="finance-v2-tag">Verified Payout Desk</span>
+          <h1 style={{ fontFamily: FONTS.head }}>Withdraw Balance</h1>
+          <p>Choose a saved bank, set a payout amount, and send the request from a clean settlement screen.</p>
+        </div>
+        <div className="finance-v2-stats">
+          <div><strong>{"\u20b9"}100</strong><span>Minimum</span></div>
+          <div><strong>{"\u20b9"}50K</strong><span>Limit</span></div>
+          <div><strong>3</strong><span>Banks</span></div>
+        </div>
+      </section>
 
-              {/* Bonus Grid */}
-              <div className="grid grid-cols-2 gap-1.5">
-                <div className="bg-white/[0.01] border border-black/5 dark:border-white/5 rounded-lg p-2 flex justify-between items-center opacity-80">
-                  <div>
-                    <p className="text-[6px] text-black/20 dark:text-white/20 font-black uppercase tracking-widest mb-0.5">Casino Bonus</p>
-                    <p className="text-sm font-black text-black/60 dark:text-white/70" style={{ fontFamily: FONTS.head }}>₹{parseFloat(accountInfo?.account_casino_bonus || 0).toLocaleString('en-IN')}</p>
-                  </div>
-                </div>
-                <div className="bg-white/[0.01] border border-black/5 dark:border-white/5 rounded-lg p-2 flex justify-between items-center opacity-80">
-                  <div>
-                    <p className="text-[6px] text-black/20 dark:text-white/20 font-black uppercase tracking-widest mb-0.5">Sports Bonus</p>
-                    <p className="text-sm font-black text-black/60 dark:text-white/70" style={{ fontFamily: FONTS.head }}>₹{parseFloat(accountInfo?.account_sports_bonus || 0).toLocaleString('en-IN')}</p>
-                  </div>
-                </div>
-              </div>
+      <section className="finance-v2-workspace withdraw">
+        <div className="finance-v2-panel">
+          <div className="finance-v2-balance-strip">
+            <div>
+              <span>Withdrawable Balance</span>
+              <strong>{"\u20b9"}{parseFloat(accountInfo?.account_balance || 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</strong>
             </div>
-
-            {/* Bank Selection */}
-            <div className="space-y-1.5 pt-2 border-t border-black/5 dark:border-white/5 flex-1 flex flex-col">
-              <button 
-                onClick={() => {
-                  if (addedBankAccounts.length >= 3) {
-                    addToast("Maximum 3 bank accounts allowed", "error")
-                  } else {
-                    setShowAddBankPopup(true)
-                  }
-                }} 
-                className={`w-full py-2 rounded-lg border border-dashed text-[8px] font-black uppercase tracking-widest transition-all active:scale-95 group ${
-                   addedBankAccounts.length >= 3 
-                   ? "bg-black/5 border-black/10 text-black/20 cursor-not-allowed" 
-                   : "bg-brand/5 border-brand/30 text-brand hover:bg-brand hover:text-black"
-                }`}
-              >
-                <FontAwesomeIcon icon={faPlus} className={`mr-1.5 transition-transform ${addedBankAccounts.length < 3 ? "group-hover:rotate-90" : ""}`} />
-                {addedBankAccounts.length >= 3 ? "Bank Limit Reached" : "Link Bank"}
-              </button>
-              
-              {addedBankAccounts.length > 0 ? (
-                <div className="space-y-1.5 max-h-[250px] overflow-y-auto pr-1 custom-scrollbar">
-                   <AnimatePresence>
-                     {addedBankAccounts.map((account) => (
-                       <motion.div 
-                         key={account.c_bank_id}
-                         initial={{ opacity: 0 }}
-                         animate={{ opacity: 1 }}
-                         exit={{ opacity: 0, x: -10 }}
-                         onClick={() => {
-                           if(selectedAccount !== account.c_bank_id) {
-                             setConfirmSelection({ isOpen: true, account });
-                           }
-                         }}
-                         className={`relative p-2.5 rounded-xl border transition-all cursor-pointer group ${
-                           selectedAccount === account.c_bank_id 
-                           ? "bg-brand/10 border-brand/50 shadow-md" 
-                           : "bg-white/[0.01] border-white/5 hover:bg-white/[0.03]"
-                         }`}
-                       >
-                         <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2.5">
-                               <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${
-                                 selectedAccount === account.c_bank_id ? "bg-brand text-black shadow-sm" : "bg-white/5 text-white/10"
-                               }`}>
-                                 <FontAwesomeIcon icon={faUniversity} className="text-xs" />
-                               </div>
-                               <div>
-                                 <p className="text-[10px] font-black uppercase tracking-tighter leading-none mb-1">
-                                   {account.c_bank_name}
-                                 </p>
-                                 <p className="text-[7px] font-mono opacity-30 font-bold tracking-widest uppercase">
-                                   **** {account.c_bank_account.slice(-4)}
-                                 </p>
-                               </div>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                               {/* Delete Button */}
-                               <button 
-                                 onClick={(e) => { e.stopPropagation(); deleteBankCard(account.c_bank_id); }}
-                                 className="w-7 h-7 rounded-lg flex items-center justify-center text-red-500 hover:bg-red-500/10 transition-all"
-                               >
-                                 <FaTrash className="text-[9px]" />
-                               </button>
-
-                               {/* Selection Tick */}
-                               {selectedAccount === account.c_bank_id && (
-                                 <motion.div 
-                                   initial={{ scale: 0 }}
-                                   animate={{ scale: 1 }}
-                                   className="w-6 h-6 rounded-full bg-brand flex items-center justify-center text-black shadow-sm"
-                                 >
-                                    <FontAwesomeIcon icon={faCheck} className="text-[8px]" />
-                                 </motion.div>
-                               )}
-                            </div>
-                         </div>
-                       </motion.div>
-                     ))}
-                   </AnimatePresence>
-                </div>
-              ) : (
-                <button onClick={() => setShowAddBankPopup(true)} className="w-full py-16 border-2 border-dashed border-white/5 rounded-[2.5rem] flex flex-col items-center justify-center gap-4 group hover:border-brand/40 transition-all bg-white/[0.01]">
-                   <div className="w-16 h-16 rounded-full bg-brand/10 flex items-center justify-center group-hover:bg-brand group-hover:scale-110 transition-all duration-500">
-                      <FontAwesomeIcon icon={faPlus} className="text-brand group-hover:text-black transition-colors text-xl" />
-                   </div>
-                   <div className="text-center">
-                     <p className="text-[12px] font-black uppercase tracking-[0.2em] mb-1">Add Settlement Bank</p>
-                     <p className="text-[9px] font-bold opacity-20 uppercase tracking-widest">Connect an account to start withdrawing</p>
-                   </div>
-                </button>
-              )}
-            </div>
+            <FontAwesomeIcon icon={faIndianRupeeSign} />
           </div>
 
-          {/* Right Column: Amount & Confirm */}
-          <div className="space-y-4 lg:pt-8">
-            <div className="text-center">
-              <label className="text-[8px] text-black/40 dark:text-white/40 font-black uppercase tracking-widest mb-2 block">2. Withdrawal Amount</label>
-              <div className="relative max-w-[160px] mx-auto">
-                <div className="absolute inset-y-0 left-3.5 flex items-center text-brand text-base"><FontAwesomeIcon icon={faIndianRupeeSign} /></div>
-                <input 
-                  type="number" 
-                  value={amount} 
-                  onChange={(e) => setAmount(e.target.value)} 
-                  placeholder="0"
-                  autoComplete="off"
-                  autoCorrect="off"
-                  spellCheck="false"
-                  className="w-full py-3.5 pl-10 pr-4 rounded-2xl border border-black/10 dark:border-white/10 text-xl font-black text-center focus:outline-none focus:border-brand/40 shadow-inner bg-black/20"
-                  style={{ backgroundColor: COLORS.bg3, color: COLORS.text, fontFamily: FONTS.head }} 
-                />
-              </div>
-            </div>
+          <div className="finance-v2-mini-balances">
+            <div><span>Casino Bonus</span><strong>{"\u20b9"}{parseFloat(accountInfo?.account_casino_bonus || 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</strong></div>
+            <div><span>Sports Bonus</span><strong>{"\u20b9"}{parseFloat(accountInfo?.account_sports_bonus || 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</strong></div>
+            <div><span>Total Balance</span><strong>{"\u20b9"}{parseFloat(accountInfo?.account_balance || 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</strong></div>
+          </div>
 
-            <div className="grid grid-cols-4 gap-1.5 max-w-[280px] mx-auto">
-              {["500", "1000", "5000", "10000"].map((v) => (
-                <button key={v} onClick={() => setAmount(v)}
-                  className={`py-1.5 rounded-lg border text-[8px] font-black transition-all ${amount === v ? "bg-brand border-brand text-black dark:text-white shadow-lg" : "border-black/5 dark:border-white/5 bg-white/[0.01] text-black/40 dark:text-white/40"}`}>
-                  ₹{parseInt(v)}
-                </button>
-              ))}
+          <div className="finance-v2-panel-head account-head">
+            <span>01</span>
+            <div>
+              <h2>Settlement Bank</h2>
+              <p>Select or link a verified bank account.</p>
             </div>
+            <button
+              type="button"
+              className="finance-v2-link-btn"
+              disabled={addedBankAccounts.length >= 3}
+              onClick={() => {
+                if (addedBankAccounts.length >= 3) addToast("Maximum 3 bank accounts allowed", "error")
+                else setShowAddBankPopup(true)
+              }}
+            >
+              <FontAwesomeIcon icon={faPlus} />
+              Link
+            </button>
+          </div>
 
-            <div className="space-y-2.5">
-              <button onClick={handleWithdrawal} disabled={!amount || !selectedAccount}
-                className={`w-full py-3.5 rounded-xl text-black dark:text-white font-black uppercase tracking-[0.3em] text-[10px] flex items-center justify-center gap-2.5 transition-all active:scale-95 shadow-xl relative overflow-hidden group ${
-                  amount && selectedAccount ? "opacity-100 hover:shadow-brand/20" : "opacity-20 pointer-events-none"
-                }`} 
-                style={{ background: COLORS.brandGradient }}>
-                  <FontAwesomeIcon icon={faWallet} className="text-[12px]" />
-                  <span>Confirm Payout</span>
+          <div className="finance-v2-account-list">
+            {addedBankAccounts.length > 0 ? (
+              <AnimatePresence>
+                {addedBankAccounts.map((account) => (
+                  <motion.div
+                    key={account.c_bank_id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, x: -12 }}
+                    className={`finance-v2-account-card ${selectedAccount === account.c_bank_id ? "active" : ""}`}
+                    onClick={() => {
+                      if (selectedAccount !== account.c_bank_id) setConfirmSelection({ isOpen: true, account })
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faUniversity} />
+                    <div>
+                      <strong>{account.c_bank_name}</strong>
+                      <span>**** {account.c_bank_account.slice(-4)}</span>
+                    </div>
+                    <button type="button" onClick={(e) => { e.stopPropagation(); deleteBankCard(account.c_bank_id) }}>
+                      <FaTrash />
+                    </button>
+                    {selectedAccount === account.c_bank_id && <em><FontAwesomeIcon icon={faCheck} /></em>}
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            ) : (
+              <button type="button" className="finance-v2-empty-account" onClick={() => setShowAddBankPopup(true)}>
+                <FontAwesomeIcon icon={faPlus} />
+                <strong>Add Bank Account</strong>
+                <span>Required before withdrawal</span>
               </button>
-
-              <div className="flex items-start gap-2.5 p-2.5 bg-brand/5 rounded-xl border border-brand/10">
-                 <FontAwesomeIcon icon={faInfoCircle} className="text-brand text-[10px] mt-0.5" />
-                 <p className="text-[7px] text-black/40 dark:text-white/40 uppercase font-black leading-relaxed tracking-wider">
-                    Only bonuses require gameplay (wagering) to convert to real money. Real money deposits can be withdrawn at any time.
-                 </p>
-              </div>
-            </div>
+            )}
           </div>
         </div>
-      </div>
 
-      <div className="pb-8 text-center opacity-10">
-        <p className="text-[8px] uppercase font-black tracking-[1em]">Authorized Payout Node</p>
-      </div>
-
-      {/* History Section */}
-      <div className="p-4 md:p-6 border-t border-black/5 dark:border-white/5 bg-black/10 relative z-10">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <FontAwesomeIcon icon={faHistory} className="text-brand text-xs" />
-            <h3 className="text-[10px] font-black uppercase tracking-widest">Withdrawal History</h3>
+        <div className="finance-v2-ticket payout">
+          <div className="finance-v2-panel-head">
+            <span>02</span>
+            <div>
+              <h2>Payout Request</h2>
+              <p>{selectedBankAccount ? `Sending to ${selectedBankAccount.c_bank_name}` : "Choose a bank account first."}</p>
+            </div>
           </div>
-          <div className="flex gap-1">
+
+          <label className="finance-v2-label">Withdraw Amount</label>
+          <div className="finance-v2-money-input">
+            <FontAwesomeIcon icon={faIndianRupeeSign} />
+            <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="0" />
+          </div>
+
+          <div className="finance-v2-chip-grid four">
+            {["500", "1000", "5000", "10000"].map((v) => (
+              <button key={v} type="button" onClick={() => setAmount(v)} className={amount === v ? "active" : ""}>
+                {"\u20b9"}{parseInt(v).toLocaleString("en-IN")}
+              </button>
+            ))}
+          </div>
+
+          <button type="button" onClick={handleWithdrawal} disabled={!amount || !selectedAccount} className="finance-v2-primary">
+            <FontAwesomeIcon icon={faWallet} />
+            Confirm Payout
+          </button>
+
+          <div className="finance-v2-note">
+            <FontAwesomeIcon icon={faInfoCircle} />
+            Real cash deposits and game winnings can be withdrawn instantly. Bonus funds may need wagering.
+          </div>
+        </div>
+      </section>
+
+      <section className="finance-v2-history">
+        <div className="finance-v2-history-head">
+          <div>
+            <h2>Withdrawal History</h2>
+            <p>Recent payout request logs</p>
+          </div>
+          <div className="finance-v2-filters">
             {["All", "Success", "Processing", "Rejected"].map((f) => (
-              <button key={f} onClick={() => setHistoryFilter(f)}
-                className={`px-2 py-1 rounded-md text-[7px] font-black uppercase transition-all ${historyFilter === f ? "bg-brand text-black" : "bg-white/5 text-black/40 dark:text-white/40 hover:bg-white/10"}`}>
+              <button key={f} type="button" onClick={() => setHistoryFilter(f)} className={historyFilter === f ? "active" : ""}>
                 {f}
               </button>
             ))}
           </div>
         </div>
 
-        <div className="space-y-2">
+        <div className="finance-v2-records">
           {withdrawRecords
-            .filter(r => historyFilter === "All" || r.w_status.toLowerCase() === historyFilter.toLowerCase())
-            .slice(0, 5) // Show top 5
+            .filter((r) => historyFilter === "All" || (r.w_status || "").toLowerCase() === historyFilter.toLowerCase())
+            .slice(0, 6)
             .map((r, i) => (
-              <div key={i} className="flex justify-between items-center p-3 rounded-xl bg-white/[0.02] border border-white/5">
-                <div className="flex flex-col gap-0.5">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-black text-black dark:text-white">₹{r.w_amount}</span>
-                    <span className={`px-1.5 py-0.5 rounded text-[6px] font-black uppercase ${
-                      r.w_status.toLowerCase() === 'success' ? 'bg-green-500/10 text-green-500' :
-                      r.w_status.toLowerCase() === 'processing' || r.w_status.toLowerCase() === 'pending' ? 'bg-yellow-500/10 text-yellow-500' :
-                      'bg-red-500/10 text-red-500'
-                    }`}>
-                      {r.w_status}
-                    </span>
-                  </div>
-                  <span className="text-[7px] text-black/30 dark:text-white/30 font-bold uppercase tracking-tight">{r.w_date} {r.w_time}</span>
+              <div className="finance-v2-record" key={i}>
+                <div>
+                  <strong>{"\u20b9"}{parseFloat(r.w_amount || 0).toLocaleString("en-IN")}</strong>
+                  <span>{r.w_date} {r.w_time}</span>
                 </div>
-                <div className="text-right">
-                  <span className="text-[7px] text-brand font-mono block">#{r.w_uniq_id.substring(0, 8)}</span>
-                  <span className="text-[6px] text-black/20 dark:text-white/20 uppercase font-bold">{r.w_remark || 'Withdrawal'}</span>
+                <div>
+                  <em>{r.w_status}</em>
+                  <small>#{String(r.w_uniq_id || "--------").substring(0, 8).toUpperCase()}</small>
                 </div>
               </div>
             ))}
+
           {withdrawRecords.length === 0 && !loadingHistory && (
-            <div className="py-8 text-center opacity-20">
-              <FontAwesomeIcon icon={faSearch} className="mb-2 text-xs" />
-              <p className="text-[8px] font-black uppercase tracking-widest">No withdrawal logs found</p>
-            </div>
+            <div className="finance-v2-empty"><FontAwesomeIcon icon={faSearch} /> No withdrawals recorded</div>
           )}
           {loadingHistory && (
-             <div className="py-8 text-center opacity-20">
-              <FontAwesomeIcon icon={faClock} className="animate-spin mb-2 text-xs" />
-              <p className="text-[8px] font-black uppercase tracking-widest">Loading history...</p>
-           </div>
+            <div className="finance-v2-empty"><FontAwesomeIcon icon={faClock} /> Loading withdrawal history...</div>
           )}
         </div>
-      </div>
+      </section>
 
-      {/* Add Bank Popup */}
       <AnimatePresence>
         {showAddBankPopup && (
-          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          <div className="finance-v2-modal">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94, y: 18 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-[#111111] border border-white/10 rounded-[2.5rem] p-8 w-full max-w-md relative shadow-[0_30px_100px_rgba(0,0,0,1)]"
+              exit={{ opacity: 0, scale: 0.94, y: 18 }}
+              className="finance-v2-popup"
             >
-              <button 
-                onClick={() => setShowAddBankPopup(false)} 
-                className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center bg-white/5 hover:bg-white/10 transition-colors"
-                title="Close"
-              >
-                 <FontAwesomeIcon icon={faTimes} className="text-sm opacity-50" />
+              <button type="button" className="finance-v2-popup-close" onClick={() => setShowAddBankPopup(false)}>
+                <FontAwesomeIcon icon={faTimes} />
               </button>
-              
-              <div className="mb-8">
-                <div className="w-12 h-12 rounded-2xl bg-brand/20 flex items-center justify-center mb-4">
-                  <FontAwesomeIcon icon={faUniversity} className="text-brand text-lg" />
-                </div>
-                <h3 className="text-xl font-black text-white uppercase tracking-tighter" style={{ fontFamily: FONTS.head }}>
-                  Link <span className="text-brand">New Account</span>
-                </h3>
-                <p className="text-[10px] font-bold opacity-30 uppercase tracking-widest mt-1">Provide accurate details for fast payouts</p>
-              </div>
-
-              <div className="space-y-4">
-                <div className="space-y-1.5">
-                  <label className="text-[9px] text-white/30 font-black uppercase tracking-widest ml-1">Account Holder Name</label>
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-4 flex items-center text-white/20 group-focus-within:text-brand transition-colors">
-                       <FontAwesomeIcon icon={faShieldAlt} className="text-[10px]" />
-                    </div>
-                    <input name="realName" value={formData.realName} onChange={handleInputChange} placeholder="AS PER PASSBOOK" 
-                      className="w-full bg-black border border-white/5 rounded-2xl py-4 pl-11 pr-5 text-xs font-bold focus:outline-none focus:border-brand/40 transition-all text-white" />
-                  </div>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[9px] text-white/30 font-black uppercase tracking-widest ml-1">Account Number</label>
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-4 flex items-center text-white/20 group-focus-within:text-brand transition-colors">
-                       <FontAwesomeIcon icon={faCreditCard} className="text-[10px]" />
-                    </div>
-                    <input name="accountNumber" value={formData.accountNumber} onChange={handleInputChange} placeholder="BANK ACCOUNT DIGITS" 
-                      className="w-full bg-black border border-white/5 rounded-2xl py-4 pl-11 pr-5 text-xs font-bold focus:outline-none focus:border-brand/40 transition-all text-white" />
-                  </div>
-                </div>
-
-                <div className="space-y-1.5 relative">
-                  <label className="text-[9px] text-white/30 font-black uppercase tracking-widest ml-1">Select Bank</label>
-                  <button 
-                    onClick={() => {
-                        setShowBankDropdown(!showBankDropdown)
-                    }} 
-                    className="w-full bg-black border border-white/5 rounded-2xl py-4 px-5 text-xs font-bold text-left flex justify-between items-center group hover:bg-black/60 transition-all text-white"
-                  >
-                    <span className={formData.selectedBank ? "text-white" : "text-white/20"}>
-                      {formData.selectedBank || "CHOOSE FROM LIST"}
-                    </span>
-                    <FontAwesomeIcon icon={faChevronDown} className={`text-[10px] transition-transform duration-300 ${showBankDropdown ? 'rotate-180 text-brand' : 'opacity-20'}`} />
-                  </button>
-                  
-                  <AnimatePresence>
-                    {showBankDropdown && (
-                      <motion.div 
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        className="absolute z-[120] w-full mt-2 bg-[#1a1a1a] border border-white/10 rounded-2xl overflow-hidden shadow-2xl"
-                      >
-                        <div className="p-3 bg-white/[0.03] border-b border-white/5 flex items-center gap-3">
-                           <FontAwesomeIcon icon={faSearch} className="text-white/20 text-[10px]" />
-                           <input value={bankSearch} onChange={(e) => setBankSearch(e.target.value)} placeholder="TYPE TO FILTER..." 
-                             className="bg-transparent border-none text-[10px] font-black w-full focus:ring-0 text-white placeholder:text-white/10" autoFocus />
-                        </div>
-                        <div className="max-h-48 overflow-y-auto custom-scrollbar">
-                          {availableBanks
-                            .filter(b => b.bankName.toLowerCase().includes(bankSearch.toLowerCase()))
-                            .map(b => (
-                              <button key={b.bankName} onClick={() => { setFormData(p => ({ ...p, selectedBank: b.bankName })); setShowBankDropdown(false); }}
-                                className="w-full text-left px-5 py-3.5 text-[10px] font-black tracking-tight text-white/50 hover:bg-brand hover:text-black transition-all">
-                                {b.bankName}
-                              </button>
-                            ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-
-                <div className="space-y-1.5">
-                  <label className="text-[9px] text-white/30 font-black uppercase tracking-widest ml-1">IFSC Code</label>
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-4 flex items-center text-white/20 group-focus-within:text-brand transition-colors">
-                       <FontAwesomeIcon icon={faUniversity} className="text-[10px]" />
-                    </div>
-                    <input name="ifscCode" value={formData.ifscCode} onChange={handleInputChange} placeholder="SBIN000XXXX" 
-                      className="w-full bg-black border border-white/5 rounded-2xl py-4 pl-11 pr-5 text-[10px] font-black focus:outline-none focus:border-brand/40 transition-all text-white" />
-                  </div>
-                </div>
-
-                <div className="pt-4">
-                  <button onClick={addBankDetails} className="w-full py-5 rounded-2xl text-black font-black uppercase tracking-[0.4em] text-[10px] shadow-2xl active:scale-95 transition-all relative overflow-hidden"
-                    style={{ background: COLORS.brandGradient }}>
-                    Confirm & Link Account
-                  </button>
+              <div className="finance-v2-popup-head">
+                <FontAwesomeIcon icon={faUniversity} />
+                <div>
+                  <h3>Link Bank Account</h3>
+                  <p>Use details exactly as shown in your bank records.</p>
                 </div>
               </div>
+
+              <div className="finance-v2-form-grid">
+                <label>
+                  <span>Account Holder Name</span>
+                  <FontAwesomeIcon icon={faShieldAlt} />
+                  <input name="realName" value={formData.realName} onChange={handleInputChange} placeholder="Name as per bank" />
+                </label>
+                <label>
+                  <span>Account Number</span>
+                  <FontAwesomeIcon icon={faCreditCard} />
+                  <input name="accountNumber" value={formData.accountNumber} onChange={handleInputChange} placeholder="Full account number" />
+                </label>
+                <div className="finance-v2-bank-select">
+                  <span>Select Bank</span>
+                  <button type="button" onClick={() => setShowBankDropdown(!showBankDropdown)}>
+                    {formData.selectedBank || "Choose bank"} <FontAwesomeIcon icon={faChevronDown} />
+                  </button>
+                  {showBankDropdown && (
+                    <div className="finance-v2-bank-menu">
+                      <div>
+                        <FontAwesomeIcon icon={faSearch} />
+                        <input value={bankSearch} onChange={(e) => setBankSearch(e.target.value)} placeholder="Search bank" autoFocus />
+                      </div>
+                      <section>
+                        {availableBanks
+                          .filter((bankItem) => bankItem.bankName.toLowerCase().includes(bankSearch.toLowerCase()))
+                          .map((bankItem) => (
+                            <button
+                              key={bankItem.bankName}
+                              type="button"
+                              onClick={() => {
+                                setFormData((prev) => ({ ...prev, selectedBank: bankItem.bankName }))
+                                setShowBankDropdown(false)
+                              }}
+                            >
+                              {bankItem.bankName}
+                            </button>
+                          ))}
+                      </section>
+                    </div>
+                  )}
+                </div>
+                <label>
+                  <span>IFSC Code</span>
+                  <FontAwesomeIcon icon={faUniversity} />
+                  <input name="ifscCode" value={formData.ifscCode} onChange={handleInputChange} placeholder="SBIN0001234" />
+                </label>
+              </div>
+
+              <button type="button" className="finance-v2-primary" onClick={addBankDetails}>Confirm & Link</button>
             </motion.div>
           </div>
         )}
       </AnimatePresence>
 
-      {/* Select Bank Confirmation Popup */}
       <AnimatePresence>
-        {confirmSelection.isOpen && (
-          <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
+        {confirmSelection.isOpen && confirmSelection.account && (
+          <div className="finance-v2-modal">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="bg-[#111] border border-white/10 rounded-[2.5rem] p-8 w-full max-w-xs shadow-2xl relative overflow-hidden"
+              exit={{ opacity: 0, scale: 0.94 }}
+              className="finance-v2-popup compact"
             >
-              <div className="flex flex-col items-center text-center gap-6 relative z-10">
-                <div className="w-20 h-20 rounded-[2rem] bg-brand/10 flex items-center justify-center text-brand shadow-inner">
-                  <FontAwesomeIcon icon={faUniversity} className="text-3xl" />
-                </div>
-                
-                <div className="space-y-4 w-full">
-                  <h3 className="text-xl font-black uppercase tracking-tighter" style={{ fontFamily: FONTS.head }}>
-                    Link <span className="text-brand">Account?</span>
-                  </h3>
-                  <div className="space-y-2.5">
-                    {/* Detail Row: Bank */}
-                    <div className="py-2.5 px-4 bg-white/5 rounded-xl border border-white/5 flex justify-between items-center">
-                      <span className="text-[7px] font-black text-white/20 uppercase tracking-widest">Bank</span>
-                      <span className="text-[9px] font-black text-brand uppercase">{confirmSelection.account.c_bank_name}</span>
-                    </div>
-                    {/* Detail Row: Name */}
-                    <div className="py-2.5 px-4 bg-white/5 rounded-xl border border-white/5 flex justify-between items-center">
-                      <span className="text-[7px] font-black text-white/20 uppercase tracking-widest">Holder</span>
-                      <span className="text-[9px] font-black text-white uppercase">{confirmSelection.account.c_beneficiary}</span>
-                    </div>
-                    {/* Detail Row: IFSC */}
-                    <div className="py-2.5 px-4 bg-white/5 rounded-xl border border-white/5 flex justify-between items-center">
-                      <span className="text-[7px] font-black text-white/20 uppercase tracking-widest">IFSC</span>
-                      <span className="text-[9px] font-mono font-bold text-white uppercase tracking-wider">{confirmSelection.account.c_bank_ifsc_code}</span>
-                    </div>
-                    {/* Detail Row: Account Number (Middle Starred) */}
-                    <div className="py-2.5 px-4 bg-brand/5 rounded-xl border border-brand/10 flex justify-between items-center relative group/acct">
-                      <span className="text-[7px] font-black text-brand/40 uppercase tracking-widest">Acct No.</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-mono font-bold text-white tracking-[0.1em]">
-                          {showFullAcct 
-                            ? confirmSelection.account.c_bank_account 
-                            : `${confirmSelection.account.c_bank_account.slice(0, 4)} **** ${confirmSelection.account.c_bank_account.slice(-4)}`
-                          }
-                        </span>
-                        <button 
-                          onClick={() => setShowFullAcct(!showFullAcct)}
-                          className="w-5 h-5 rounded-md bg-white/5 flex items-center justify-center hover:bg-white/10 transition-all text-white/40 hover:text-brand"
-                        >
-                          <FontAwesomeIcon icon={showFullAcct ? faEyeSlash : faEye} className="text-[8px]" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-col w-full gap-2">
-                  <button 
-                    onClick={() => {
-                      setSelectedAccount(confirmSelection.account.c_bank_id);
-                      addToast(`${confirmSelection.account.c_bank_name} Selected`, "success");
-                      setConfirmSelection({ isOpen: false, account: null });
-                    }}
-                    className="w-full py-4 rounded-xl bg-brand text-black font-black uppercase tracking-[0.2em] text-[10px] shadow-lg active:scale-95 transition-all hover:shadow-brand/40"
-                  >
-                    Confirm & Link
-                  </button>
-                  <button 
-                    onClick={() => setConfirmSelection({ isOpen: false, account: null })}
-                    className="w-full py-4 rounded-xl bg-white/5 text-white/40 font-black uppercase tracking-[0.2em] text-[10px] hover:bg-white/10 transition-all"
-                  >
-                    Cancel
-                  </button>
+              <div className="finance-v2-popup-head centered">
+                <FontAwesomeIcon icon={faUniversity} />
+                <div>
+                  <h3>Set Active Account?</h3>
+                  <p>{confirmSelection.account.c_bank_name}</p>
                 </div>
               </div>
+
+              <div className="finance-v2-confirm-lines">
+                <div><span>Holder</span><strong>{confirmSelection.account.c_beneficiary}</strong></div>
+                <div><span>IFSC</span><strong>{confirmSelection.account.c_bank_ifsc_code}</strong></div>
+                <div>
+                  <span>Account</span>
+                  <strong>
+                    {showFullAcct
+                      ? confirmSelection.account.c_bank_account
+                      : `${confirmSelection.account.c_bank_account.slice(0, 4)} **** ${confirmSelection.account.c_bank_account.slice(-4)}`}
+                    <button type="button" onClick={() => setShowFullAcct(!showFullAcct)}>
+                      <FontAwesomeIcon icon={showFullAcct ? faEyeSlash : faEye} />
+                    </button>
+                  </strong>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                className="finance-v2-primary"
+                onClick={() => {
+                  setSelectedAccount(confirmSelection.account.c_bank_id)
+                  addToast(`${confirmSelection.account.c_bank_name} selected`, "success")
+                  setConfirmSelection({ isOpen: false, account: null })
+                }}
+              >
+                Set Active Account
+              </button>
+              <button type="button" className="finance-v2-secondary" onClick={() => setConfirmSelection({ isOpen: false, account: null })}>Cancel</button>
             </motion.div>
           </div>
         )}

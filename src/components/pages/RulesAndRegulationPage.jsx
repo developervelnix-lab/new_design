@@ -1,15 +1,14 @@
-import React from 'react'
 import RulesAndRegulation from '../sidebar-components/legal-complience/RulesAndRegulation'
-import Navbar from '../navbar/Navbar'
-import { useColors } from '../../hooks/useColors';
+import RanaHeader from '../home/ranamatch/RanaHeader'
+import '../../assets/css/ranamatch.css';
+
 function RulesAndRegulationPage() {
-  const COLORS = useColors();
   return (
-    <div className="min-h-screen" style={{ backgroundColor: COLORS.bg }}>
-      <Navbar />
-      <div className='pb-10 px-2'>
+    <div className="finance-route-shell legal-route-shell min-h-screen">
+      <RanaHeader />
+      <main className="finance-route-main legal-route-main">
         <RulesAndRegulation />
-      </div>
+      </main>
     </div>
   )
 }

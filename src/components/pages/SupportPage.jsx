@@ -2,11 +2,11 @@ import React from 'react'
 import { useSearchParams } from 'react-router-dom'
 import ContactUs from '../sidebar-components/contact/ContactUs'
 import SupportHistory from '../sidebar-components/contact/SupportHistory'
-import Navbar from '../navbar/Navbar'
-import { useColors } from '../../hooks/useColors';
+import RanaHeader from '../home/ranamatch/RanaHeader'
+import AuthModalHost from '../common/AuthModalHost'
+import '../../assets/css/ranamatch.css'
 
 function SupportPage() {
-  const COLORS = useColors();
   const [searchParams, setSearchParams] = useSearchParams();
   const view = searchParams.get('view') || 'contact';
 
@@ -19,14 +19,25 @@ function SupportPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: COLORS.bg }}>
-      <Navbar />
-      <div className='pb-10 px-2'>
-        {view === 'history' ? (
-          <SupportHistory onBack={setShowContact} />
-        ) : (
-          <ContactUs onShowHistory={setShowHistory} />
-        )}
+    <div className="rana-layout">
+      <AuthModalHost />
+      <RanaHeader />
+      <div style={{
+        flex: 1,
+        overflowY: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '24px 16px 40px',
+        minHeight: 0,
+      }}>
+        <div style={{ width: '100%', maxWidth: '960px' }}>
+          {view === 'history' ? (
+            <SupportHistory onBack={setShowContact} />
+          ) : (
+            <ContactUs onShowHistory={setShowHistory} />
+          )}
+        </div>
       </div>
     </div>
   )

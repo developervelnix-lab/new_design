@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSite } from "../../../context/SiteContext";
+import { apiGet } from "../../../utils/apiFetch";
 
 const RanaSidebarRight = () => {
   const { accountInfo, setShowLogin, setShowRegister } = useSite();
+  const [recentWins, setRecentWins] = useState([]);
+  const [winsLoading, setWinsLoading] = useState(true);
   const isLoggedIn = !!(
     accountInfo?.account_id &&
     accountInfo.account_id !== "guest" &&
@@ -21,18 +24,31 @@ const RanaSidebarRight = () => {
   const sportsBonus = formatBalance(accountInfo?.account_sports_bonus);
   const totalBalance = formatBalance(accountInfo?.account_total_balance ?? accountInfo?.account_balance);
 
-  const recentWins = [
-    { avatar: "👨", user: "Vikram_99", game: "Crazy Time", amount: "₹45,200" },
-    { avatar: "👩", user: "Neha_S", game: "Lightning Roulette", amount: "₹18,500" },
-    { avatar: "🧑", user: "Amit_K", game: "Aviator", amount: "₹1.2L" },
-    { avatar: "👨", user: "Rahul_B", game: "Teen Patti Live", amount: "₹32,000" },
-    { avatar: "👩", user: "Sana_M", game: "Blackjack", amount: "₹24,800" },
-    { avatar: "🧑", user: "Arjun_P", game: "Dragon Tiger", amount: "₹67,400" },
-    { avatar: "👨", user: "Karan_V", game: "Roulette", amount: "₹9,600" },
-    { avatar: "👩", user: "Priya_N", game: "Baccarat", amount: "₹28,900" },
-    { avatar: "🧑", user: "Nikhil_R", game: "Crash Games", amount: "₹14,750" },
-    { avatar: "👨", user: "Mehul_T", game: "Live Casino", amount: "₹52,100" },
-  ];
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadRecentWins = async () => {
+      try {
+        const response = await apiGet("route-big-wins", { LIMIT: "10" });
+        const result = await response.json();
+
+        if (isMounted) {
+          setRecentWins(result?.status_code === "success" && Array.isArray(result.data) ? result.data : []);
+        }
+      } catch (error) {
+        console.error("Failed to load recent wins", error);
+        if (isMounted) setRecentWins([]);
+      } finally {
+        if (isMounted) setWinsLoading(false);
+      }
+    };
+
+    loadRecentWins();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <aside className="sidebar-right">
@@ -137,16 +153,32 @@ const RanaSidebarRight = () => {
       <div className="side-section">
         <div className="side-title">🏆 Recent Big Wins</div>
         <div className="wins-list">
-          {recentWins.map((win, index) => (
-            <div className="win-item" key={`${win.user}-${index}`}>
-              <div className={`win-avatar gt-${(index % 4) + 1}`}>{win.avatar}</div>
+          {winsLoading ? (
+            <div className="win-item">
               <div className="win-info">
-                <div className="win-user">{win.user}</div>
-                <div className="win-game">{win.game}</div>
+                <div className="win-user">Loading live wins...</div>
+                <div className="win-game">Fetching real backend data</div>
               </div>
-              <div className="win-amount">{win.amount}</div>
             </div>
-          ))}
+          ) : recentWins.length > 0 ? (
+            recentWins.map((win, index) => (
+              <div className="win-item" key={`${win.user}-${win.game}-${index}`}>
+                <div className={`win-avatar gt-${(index % 4) + 1}`}>{win.avatar}</div>
+                <div className="win-info">
+                  <div className="win-user">{win.user}</div>
+                  <div className="win-game">{win.game}</div>
+                </div>
+                <div className="win-amount">₹{win.amount}</div>
+              </div>
+            ))
+          ) : (
+            <div className="win-item">
+              <div className="win-info">
+                <div className="win-user">No live wins found</div>
+                <div className="win-game">Real wins will appear after profitable bets</div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

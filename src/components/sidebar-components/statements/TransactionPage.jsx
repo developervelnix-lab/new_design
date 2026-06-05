@@ -1,39 +1,42 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import { FaClipboard, FaHistory, FaSearch, FaCheckCircle, FaExclamationTriangle, FaClock, FaInfoCircle } from "react-icons/fa"
-import { useColors } from '../../../hooks/useColors';
-import { FONTS } from '../../../constants/theme';
-import { API_URL } from '../../../utils/constants';
+import { FaCheckCircle, FaClipboard, FaClock, FaExchangeAlt, FaExclamationTriangle, FaInfoCircle, FaSearch, FaWallet } from "react-icons/fa"
+import { FONTS } from "../../../constants/theme"
+import { API_URL } from "../../../utils/constants"
 
 const TransactionPage = () => {
-  const COLORS = useColors();
   const [activeTab, setActiveTab] = useState("Deposit")
   const [filter, setFilter] = useState("All")
-  const authSecretKey = localStorage.getItem("auth_secret_key")
-  const userId = localStorage.getItem("account_id")
+  const [searchTerm, setSearchTerm] = useState("")
   const [depositRecords, setDepositRecords] = useState([])
   const [withdrawRecords, setWithdrawRecords] = useState([])
   const [toast, setToast] = useState(null)
-  
-  const parseDateTime = (str) => {
-    if (!str) return new Date(0);
+  const authSecretKey = localStorage.getItem("auth_secret_key")
+  const userId = localStorage.getItem("account_id")
+
+  const safeFloat = (value) => {
+    const number = parseFloat(value)
+    return Number.isNaN(number) ? 0 : number
+  }
+
+  const parseDateTime = (date, time) => {
+    const value = `${date || ""} ${time || ""}`.trim()
+    if (!value) return new Date(0)
     try {
-      const parts = str.split(' ');
-      if (parts.length < 2) return new Date(str);
-      const [datePart, timePart, ampm] = parts;
-      const [day, month, year] = datePart.split('-');
-      let [hours, minutes] = timePart.split(':');
-      
-      hours = parseInt(hours, 10);
-      if (ampm && ampm.toLowerCase() === 'pm' && hours < 12) hours += 12;
-      if (ampm && ampm.toLowerCase() === 'am' && hours === 12) hours = 0;
-      
-      return new Date(year, month - 1, day, hours, minutes);
-    } catch (e) {
-      return new Date(str);
+      const parts = value.split(" ")
+      if (parts.length < 2) return new Date(value)
+      const [datePart, timePart, ampm] = parts
+      const [day, month, year] = datePart.split("-")
+      let [hours, minutes] = timePart.split(":")
+      hours = parseInt(hours, 10)
+      if (ampm && ampm.toLowerCase() === "pm" && hours < 12) hours += 12
+      if (ampm && ampm.toLowerCase() === "am" && hours === 12) hours = 0
+      return new Date(year, month - 1, day, hours, minutes)
+    } catch (error) {
+      return new Date(value)
     }
-  };
+  }
 
   useEffect(() => {
     fetchDepositRecords()
@@ -68,238 +71,262 @@ const TransactionPage = () => {
     }
   }
 
-  const mergeTransactions = (dep, wit) => {
-    return [
-      ...dep.map((r) => ({
-        id: r.r_uniq_id,
-        balance: r.r_amount,
-        category: "Deposit",
-        date: r.r_date,
-        type: r.r_mode,
-        details: r.r_details,
-        time: r.r_time,
-        orderNumber: r.r_uniq_id,
-        remark: r.r_remark,
-        status: r.r_status,
-      })),
-      ...wit.map((r) => ({
-        id: r.w_uniq_id,
-        balance: r.w_amount,
-        category: "Withdrawal",
-        date: r.w_date,
-        time: r.w_time,
-        orderNumber: r.w_uniq_id,
-        remark: r.w_remark,
-        status: r.w_status,
-      })),
-    ]
-  }
+  const mergeTransactions = (deposits, withdrawals) => [
+    ...deposits.map((record) => ({
+      id: record.r_uniq_id,
+      amount: record.r_amount,
+      category: "Deposit",
+      date: record.r_date,
+      time: record.r_time,
+      method: record.r_mode || "Deposit",
+      details: record.r_details || "Wallet recharge",
+      orderNumber: record.r_uniq_id,
+      remark: record.r_remark,
+      status: record.r_status || "Processing",
+    })),
+    ...withdrawals.map((record) => ({
+      id: record.w_uniq_id,
+      amount: record.w_amount,
+      category: "Withdrawal",
+      date: record.w_date,
+      time: record.w_time,
+      method: "Withdraw",
+      details: record.w_remark || "Bank payout",
+      orderNumber: record.w_uniq_id,
+      remark: record.w_remark,
+      status: record.w_status || "Processing",
+    })),
+  ]
 
   const transactionsData = mergeTransactions(depositRecords, withdrawRecords)
-  const filteredTransactions = transactionsData.filter(
-    (t) => (t.category === activeTab) && (filter === "All" || t.status.toLowerCase() === filter.toLowerCase())
-  ).sort((a, b) => parseDateTime(b.date) - parseDateTime(a.date))
+  const filteredTransactions = transactionsData
+    .filter((transaction) => {
+      const matchesTab = transaction.category === activeTab
+      const matchesFilter = filter === "All" || (transaction.status || "").toLowerCase() === filter.toLowerCase()
+      const searchText = `${transaction.orderNumber || ""} ${transaction.method || ""} ${transaction.details || ""} ${transaction.remark || ""}`.toLowerCase()
+      return matchesTab && matchesFilter && searchText.includes(searchTerm.toLowerCase())
+    })
+    .sort((a, b) => parseDateTime(b.date, b.time) - parseDateTime(a.date, a.time))
+
+  const totals = transactionsData.reduce(
+    (acc, transaction) => {
+      const amount = safeFloat(transaction.amount)
+      const status = (transaction.status || "").toLowerCase()
+      if (transaction.category === "Deposit") acc.deposits += amount
+      if (transaction.category === "Withdrawal") acc.withdrawals += amount
+      if (status === "success") acc.success += 1
+      else if (status === "processing" || status === "pending") acc.processing += 1
+      else acc.rejected += 1
+      return acc
+    },
+    { deposits: 0, withdrawals: 0, success: 0, processing: 0, rejected: 0 }
+  )
 
   const copyToClipboard = (text) => {
-    navigator.clipboard.writeText(text);
-    setToast({ message: "ID Copied", type: "success" });
-    setTimeout(() => setToast(null), 3000);
-  };
+    if (!text) return
+    navigator.clipboard.writeText(text)
+    setToast({ message: "Transaction ID copied", type: "success" })
+    setTimeout(() => setToast(null), 2500)
+  }
+
+  const getStatusClass = (status = "") => {
+    const normalized = status.toLowerCase()
+    if (normalized === "success") return "success"
+    if (normalized === "processing" || normalized === "pending") return "processing"
+    return "rejected"
+  }
+
+  const formatMoney = (value) =>
+    safeFloat(value).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
   return (
-    <div className="text-black dark:text-white w-full max-w-5xl mx-auto overflow-hidden rounded-2xl md:rounded-3xl border border-black/10 dark:border-white/10 shadow-3xl relative mb-2"
-      style={{ backgroundColor: COLORS.bg2, color: COLORS.text }}>
-
-      {/* Background Glows */}
-      <div className="absolute inset-0 pointer-events-none opacity-10">
-        <div className="absolute top-0 right-0 w-48 h-48 bg-brand/30 blur-[100px]"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-brand/30 blur-[100px]"></div>
-      </div>
-
-      {/* Header */}
-      <div className="p-3 md:p-4 border-b border-black/5 dark:border-white/5 flex items-center justify-between relative z-10 bg-white/[0.02]">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center bg-brand shadow-lg text-black dark:text-white text-base">
-            <FaHistory size={16} />
-          </div>
-          <div>
-            <h2 className="text-sm md:text-base font-black uppercase tracking-tight" style={{ fontFamily: FONTS.head }}>
-              Account <span className="text-brand">History</span>
-            </h2>
-            <p className="text-[8px] font-bold uppercase tracking-widest text-black/20 dark:text-white/20">Statement Logs</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Toast */}
+    <div className="wallet-statement-v2">
       {toast && (
-        <div className="fixed top-6 right-6 z-[100] animate-in fade-in slide-in-from-top-4 duration-300">
-          <div className={`flex items-center px-4 py-2.5 rounded-xl border shadow-2xl backdrop-blur-xl ${toast.type === "success" ? "bg-black/80 border-green-500/30 text-white" : "bg-black/80 border-red-500/30 text-white"}`}>
-            {toast.type === "success" ? <FaCheckCircle className="text-green-500 mr-2 text-sm" /> : <FaExclamationTriangle className="text-red-500 mr-2 text-sm" />}
-            <span className="text-[10px] font-black uppercase tracking-wide">{toast.message}</span>
-          </div>
+        <div className="wallet-toast">
+          <FaCheckCircle />
+          <span>{toast.message}</span>
         </div>
       )}
 
-      {/* Controls */}
-      <div className="p-3 md:p-4 space-y-3 md:space-y-4 relative z-10">
-        
-        {/* Tabs */}
-        <div className="flex bg-black/5 dark:bg-black p-1 rounded-xl border border-black/5 dark:border-white/5 w-full max-w-xs mx-auto">
+      <section className="wallet-statement-hero">
+        <div>
+          <span className="wallet-statement-tag">Wallet Ledger</span>
+          <h1 style={{ fontFamily: FONTS.head }}>Transaction History</h1>
+          <p>Review every deposit and withdrawal request with status, amount, reference ID, and timing.</p>
+        </div>
+        <div className="wallet-statement-metrics">
+          <div>
+            <span>Total Deposits</span>
+            <strong>{"\u20b9"}{formatMoney(totals.deposits)}</strong>
+          </div>
+          <div>
+            <span>Total Withdrawals</span>
+            <strong>{"\u20b9"}{formatMoney(totals.withdrawals)}</strong>
+          </div>
+          <div>
+            <span>Successful</span>
+            <strong>{totals.success}</strong>
+          </div>
+        </div>
+      </section>
+
+      <section className="wallet-statement-toolbar">
+        <div className="wallet-statement-title">
+          <span><FaWallet /></span>
+          <div>
+            <h2>Account Statement</h2>
+            <p>{filteredTransactions.length} record{filteredTransactions.length === 1 ? "" : "s"} visible</p>
+          </div>
+        </div>
+
+        <label className="wallet-statement-search">
+          <FaSearch />
+          <input
+            value={searchTerm}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            placeholder="Search ID, method or remark"
+          />
+        </label>
+      </section>
+
+      <section className="wallet-statement-controls">
+        <div className="wallet-statement-tabs">
           {["Deposit", "Withdrawal"].map((tab) => (
-            <button key={tab} onClick={() => setActiveTab(tab)}
-              className={`flex-1 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all duration-300 ${activeTab === tab ? "bg-brand text-black shadow-md" : "text-black/30 dark:text-white/30 hover:text-black/50 dark:text-white/50"}`}>
+            <button key={tab} type="button" onClick={() => setActiveTab(tab)} className={activeTab === tab ? "active" : ""}>
               {tab}
             </button>
           ))}
         </div>
-
-        {/* Filters */}
-        <div className="flex flex-wrap justify-center gap-1">
-          {["All", "Success", "Processing", "Rejected"].map((f) => (
-            <button key={f} onClick={() => setFilter(f)}
-              className={`px-3 py-1.5 rounded-lg border text-[7.5px] font-black uppercase tracking-widest transition-all ${filter === f ? "border-brand/40 bg-brand/10 text-brand" : "border-black/5 dark:border-white/5 bg-white/[0.03] text-black/20 dark:text-white/20"}`}>
-              {f}
+        <div className="wallet-statement-filters">
+          {["All", "Success", "Processing", "Rejected"].map((item) => (
+            <button key={item} type="button" onClick={() => setFilter(item)} className={filter === item ? "active" : ""}>
+              {item}
             </button>
           ))}
         </div>
+      </section>
 
-        {/* Transaction Content */}
-        <div className="mt-2">
-          {filteredTransactions.length > 0 ? (
-            <>
-              {/* Desktop Table - Compact */}
-              <div className="hidden md:block overflow-x-auto rounded-xl border border-black/5 dark:border-white/5 bg-black/5 dark:bg-black/50">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="bg-black/10 dark:bg-white/5">
-                      <th className="p-3 text-[8.5px] font-black uppercase tracking-widest opacity-40">Identification</th>
-                      <th className="p-3 text-[8.5px] font-black uppercase tracking-widest opacity-40">Method</th>
-                      <th className="p-3 text-[8.5px] font-black uppercase tracking-widest opacity-40">Details</th>
-                      <th className="p-3 text-[8.5px] font-black uppercase tracking-widest opacity-40">Amount</th>
-                      <th className="p-3 text-[8.5px] font-black uppercase tracking-widest opacity-40 text-center">Status</th>
-                      <th className="p-3 text-[8.5px] font-black uppercase tracking-widest opacity-40 text-right">Date</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredTransactions.map((tx) => (
-                      <tr key={tx.id} className="border-b border-black/5 dark:border-white/5 hover:bg-brand/[0.02] transition-colors group">
-                        <td className="p-3">
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-[9.5px] font-mono font-bold text-black/40 dark:text-white/30 tracking-wider">
-                              {tx.orderNumber.substring(0, 12)}...
-                            </span>
-                            <button onClick={() => copyToClipboard(tx.orderNumber)}
-                              className="w-5 h-5 rounded bg-white/5 flex items-center justify-center text-black/20 dark:text-white/20 hover:text-brand hover:bg-brand/10 transition-all opacity-0 group-hover:opacity-100 border border-black/5 dark:border-white/5">
-                              <FaClipboard size={8} />
+      <section className="wallet-status-strip">
+        <div><strong>{totals.success}</strong><span>Success</span></div>
+        <div><strong>{totals.processing}</strong><span>Processing</span></div>
+        <div><strong>{totals.rejected}</strong><span>Rejected</span></div>
+      </section>
+
+      <section className="wallet-statement-card">
+        {filteredTransactions.length > 0 ? (
+          <>
+            <div className="wallet-table-wrap">
+              <table className="wallet-table">
+                <thead>
+                  <tr>
+                    <th>Reference</th>
+                    <th>Type</th>
+                    <th>Details</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredTransactions.map((transaction) => {
+                    const statusClass = getStatusClass(transaction.status)
+                    return (
+                      <tr key={transaction.id}>
+                        <td>
+                          <div className="wallet-reference">
+                            <span>{String(transaction.orderNumber || "--").substring(0, 14)}...</span>
+                            <button type="button" onClick={() => copyToClipboard(transaction.orderNumber)}>
+                              <FaClipboard />
                             </button>
                           </div>
                         </td>
-                        <td className="p-3">
-                          <div className="flex items-center gap-1.5">
-                            <div className={`w-1.5 h-1.5 rounded-full ${tx.category === 'Deposit' ? 'bg-emerald-500' : 'bg-rose-500'} animate-pulse`}></div>
-                            <span className="text-[10px] font-black uppercase tracking-tight text-black dark:text-white/80">
-                              {tx.category === 'Deposit' ? tx.type : 'Withdraw'}
-                            </span>
+                        <td>
+                          <div className={`wallet-type ${transaction.category.toLowerCase()}`}>
+                            <span><FaExchangeAlt /></span>
+                            <strong>{transaction.method}</strong>
                           </div>
                         </td>
-                        <td className="p-3">
-                          <span className="text-[10px] font-bold text-black/30 dark:text-white/30 italic truncate max-w-[120px] block">
-                            {tx.category === 'Deposit' ? (tx.details || 'Recharge') : (tx.remark || 'Withdrawal')}
-                          </span>
-                          {tx.category === 'Deposit' && tx.remark && (
-                            <span className="text-[8px] font-black uppercase text-brand mt-1 flex items-center gap-1 opacity-70">
-                              <FaInfoCircle size={8} /> {tx.remark}
-                            </span>
-                          )}
-                        </td>
-                        <td className="p-3">
-                          <span className="text-[11px] font-black text-black dark:text-white" style={{ fontFamily: FONTS.head }}>₹{tx.balance}</span>
-                        </td>
-                        <td className="p-3">
-                          <div className="flex justify-center">
-                            <div className={`px-2 py-0.5 rounded text-[7.5px] font-black uppercase tracking-tight flex items-center gap-1 border ${tx.status.toLowerCase() === 'success' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/10' :
-                              tx.status.toLowerCase() === 'processing' ? 'bg-amber-500/10 text-amber-500 border-amber-500/10' :
-                                'bg-rose-500/10 text-rose-400 border-rose-500/10'
-                              }`}>
-                              {tx.status.toLowerCase() === 'processing' ? <FaClock className="animate-spin text-[8px]" /> :
-                                tx.status.toLowerCase() === 'success' ? <FaCheckCircle /> : <FaExclamationTriangle />}
-                              {tx.status}
-                            </div>
+                        <td>
+                          <div className="wallet-details">
+                            <strong>{transaction.details || transaction.category}</strong>
+                            {transaction.remark && <span>{transaction.remark}</span>}
                           </div>
                         </td>
-                        <td className="p-3 text-right">
-                          <div className="text-[9px] font-bold text-black/30 dark:text-white/20 uppercase tracking-tighter">
-                            {tx.date}
+                        <td className={transaction.category === "Deposit" ? "amount deposit" : "amount withdraw"}>
+                          {transaction.category === "Deposit" ? "+" : "-"}{"\u20b9"}{formatMoney(transaction.amount)}
+                        </td>
+                        <td>
+                          <em className={statusClass}>
+                            {statusClass === "success" && <FaCheckCircle />}
+                            {statusClass === "processing" && <FaClock />}
+                            {statusClass === "rejected" && <FaExclamationTriangle />}
+                            {transaction.status}
+                          </em>
+                        </td>
+                        <td>
+                          <div className="wallet-date">
+                            <strong>{transaction.date || "--"}</strong>
+                            <span>{transaction.time || ""}</span>
                           </div>
                         </td>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
 
-              {/* Mobile Card List - Extra Compact */}
-              <div className="md:hidden space-y-2">
-                {filteredTransactions.map((tx) => (
-                  <div key={tx.id} className="p-3 rounded-xl bg-black/5 dark:bg-white/[0.02] border border-black/5 dark:border-white/5">
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="flex flex-col">
-                        <span className="text-[8px] font-black text-black/20 dark:text-white/20 uppercase tracking-widest mb-0.5">#{tx.orderNumber.substring(0, 10)}</span>
-                        <div className="flex items-center gap-1.5">
-                          <div className={`w-1.5 h-1.5 rounded-full ${tx.category === 'Deposit' ? 'bg-emerald-500' : 'bg-rose-500'}`}></div>
-                          <span className="text-[11px] font-black uppercase tracking-tight text-black dark:text-white">{tx.category === 'Deposit' ? tx.type : 'Withdrawal'}</span>
-                        </div>
+            <div className="wallet-mobile-list">
+              {filteredTransactions.map((transaction) => {
+                const statusClass = getStatusClass(transaction.status)
+                return (
+                  <div className="wallet-mobile-card" key={transaction.id}>
+                    <div className="wallet-mobile-top">
+                      <div>
+                        <span>#{String(transaction.orderNumber || "--").substring(0, 12)}</span>
+                        <strong>{transaction.method}</strong>
                       </div>
-                      <div className={`px-2 py-0.5 rounded-md text-[7px] font-black uppercase ${tx.status.toLowerCase() === 'success' ? 'bg-emerald-500/10 text-emerald-400' :
-                        tx.status.toLowerCase() === 'processing' ? 'bg-amber-500/10 text-amber-400' : 'bg-rose-500/10 text-rose-400'
-                        }`}>
-                        {tx.status}
-                      </div>
+                      <em className={statusClass}>{transaction.status}</em>
                     </div>
-                    <div className="flex justify-between items-end pt-2 border-t border-black/5 dark:border-white/5">
-                      <div className="flex flex-col">
-                        <span className="text-[7.5px] font-black text-black/20 dark:text-white/10 uppercase mb-0.5">Amount</span>
-                        <span className="text-[11px] font-black text-black dark:text-white" style={{ fontFamily: FONTS.head }}>₹{tx.balance}</span>
+                    <p>{transaction.details || transaction.category}</p>
+                    <div className="wallet-mobile-grid">
+                      <div>
+                        <span>Amount</span>
+                        <strong className={transaction.category === "Deposit" ? "deposit" : "withdraw"}>
+                          {transaction.category === "Deposit" ? "+" : "-"}{"\u20b9"}{formatMoney(transaction.amount)}
+                        </strong>
                       </div>
-                      <div className="flex flex-col items-end">
-                        <span className="text-[7.5px] font-black text-black/20 dark:text-white/10 uppercase mb-0.5">{tx.date}</span>
-                        <span className="text-[8.5px] font-bold text-black/30 dark:text-white/20">{tx.time}</span>
+                      <div>
+                        <span>Date</span>
+                        <strong>{transaction.date || "--"}</strong>
                       </div>
+                      <button type="button" onClick={() => copyToClipboard(transaction.orderNumber)}>
+                        <FaClipboard /> Copy ID
+                      </button>
                     </div>
-                    {tx.remark && (
-                      <div className="mt-2 p-2 rounded-lg bg-brand/5 border border-brand/10">
-                        <p className="text-[8px] font-black text-brand uppercase flex items-center gap-1.5 leading-tight">
-                          <FaInfoCircle size={8} /> {tx.remark}
-                        </p>
+                    {transaction.remark && (
+                      <div className="wallet-mobile-note">
+                        <FaInfoCircle /> {transaction.remark}
                       </div>
                     )}
                   </div>
-                ))}
-              </div>
-            </>
-          ) : (
-            <div className="py-20 text-center space-y-3">
-              <div className="w-16 h-16 bg-white/[0.01] rounded-full flex items-center justify-center mx-auto border-2 border-dashed border-black/5 dark:border-white/5 opacity-10">
-                <FaSearch className="text-2xl" />
-              </div>
-              <p className="text-[9px] font-black uppercase text-black/10 dark:text-white/10 tracking-[0.6em]">No logs</p>
+                )
+              })}
             </div>
-          )}
-        </div>
-      </div>
+          </>
+        ) : (
+          <div className="wallet-empty-state">
+            <FaSearch />
+            <strong>No transaction records</strong>
+            <span>Try another tab, filter, or search term.</span>
+          </div>
+        )}
+      </section>
 
-      {/* Footer */}
-      <div className="p-3 md:p-4 bg-brand/5 border-t border-black/5 dark:border-white/5 flex items-center gap-2.5 relative z-10">
-        <FaInfoCircle className="text-brand text-xs flex-shrink-0" />
-        <p className="text-[8px] text-black/30 dark:text-white/30 uppercase font-black tracking-wider leading-relaxed">
-          Records are updated in real-time.
-        </p>
-      </div>
-
-      <div className="pb-4 text-center opacity-5 select-none pointer-events-none">
-        <p className="text-[8px] font-black uppercase tracking-[1.5em] ml-[1.5em]">Log Node 01</p>
-      </div>
+      <section className="wallet-statement-footnote">
+        <FaInfoCircle />
+        <span>Wallet records are updated in real time after gateway and admin verification.</span>
+      </section>
     </div>
   )
 }

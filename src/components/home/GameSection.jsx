@@ -15,7 +15,7 @@ import { useSite } from "../../context/SiteContext"
 import { URL } from "../../utils/constants"
 import { useGames } from "../../context/GameContext"
 
-const GameSection = ({ title, games, id, layout = "slider" }) => {
+const GameSection = ({ title, games, id, layout = "slider", hideHeader = false }) => {
   const COLORS = useColors()
   const { setShowLogin, refreshSiteData, accountInfo } = useSite()
   const [preloadedImages, setPreloadedImages] = useState([])
@@ -190,35 +190,37 @@ const GameSection = ({ title, games, id, layout = "slider" }) => {
       id={sectionId}
       className="game-section relative w-full py-4 md:py-6 scroll-mt-24 md:scroll-mt-32"
     >
-      <div className="flex justify-between items-center gap-3 mb-4 md:mb-5 px-1 md:px-2">
-        <h2 className="section-banner max-w-full" style={{ fontFamily: FONTS.head }}>
-          <span>{title}</span>
-        </h2>
-        {layout !== "grid" && (
-          <div className="flex items-center space-x-2 sm:space-x-4">
-            <div className="hidden md:flex items-center gap-1">
+      {!hideHeader && (
+        <div className="flex justify-between items-center gap-3 mb-4 md:mb-5 px-1 md:px-2">
+          <h2 className="section-banner max-w-full" style={{ fontFamily: FONTS.head }}>
+            <span>{title}</span>
+          </h2>
+          {layout !== "grid" && (
+            <div className="flex items-center space-x-2 sm:space-x-4">
+              <div className="hidden md:flex items-center gap-1">
+                <button
+                  className={`nav-button prev-${sectionId} header-icon-btn !rounded-full !w-8 !h-8 flex items-center justify-center hover:scale-110 transition-all duration-300`}
+                >
+                  <FaChevronLeft size={12} />
+                </button>
+                <button
+                  className={`nav-button next-${sectionId} header-icon-btn !rounded-full !w-8 !h-8 flex items-center justify-center hover:scale-110 transition-all duration-300`}
+                >
+                  <FaChevronRight size={12} />
+                </button>
+              </div>
+
               <button
-                className={`nav-button prev-${sectionId} header-icon-btn !rounded-full !w-8 !h-8 flex items-center justify-center hover:scale-110 transition-all duration-300`}
+                onClick={openPopup}
+                className="see-all"
+                aria-label="See All"
               >
-                <FaChevronLeft size={12} />
-              </button>
-              <button
-                className={`nav-button next-${sectionId} header-icon-btn !rounded-full !w-8 !h-8 flex items-center justify-center hover:scale-110 transition-all duration-300`}
-              >
-                <FaChevronRight size={12} />
+                See All
               </button>
             </div>
-
-            <button
-              onClick={openPopup}
-              className="see-all"
-              aria-label="See All"
-            >
-              See All
-            </button>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
 
       {layout === "grid" ? (
         <div className="see-all-grid gap-3 md:gap-6 animate-fadeInUp">
@@ -414,94 +416,69 @@ const GameSection = ({ title, games, id, layout = "slider" }) => {
         )}
 
       {confirmPopup.show && createPortal(
-        <div className="fixed inset-0 flex items-center justify-center bg-black/10 dark:bg-black/40 backdrop-blur-2xl z-[100000] transition-all duration-500 animate-fadeIn">
-          <div
-            className="relative p-10 rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8)] max-w-sm w-full mx-6 animate-fadeInUp border border-black/10 dark:border-white/10 text-center"
-            style={{
-              backgroundColor: `${COLORS.bg2}F2`,
-              backgroundImage: 'radial-gradient(circle at top right, rgba(230, 160, 0, 0.05), transparent 40%)'
-            }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none rounded-[2.5rem]"></div>
-
-            <div
-              className="absolute -top-10 left-1/2 transform -translate-x-1/2 p-6 rounded-full shadow-2xl animate-bounce-slow"
-              style={{ background: COLORS.brandGradient }}
-            >
-              <FaPlay className="text-black dark:text-white ml-0.5" size={28} />
+        <div className="game-launch-overlay">
+          <div className="game-launch-card animate-fadeInUp">
+            <div className="game-launch-play">
+              <FaPlay />
             </div>
 
-            <div className="relative z-10 mt-8 mb-8">
+            <div>
               {confirmPopup.error === "balance_error" ? (
                 <div className="space-y-3">
-                  <h3
-                    className="text-xl font-black text-brand tracking-tight uppercase"
-                    style={{ fontFamily: FONTS.head }}
-                  >
+                  <h3 className="game-launch-title" style={{ fontFamily: FONTS.head }}>
                     Insufficient Balance
                   </h3>
-                  <p className="text-black/60 dark:text-white/60 text-sm leading-relaxed px-2">
+                  <p className="game-launch-copy">
                     A minimum deposit of <span className="text-black dark:text-white font-bold">â‚¹100</span> is required to access this premium experience.
                   </p>
                 </div>
               ) : confirmPopup.error === "authorization_error" ? (
                 <div className="space-y-3">
-                  <h3
-                    className="text-xl font-black text-red-500 tracking-tight uppercase"
-                    style={{ fontFamily: FONTS.head }}
-                  >
+                  <h3 className="game-launch-title" style={{ fontFamily: FONTS.head }}>
                     Session Expired
                   </h3>
-                  <p className="text-black/60 dark:text-white/60 text-sm leading-relaxed px-2">
+                  <p className="game-launch-copy">
                     Your session has expired or you are not authorized to play this game. Please try logging in again.
                   </p>
                 </div>
               ) : confirmPopup.error ? (
                 <div className="space-y-3">
-                  <h3
-                    className="text-xl font-black text-red-500 tracking-tight uppercase"
-                    style={{ fontFamily: FONTS.head }}
-                  >
+                  <h3 className="game-launch-title" style={{ fontFamily: FONTS.head }}>
                     Game Unavailable
                   </h3>
-                  <p className="text-black/60 dark:text-white/60 text-sm leading-relaxed px-2">
+                  <p className="game-launch-copy">
                     This game is currently unavailable ({confirmPopup.error}). Please try another one.
                   </p>
                 </div>
               ) : (
                 <div className="space-y-3">
-                  <h3
-                    className="text-xl font-black text-black dark:text-white tracking-tight uppercase"
-                    style={{ fontFamily: FONTS.head }}
-                  >
+                  <h3 className="game-launch-title" style={{ fontFamily: FONTS.head }}>
                     READY TO WIN?
                   </h3>
-                  <p className="text-black/60 dark:text-white/60 text-sm leading-relaxed px-2">
+                  <p className="game-launch-copy">
                     You are about to enter <span className="text-black dark:text-white font-bold">{confirmPopup.game?.["Game Name"]}</span>. Good luck!
                   </p>
                 </div>
               )}
             </div>
 
-            <div className="flex flex-col gap-3 mt-8">
+            <div className="game-launch-actions">
               {confirmPopup.error === "balance_error" ? (
                 <button
                   onClick={() => {
                     setConfirmPopup({ show: false, game: null, error: null })
                   }}
-                  className="w-full px-6 py-4 rounded-2xl font-bold uppercase tracking-widest transition-all duration-300 shadow-lg active:scale-95 group overflow-hidden relative"
-                  style={{ background: COLORS.brandGradient, fontFamily: FONTS.ui }}
+                  className="game-launch-primary"
+                  style={{ fontFamily: FONTS.ui }}
                 >
-                  <div className="absolute inset-0 bg-gray-100 dark:bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <span>Add Funds</span>
                 </button>
               ) : confirmPopup.error === "authorization_error" ? (
                 <button
                   onClick={handleAuthError}
-                  className="w-full px-6 py-4 rounded-2xl font-bold uppercase tracking-widest transition-all duration-300 shadow-lg active:scale-95 group overflow-hidden relative text-black dark:text-white"
-                  style={{ background: COLORS.brandGradient, fontFamily: FONTS.ui }}
+                  className="game-launch-primary"
+                  style={{ fontFamily: FONTS.ui }}
                 >
-                  <div className="absolute inset-0 bg-gray-100 dark:bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <span>Log In Again</span>
                 </button>
               ) : confirmPopup.error ? (
@@ -509,26 +486,24 @@ const GameSection = ({ title, games, id, layout = "slider" }) => {
                   onClick={() => {
                     setConfirmPopup({ show: false, game: null, error: null });
                   }}
-                  className="w-full px-6 py-4 rounded-2xl font-bold uppercase tracking-widest transition-all duration-300 shadow-lg active:scale-95 group overflow-hidden relative text-black dark:text-white"
-                  style={{ background: COLORS.brandGradient, fontFamily: FONTS.ui }}
+                  className="game-launch-primary"
+                  style={{ fontFamily: FONTS.ui }}
                 >
-                  <div className="absolute inset-0 bg-gray-100 dark:bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <span>Try Other Game</span>
                 </button>
               ) : (
                 <button
                   onClick={confirmGameOpen}
-                  className="w-full px-6 py-4 rounded-2xl font-bold uppercase tracking-widest transition-all duration-300 shadow-lg active:scale-95 group overflow-hidden relative text-black dark:text-white"
-                  style={{ background: COLORS.brandGradient, fontFamily: FONTS.ui }}
+                  className="game-launch-primary"
+                  style={{ fontFamily: FONTS.ui }}
                 >
-                  <div className="absolute inset-0 bg-gray-100 dark:bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                   <span>Confirm Play</span>
                 </button>
               )}
 
               <button
                 onClick={() => setConfirmPopup({ show: false, game: null, error: null })}
-                className="w-full px-6 py-3 rounded-2xl font-bold uppercase tracking-widest bg-gray-100 dark:bg-white/5 text-black/60 dark:text-white/60 hover:text-black dark:text-white hover:bg-gray-100 dark:bg-white/10 transition-all duration-300 border border-black/5 dark:border-white/5"
+                className="game-launch-secondary"
                 style={{ fontFamily: FONTS.ui }}
               >
                 {confirmPopup.error === "balance_error" ? "Close" : "Cancel"}
@@ -540,9 +515,9 @@ const GameSection = ({ title, games, id, layout = "slider" }) => {
       )}
 
       {confirmLoading && createPortal(
-        <div className="fixed inset-0 bg-black/25 dark:bg-black/60 backdrop-blur-2xl z-[100000] flex flex-col items-center justify-center transition-all duration-700 animate-fadeIn p-4 overflow-y-auto">
+        <div className="game-launch-overlay">
           <div
-            className="w-[90%] max-w-[340px] md:max-w-md px-5 py-6 md:px-8 md:py-10 rounded-[2rem] md:rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8)] border border-black/10 dark:border-white/10 relative overflow-hidden text-center max-h-[92vh] overflow-y-auto scrollbar-none"
+            className="game-loading-card"
             style={{
               backgroundColor: `${COLORS.bg2}F2`,
               backgroundImage: 'radial-gradient(circle at top right, rgba(230, 160, 0, 0.05), transparent 40%)'
@@ -550,54 +525,46 @@ const GameSection = ({ title, games, id, layout = "slider" }) => {
           >
             <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none"></div>
 
-            <div className="relative z-10 mb-6 md:mb-8">
+            <div>
               {confirmPopup.game && (
-                <div className="flex flex-col items-center">
-                  <div className="relative mb-4 md:mb-6 group">
-                    <div className="absolute -inset-4 bg-brand/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                    <div className="relative w-20 h-20 md:w-28 md:h-28 rounded-2xl overflow-hidden border-2 border-black/10 dark:border-white/10 shadow-2xl transform transition-transform duration-700 hover:scale-105">
+                <div>
+                  <div className="game-loading-icon">
+                    <div>
                       <img
                         src={confirmPopup.game.icon || "/placeholder.svg"}
                         alt={confirmPopup.game["Game Name"]}
                         className="w-full h-full object-cover"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                     </div>
                   </div>
                   <h3
-                    className="text-xl md:text-2xl font-black text-black dark:text-white mb-1.5 md:mb-2 tracking-wider uppercase"
+                    className="game-loading-title"
                     style={{ fontFamily: FONTS.head }}
                   >
                     {confirmPopup.game["Game Name"]}
                   </h3>
-                  <div className="flex items-center gap-2 text-brand font-bold text-xs uppercase tracking-[0.2em] animate-pulse">
-                    <span className="w-2 h-2 rounded-full bg-brand shadow-[0_0_10px_rgba(29,78,216,1)]"></span>
+                  <div className="game-loading-status">
+                    <i></i>
                     Initializing Elite Experience
                   </div>
                 </div>
               )}
             </div>
 
-            <div className="relative z-10 px-2 md:px-4 mb-6 md:mb-10">
-              <div className="w-full bg-gray-100 dark:bg-white/5 rounded-full h-1 overflow-hidden backdrop-blur-sm border border-black/5 dark:border-white/5">
+            <div className="game-loading-progress">
+              <div className="game-loading-bar">
                 <div
-                  className="h-full rounded-full transition-all duration-300 ease-out relative"
-                  style={{
-                    width: `${loadingProgress}%`,
-                    background: COLORS.brandGradient,
-                    boxShadow: `0 0 20px ${COLORS.brand}80`
-                  }}
-                >
-                  <div className="absolute top-0 right-0 w-8 h-full bg-gray-100 dark:bg-white/40 blur-sm animate-shimmer"></div>
-                </div>
+                  className="game-loading-fill"
+                  style={{ width: `${loadingProgress}%` }}
+                ></div>
               </div>
-              <div className="flex justify-between mt-3 px-1">
-                <span className="text-[10px] text-black/40 dark:text-white/40 font-bold uppercase tracking-widest">Connection Status</span>
-                <span className="text-[10px] text-brand font-black italic">{Math.round(loadingProgress)}%</span>
+              <div className="game-loading-meta">
+                <span>Connection Status</span>
+                <strong>{Math.round(loadingProgress)}%</strong>
               </div>
             </div>
 
-            <div className="relative z-10 space-y-4 px-2 mb-10 text-left">
+            <div className="game-loading-steps">
               {[
                 { label: "Establishing Connection", threshold: 30 },
                 { label: "Syncing Game Assets", threshold: 60 },
@@ -621,18 +588,13 @@ const GameSection = ({ title, games, id, layout = "slider" }) => {
               ))}
             </div>
 
-            <div className="relative z-10 py-4 px-6 rounded-2xl bg-gray-100 dark:bg-white/5 border border-black/5 dark:border-white/5 backdrop-blur-md group hover:bg-white/[0.08] transition-all duration-500">
-              <div className="flex items-center gap-3 mb-1">
-                <div className="w-5 h-[1px] bg-brand/50"></div>
-                <span className="text-[10px] text-brand/80 font-black uppercase tracking-widest">Pro Tip</span>
-              </div>
-              <p className="text-xs text-black/60 dark:text-white/60 leading-relaxed font-medium italic">
-                "Enable high performance mode in settings for the smoothest gameplay experience."
-              </p>
+            <div className="game-loading-tip">
+              <strong>Pro Tip</strong>
+              <p>Enable high performance mode in settings for the smoothest gameplay experience.</p>
             </div>
           </div>
 
-          <div className="mt-8 flex items-center gap-4 opacity-30">
+          <div className="hidden">
             <div className="h-px w-10 bg-gradient-to-r from-transparent to-white/50"></div>
             <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black dark:text-white">{accountInfo?.service_site_name || 'Site'} Elite</span>
             <div className="h-px w-10 bg-gradient-to-l from-transparent to-white/50"></div>

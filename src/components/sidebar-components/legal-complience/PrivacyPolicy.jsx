@@ -1,116 +1,88 @@
 import React from "react";
-import { FaLock } from "react-icons/fa";
-import { useColors } from '../../../hooks/useColors';
-import { FONTS } from '../../../constants/theme';
-import Navbar from "@/components/navbar/Navbar";
+import { FaCookieBite, FaDatabase, FaLock, FaShieldAlt, FaUserCheck } from "react-icons/fa";
+import RanaHeader from "@/components/home/ranamatch/RanaHeader";
+import "@/assets/css/ranamatch.css";
 
 const PrivacyPolicy = () => {
-  const COLORS = useColors();
   const sections = [
     {
+      icon: <FaUserCheck />,
       title: "About Us",
-      content: "We are the flagship brand, offering Our Services to You, wherein You can also participate in various Contests hosted on Our Platform. Any person utilizing the Platform or any of its features, including participation in various Contests, shall be bound by the terms of this Privacy Policy."
+      content:
+        "We are the flagship brand offering services through the Platform. Any person using the Platform or participating in contests is bound by this Privacy Policy.",
     },
     {
+      icon: <FaDatabase />,
       title: "Information We Collect",
-      content: "We respect the privacy of our Users and are committed to protecting it. To offer an enriching and holistic internet experience, we collect user information as follows:",
-      list: ["Information supplied by Users.", "Information automatically tracked during navigation."]
+      content:
+        "We collect information supplied by users and information automatically tracked during navigation to improve the platform experience.",
     },
     {
+      icon: <FaShieldAlt />,
       title: "Purpose and Usage",
-      content: "To avail certain features on the Platform, Users may be required to provide the following information:",
-      list: ["Username", "Email Address", "Date Of Birth", "State", "Government ID (Aadhaar card, driving license, or voter ID)"],
-      extra: "Additionally, we may collect information related to your device, operating system, network, and location for enhancing our services."
+      content:
+        "Certain features may require username, email address, date of birth, state, government ID, device details, network information, and location-related information.",
     },
     {
+      icon: <FaLock />,
       title: "Disclosure & Sharing",
-      content: "We may share your information with our affiliates, group entities, or third-party service providers for data analytics, storage, and improving our services. However, we take necessary measures to ensure your data is protected."
+      content:
+        "Information may be shared with affiliates, group entities, or third-party service providers for analytics, storage, and service improvement under protective measures.",
     },
     {
-      title: "Use of Cookies",
-      content: "We use cookies and similar electronic tools to collect information for a better user experience. Cookies help us understand user preferences and improve our services accordingly."
+      icon: <FaCookieBite />,
+      title: "Cookies",
+      content:
+        "Cookies and similar electronic tools help us understand preferences, improve services, and provide a better user experience.",
     },
     {
-      title: "Security",
-      content: "All gathered information is securely stored in a controlled database, with restricted access. However, while we implement robust security measures, no system is entirely impenetrable."
+      icon: <FaLock />,
+      title: "Security & Retention",
+      content:
+        "Information is stored in controlled databases with restricted access. Data is retained only as long as necessary for business or legal requirements.",
     },
-    {
-      title: "Data Retention & Account Deletion",
-      content: "Your personal information will be retained only as long as necessary for legitimate business purposes or legal requirements. You may request account and data deletion by contacting our support team."
-    },
-    {
-      title: "Contact Us",
-      content: "If you have any queries regarding this Privacy Policy, feel free to contact us at the details provided in the footer."
-    }
   ];
 
   return (
-    <>
-      <Navbar />
-      <div className="px-2 pb-10" style={{ backgroundColor: COLORS.bg }}>
-        <div className="w-[96%] max-w-4xl mx-auto overflow-hidden rounded-3xl border border-black/10 dark:border-white/10 shadow-2xl relative"
-          style={{ backgroundColor: COLORS.bg2 }}>
-
-          {/* Background Glows */}
-          <div className="absolute inset-0 pointer-events-none opacity-20">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-brand/30 blur-[100px]"></div>
-            <div className="absolute bottom-0 left-0 w-64 h-64 bg-brand/30 blur-[100px]"></div>
-          </div>
-
-          {/* Header */}
-          <div className="p-4 md:p-6 border-b border-black/5 dark:border-white/5 flex items-center gap-4 relative z-10 bg-white/[0.02]">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center shadow-lg text-black dark:text-white text-lg"
-              style={{ background: COLORS.brandGradient }}>
-              <FaLock />
-            </div>
+    <div className="finance-route-shell legal-route-shell min-h-screen">
+      <RanaHeader />
+      <main className="finance-route-main legal-route-main">
+        <section className="legal-v2 legal-v2-privacy">
+          <div className="legal-v2-hero split">
             <div>
-              <h2 className="text-xl md:text-2xl font-black uppercase tracking-tight text-black dark:text-white" style={{ fontFamily: FONTS.head }}>
-                Privacy <span style={{ color: COLORS.brand }}>Policy</span>
-              </h2>
-              <span className="text-[9px] font-bold uppercase tracking-widest text-black/30 dark:text-white/30">Data Protection</span>
+              <span className="legal-v2-kicker">Data Protection</span>
+              <h1>Privacy Policy</h1>
+              <p>How we collect, protect, use, disclose, retain, and manage information connected with your platform activity.</p>
+            </div>
+            <div className="legal-v2-hero-icon"><FaLock /></div>
+          </div>
+
+          <div className="legal-v2-care-panel privacy">
+            <FaShieldAlt />
+            <div>
+              <strong>Your consent matters</strong>
+              <p>By using any part of the Platform, you consent to the collection, use, disclosure, and transfer of your information for the purposes outlined in this policy.</p>
             </div>
           </div>
 
-          {/* Content */}
-          <div className="p-3 md:p-5 space-y-3 relative z-10">
-            <p className="text-black/40 dark:text-white/40 text-[10px] leading-relaxed px-2" style={{ fontFamily: FONTS.ui }}>
-              By using any part of the Platform, You consent to the collection, use, disclosure, and transfer of Your information for the purposes outlined in this Privacy Policy.
-            </p>
- 
-            {sections.map((section, i) => (
-              <div key={i} className="bg-gray-100 dark:bg-black border border-black/5 dark:border-white/5 rounded-xl p-4 md:p-5 hover:border-brand/20 transition-all duration-300">
-                <h3 className="text-[11px] md:text-xs font-black uppercase tracking-widest mb-2" style={{ fontFamily: FONTS.head, color: COLORS.brand }}>
-                  {section.title}
-                </h3>
-                <p className="text-black/50 dark:text-white/50 text-[11px] md:text-xs leading-relaxed" style={{ fontFamily: FONTS.ui }}>
-                  {section.content}
-                </p>
-                {section.list && (
-                  <ul className="mt-2.5 space-y-1.5">
-                    {section.list.map((item, j) => (
-                      <li key={j} className="flex items-start gap-2.5 text-black/40 dark:text-white/40 text-[11px] md:text-xs" style={{ fontFamily: FONTS.ui }}>
-                        <span className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ backgroundColor: COLORS.brand }}></span>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                {section.extra && (
-                  <p className="text-black/40 dark:text-white/40 text-[11px] md:text-xs leading-relaxed mt-2.5" style={{ fontFamily: FONTS.ui }}>
-                    {section.extra}
-                  </p>
-                )}
-              </div>
+          <div className="legal-v2-privacy-grid">
+            {sections.map((section, index) => (
+              <article key={section.title} className="legal-v2-privacy-card">
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <div className="legal-v2-privacy-icon">{section.icon}</div>
+                <h2>{section.title}</h2>
+                <p>{section.content}</p>
+              </article>
             ))}
           </div>
 
-          {/* Footer */}
-          <div className="pb-8 text-center opacity-5 select-none pointer-events-none">
-            <p className="text-[9px] font-black uppercase tracking-[2em] ml-[2em]">Privacy</p>
+          <div className="legal-v2-bottom-callout">
+            <strong>Contact Us</strong>
+            <p>If you have any queries regarding this Privacy Policy, contact support through the details provided on the platform.</p>
           </div>
-        </div>
-      </div>
-    </>
+        </section>
+      </main>
+    </div>
   );
 };
 

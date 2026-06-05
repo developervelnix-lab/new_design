@@ -1,15 +1,16 @@
 import React from 'react'
-import Navbar from '../navbar/Navbar'
+import RanaHeader from '../home/ranamatch/RanaHeader'
 import OpenBets from '../sidebar-components/statements/OpenBets'
+import '../../assets/css/ranamatch.css'
 
 function OpenBetPage() {
   return (
-     <>
-        <Navbar/>
-        <div className=''>
-            <OpenBets/>
-        </div>
-     </>
+    <div className="rana-layout min-h-screen">
+      <RanaHeader />
+      <div className=''>
+        <OpenBets />
+      </div>
+    </div>
   )
 }
 
