@@ -281,8 +281,8 @@ const GameSection = ({ title, games, id, layout = "slider", hideHeader = false }
             nextEl: `.next-${sectionId}`,
           }}
           breakpoints={{
-            320: { slidesPerView: 3.2, spaceBetween: 8 },
-            480: { slidesPerView: 3.5, spaceBetween: 10 },
+            320: { slidesPerView: 4.15, spaceBetween: 8 },
+            480: { slidesPerView: 4.8, spaceBetween: 9 },
             768: { slidesPerView: 4.5, spaceBetween: 10 },
             1024: { slidesPerView: 6, spaceBetween: 10 },
             1280: { slidesPerView: 8, spaceBetween: 10 },

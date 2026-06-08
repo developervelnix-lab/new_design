@@ -67,6 +67,12 @@ const RanaHeader = ({ onOpenMobileMenu, onOpenMobileAccount }) => {
     { label: "Email", value: getAccountValue("account_email", "email", "user_email", "account_mail") },
     { label: "Mobile", value: getAccountValue("account_mobile", "mobile", "user_mobile", "account_phone", "phone") },
   ];
+  const mobileProfileDetails = [
+    { label: "Username", value: getAccountValue("account_username", "username", "user_name") },
+    { label: "User ID", value: accountInfo?.account_id || localStorage.getItem("account_id") || "Not added" },
+    { label: "Mobile", value: getAccountValue("account_mobile", "mobile", "user_mobile", "account_phone", "phone") },
+    { label: "Email", value: getAccountValue("account_email", "email", "user_email", "account_mail") },
+  ];
   const profileLinks = [
     { label: "My Tickets", path: "/support?view=history" },
     { label: "Change Password", path: "/change-password" },
@@ -473,13 +479,6 @@ const RanaHeader = ({ onOpenMobileMenu, onOpenMobileAccount }) => {
             <div className="mobile-drawer-body">
               {mobilePanel === "menu" ? (
                 <div className="mobile-quick-panel">
-                  <div className="mobile-quick-card is-primary">
-                    <FaBars />
-                    <div>
-                      <strong>Quick Links</strong>
-                      <span>Fast access to wallet, bets, bonus and support.</span>
-                    </div>
-                  </div>
                   <div className="mobile-quick-grid">
                     {mobileQuickLinks.map((item) => (
                       item.action ? (
@@ -502,6 +501,14 @@ const RanaHeader = ({ onOpenMobileMenu, onOpenMobileAccount }) => {
                         <FaUserCircle />
                         <span>My Profile</span>
                         <strong>{accountInfo?.account_username || "User"}</strong>
+                      </div>
+                      <div className="mobile-account-details">
+                        {mobileProfileDetails.map((item) => (
+                          <div key={item.label}>
+                            <span>{item.label}</span>
+                            <strong>{item.value}</strong>
+                          </div>
+                        ))}
                       </div>
                       <div className="mobile-wallet-grid">
                         {[

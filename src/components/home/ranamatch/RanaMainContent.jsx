@@ -216,7 +216,7 @@ const RanaMainContent = () => {
 
       {/* Elite Offers Section */}
       <section className="mt-7 px-4 md:px-0 w-full">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 mb-4 px-1 md:px-2">
+        <div className="elite-offers-head flex flex-col md:flex-row md:items-end justify-between gap-3 mb-4 px-1 md:px-2">
           <h2 className="section-banner max-w-full" style={{ fontFamily: FONTS.head }}>
             <span>Exclusive Elite Offers</span>
           </h2>
@@ -225,12 +225,13 @@ const RanaMainContent = () => {
           </a>
         </div>
 
+        <div className="elite-offers-scroll-shell">
         <div className="elite-offers-grid">
         {promoBanners && promoBanners.length > 0 ? (
-          promoBanners.slice(0, 2).map((promo, index) => (
+          [...promoBanners.slice(0, 2), ...promoBanners.slice(0, 2)].map((promo, index) => (
             <article
               key={index}
-              className="elite-offer-card group"
+              className={`elite-offer-card group ${index >= promoBanners.slice(0, 2).length ? 'is-duplicate' : ''}`}
               role="button"
               tabIndex={0}
               onClick={() => openOfferPreview(promo)}
@@ -277,6 +278,7 @@ const RanaMainContent = () => {
               ))}
             </>
           )}
+        </div>
         </div>
       </section>
 

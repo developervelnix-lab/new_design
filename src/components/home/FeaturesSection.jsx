@@ -34,6 +34,7 @@ const FeaturesSection = () => {
   const COLORS = useColors();
   const { accountInfo } = useSite();
   const [activeIndex, setActiveIndex] = useState(0);
+  const scrollingFeatures = [...features, ...features];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -43,23 +44,25 @@ const FeaturesSection = () => {
   }, []);
 
   return (
-    <section className="mt-7 mb-7 px-4 md:px-0 w-full">
+    <section className="features-section mt-7 mb-7 px-4 md:px-0 w-full">
       {/* Header aligned with other sections */}
-      <div className="flex items-center justify-between mb-4 px-1 md:px-2">
+      <div className="features-section-head flex items-center justify-between mb-4 px-1 md:px-2">
         <h2 className="section-banner max-w-full" style={{ fontFamily: FONTS.head }}>
           <span>Why Choose {accountInfo?.service_site_name || 'velplay365'}?</span>
         </h2>
       </div>
 
       {/* Grid of clean, horizontal cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {features.map((f, i) => {
-          const isActive = i === activeIndex;
+      <div className="features-scroll-shell">
+      <div className="features-grid grid grid-cols-2 md:grid-cols-4 gap-3">
+        {scrollingFeatures.map((f, i) => {
+          const baseIndex = i % features.length;
+          const isActive = baseIndex === activeIndex;
           return (
             <div
-              key={i}
-              className={`feature-card group flex items-center justify-between py-2.5 px-4 rounded-2xl border transition-all duration-300 overflow-hidden relative cursor-default ${isActive ? 'active' : ''}`}
-              onMouseEnter={() => setActiveIndex(i)}
+              key={`${f.title}-${i}`}
+              className={`feature-card group flex items-center justify-between py-2.5 px-4 rounded-2xl border transition-all duration-300 overflow-hidden relative cursor-default ${isActive ? 'active' : ''} ${i >= features.length ? 'is-duplicate' : ''}`}
+              onMouseEnter={() => setActiveIndex(baseIndex)}
             >
               {/* Subtle glow (active state) */}
               <div 
@@ -90,6 +93,7 @@ const FeaturesSection = () => {
             </div>
           );
         })}
+      </div>
       </div>
     </section>
   );
