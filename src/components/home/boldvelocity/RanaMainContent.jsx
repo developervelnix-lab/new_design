@@ -108,7 +108,7 @@ const RanaMainContent = () => {
     <main className="main-content">
       {/* Hero Banner Area */}
       <div className="hero">
-        <div>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div className="hero-banner hero-image-only">
             {heroBanners && heroBanners.length > 0 ? (
               <Swiper
@@ -149,6 +149,28 @@ const RanaMainContent = () => {
                 className="hero-image-banner"
               />
             )}
+          </div>
+          {/* Promo Metrics Strip */}
+          <div className="promo-metrics-strip">
+            <a href="#" className="metric-item">
+              <div className="metric-val gold-gradient">100%</div>
+              <div className="metric-label">First Deposit</div>
+            </a>
+            <div className="metric-divider"></div>
+            <a href="#" className="metric-item">
+              <div className="metric-val green-gradient">20%</div>
+              <div className="metric-label">Reload Bonus</div>
+            </a>
+            <div className="metric-divider"></div>
+            <a href="#" className="metric-item">
+              <div className="metric-val red-gradient">₹500</div>
+              <div className="metric-label">Refer & Earn</div>
+            </a>
+            <div className="metric-divider"></div>
+            <a href="#" className="metric-item live-sports">
+              <div className="metric-val white-glow">⚽ Live</div>
+              <div className="metric-label">Sports</div>
+            </a>
           </div>
         </div>
 
@@ -226,40 +248,6 @@ const RanaMainContent = () => {
       </div>
 
       <MobileBigWinsStrip />
-
-      {/* Promo Cards */}
-      <div className="promo-grid">
-        <a href="#" className="promo-card pc1">
-          <div className="promo-bg-num">01</div>
-          <div style={{ position: 'relative', zIndex: 2 }}>
-            <div className="promo-eyebrow">First Deposit</div>
-            <div className="promo-amount">100%</div>
-            <div className="promo-title">UP TO ₹20,000</div>
-            <div className="promo-desc">Bonus on first deposit</div>
-            <button className="promo-btn" style={{ color: '#7C3AED' }}><i className="ti ti-arrow-right"></i></button>
-          </div>
-        </a>
-        <a href="#" className="promo-card pc2">
-          <div className="promo-bg-num">02</div>
-          <div style={{ position: 'relative', zIndex: 2 }}>
-            <div className="promo-eyebrow">Reload Bonus</div>
-            <div className="promo-amount">20%</div>
-            <div className="promo-title">WEEKLY BONUS</div>
-            <div className="promo-desc">Every Monday reload reward</div>
-            <button className="promo-btn" style={{ color: '#A77717' }}><i className="ti ti-arrow-right"></i></button>
-          </div>
-        </a>
-        <a href="#" className="promo-card pc3">
-          <div className="promo-bg-num">03</div>
-          <div style={{ position: 'relative', zIndex: 2 }}>
-            <div className="promo-eyebrow">Refer & Earn</div>
-            <div className="promo-amount">₹500</div>
-            <div className="promo-title">PER REFERRAL</div>
-            <div className="promo-desc">Per friend referred & deposited</div>
-            <button className="promo-btn" style={{ color: '#D32F2F' }}><i className="ti ti-arrow-right"></i></button>
-          </div>
-        </a>
-      </div>
 
       {/* Dynamic Game Sections */}
       <Live />

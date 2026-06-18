@@ -191,6 +191,17 @@ const GameSection = ({ title, games, id, layout = "slider", hideHeader = false }
     setShowLogin(true);
   }
 
+  const cardGradients = [
+    'linear-gradient(145deg, #fda4af 0%, #fb7185 60%, #fca5a5 100%)',
+    'linear-gradient(145deg, #fdba74 0%, #f97316 60%, #fde68a 100%)',
+    'linear-gradient(145deg, #93c5fd 0%, #6366f1 60%, #a5b4fc 100%)',
+    'linear-gradient(145deg, #fde68a 0%, #facc15 60%, #fef9c3 100%)',
+    'linear-gradient(145deg, #c4b5fd 0%, #8b5cf6 60%, #ddd6fe 100%)',
+    'linear-gradient(145deg, #6ee7b7 0%, #10b981 60%, #a7f3d0 100%)',
+    'linear-gradient(145deg, #bfdbfe 0%, #818cf8 60%, #c7d2fe 100%)',
+    'linear-gradient(145deg, #fecdd3 0%, #f43f5e 60%, #fda4af 100%)',
+  ];
+
   return (
     <div
       id={sectionId}
@@ -200,26 +211,19 @@ const GameSection = ({ title, games, id, layout = "slider", hideHeader = false }
         <div className="section-head">
           <div className="section-title">
             <i className="ti ti-device-gamepad-2"></i> {title}
+            <span className="section-count-badge">{gameList.length}</span>
           </div>
           {layout !== "grid" && (
             <div className="flex items-center space-x-2 sm:space-x-4">
               <div className="hidden md:flex items-center gap-1">
-                <button
-                  className={`nav-button prev-${sectionId} header-icon-btn !rounded-full !w-8 !h-8 flex items-center justify-center hover:scale-110 transition-all duration-300`}
-                >
+                <button className={`nav-button prev-${sectionId} header-icon-btn !rounded-full !w-8 !h-8 flex items-center justify-center hover:scale-110 transition-all duration-300`}>
                   <FaChevronLeft size={12} />
                 </button>
-                <button
-                  className={`nav-button next-${sectionId} header-icon-btn !rounded-full !w-8 !h-8 flex items-center justify-center hover:scale-110 transition-all duration-300`}
-                >
+                <button className={`nav-button next-${sectionId} header-icon-btn !rounded-full !w-8 !h-8 flex items-center justify-center hover:scale-110 transition-all duration-300`}>
                   <FaChevronRight size={12} />
                 </button>
               </div>
-
-              <span
-                onClick={openPopup}
-                className="section-more"
-              >
+              <span onClick={openPopup} className="section-more">
                 See All <i className="ti ti-arrow-right" style={{ fontSize: '13px' }}></i>
               </span>
             </div>
@@ -240,23 +244,16 @@ const GameSection = ({ title, games, id, layout = "slider", hideHeader = false }
               <div className="relative aspect-[4/5] rounded-xl overflow-hidden p-[1px] bg-gradient-to-br from-white/10 via-transparent to-white/5 transition-all duration-500 group-hover:from-brand/50 group-hover:to-brand/20 group-hover:shadow-[0_0_30px_rgba(29,78,216,0.4)] group-hover:-translate-y-1">
                 <div className="relative w-full h-full rounded-[11px] overflow-hidden bg-gray-100 dark:bg-white/5">
                   <img
-                    className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${loadingForGames === game["Game UID"] ? "opacity-30 blur-sm" : ""
-                      }`}
+                    className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${loadingForGames === game["Game UID"] ? "opacity-30 blur-sm" : ""}`}
                     src={game.icon || "/placeholder.svg"}
                     alt={game["Game Name"]}
                   />
-
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-white/5 opacity-60 group-hover:opacity-100 transition-opacity duration-500"></div>
-
                   <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div
-                      className="p-3 rounded-full shadow-2xl transform scale-50 group-hover:scale-100 transition-all duration-500 hover:scale-110"
-                      style={{ background: COLORS.brandGradient }}
-                    >
+                    <div className="p-3 rounded-full shadow-2xl transform scale-50 group-hover:scale-100 transition-all duration-500 hover:scale-110" style={{ background: COLORS.brandGradient }}>
                       <FaPlay className="text-black dark:text-white ml-0.5" size={12} />
                     </div>
                   </div>
-
                   <div className="absolute bottom-0 left-0 right-0 p-2 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
                     <div className="backdrop-blur-md bg-black/10 dark:bg-black/40 rounded-lg p-1.5 border border-black/10 dark:border-white/10 text-center shadow-xl">
                       <p className="text-[9px] font-black text-black/90 dark:text-white/90 truncate uppercase tracking-tighter">
@@ -280,45 +277,45 @@ const GameSection = ({ title, games, id, layout = "slider", hideHeader = false }
             nextEl: `.next-${sectionId}`,
           }}
           breakpoints={{
-            320: { slidesPerView: 4.15, spaceBetween: 8 },
-            480: { slidesPerView: 4.8, spaceBetween: 9 },
-            768: { slidesPerView: 4.5, spaceBetween: 10 },
-            1024: { slidesPerView: 6, spaceBetween: 10 },
-            1280: { slidesPerView: 8, spaceBetween: 10 },
+            320: { slidesPerView: 3.2, spaceBetween: 8 },
+            480: { slidesPerView: 4.2, spaceBetween: 9 },
+            768: { slidesPerView: 5, spaceBetween: 10 },
+            1024: { slidesPerView: 6, spaceBetween: 12 },
+            1280: { slidesPerView: 7, spaceBetween: 12 },
           }}
         >
           {games && Array.isArray(games) && games.map((game, index) => (
             <SwiperSlide key={index}>
-              <div
-                className="relative group"
-                onMouseEnter={() => setHoveredGame(game["Game UID"])}
-                onMouseLeave={() => setHoveredGame(null)}
-              >
-                <div className="relative aspect-[4/5] rounded-[14px] overflow-hidden bg-black/5 dark:bg-white/5 border border-transparent group-hover:border-brand/30 transition-all duration-500 group-hover:-translate-y-1.5 group-hover:shadow-[0_15px_30px_-10px_rgba(29,78,216,0.3)]">
-                  <img
-                    className={`w-full h-full object-cover cursor-pointer transition-transform duration-700 group-hover:scale-110 ${loadingForGames === game["Game UID"] ? "opacity-50 blur-sm" : ""
-                      }`}
-                    src={game.icon || "/placeholder.svg"}
-                    alt={game["Game Name"]}
-                    onClick={() => handleGameClick(game)}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-2 sm:p-3 pointer-events-none">
-                    <span className="text-black dark:text-white text-[9px] sm:text-[10px] font-bold uppercase tracking-wider truncate w-full" style={{ fontFamily: FONTS.ui }}>
-                      {game["Game Name"]}
+              <div className="lobby-game-card" onClick={() => handleGameClick(game)}>
+                <div
+                  className="lobby-card-bg"
+                  style={{ background: cardGradients[index % cardGradients.length] }}
+                >
+                  {/* Badge */}
+                  {game["Game Tag"] && (
+                    <span className={`lobby-badge lobby-badge-${(game["Game Tag"] || "").toLowerCase().replace(/\s/g, "-")}`}>
+                      {game["Game Tag"]}
                     </span>
+                  )}
+                  {/* Game Image */}
+                  <div className="lobby-card-icon">
+                    <img
+                      src={game.icon || "/placeholder.svg"}
+                      alt={game["Game Name"]}
+                      className={loadingForGames === game["Game UID"] ? "opacity-40 blur-sm" : ""}
+                    />
                   </div>
-                </div>
-                {hoveredGame === game["Game UID"] && (
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div
-                      className="rounded-full p-2.5 sm:p-5 transform scale-90 group-hover:scale-110 transition-transform duration-300 shadow-xl"
-                      style={{ background: COLORS.brandGradient }}
-                    >
-                      <FaPlay className="text-black dark:text-white ml-0.5 block sm:hidden" size={12} />
-                      <FaPlay className="text-black dark:text-white ml-1 hidden sm:block" size={24} />
+                  {/* Hover play overlay */}
+                  <div className="lobby-card-hover">
+                    <div className="lobby-play-btn">
+                      <FaPlay size={14} />
                     </div>
                   </div>
-                )}
+                </div>
+                <div className="lobby-card-info">
+                  <span className="lobby-card-name">{game["Game Name"]}</span>
+                  <span className="lobby-card-provider">{game["Game Provider"] || game["provider"] || ""}</span>
+                </div>
               </div>
             </SwiperSlide>
           ))}
