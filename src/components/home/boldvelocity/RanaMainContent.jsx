@@ -84,6 +84,41 @@ const MobileBigWinsStrip = () => {
   );
 };
 
+const LatestNewsMarquee = ({ news }) => {
+  const fallbackNews = [
+    "New Live Casino Games launching in 7 days",
+    "Mega Slots Tournament starts in 10 days",
+    "Weekly Cashback update version 2.0 releasing soon",
+    "New Bonus System upgrade in 15 days",
+  ];
+
+  const newsItems = (news || "")
+    .split(/[\n|]+/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+  const tickerNews = newsItems.length > 0 ? newsItems : fallbackNews;
+  const repeatedNews = [...tickerNews, ...tickerNews];
+
+  return (
+    <section className="latest-news-marquee" aria-label="Latest news">
+      <div className="latest-news-label">
+        <i className="ti ti-speakerphone"></i>
+        <strong>Latest News</strong>
+      </div>
+      <div className="latest-news-window">
+        <div className="latest-news-track">
+          {repeatedNews.map((item, index) => (
+            <span className="latest-news-item" key={`${item}-${index}`}>
+              <i className="ti ti-sparkles"></i>
+              <span>{item}</span>
+            </span>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const RanaMainContent = () => {
   const COLORS = useColors();
   const { heroBanners, accountInfo, promoBanners, setShowLogin, setShowRegister } = useSite();
@@ -247,7 +282,7 @@ const RanaMainContent = () => {
         </div>
       </div>
 
-      <MobileBigWinsStrip />
+      <LatestNewsMarquee news={accountInfo?.service_marquee} />
 
       {/* Dynamic Game Sections */}
       <Live />

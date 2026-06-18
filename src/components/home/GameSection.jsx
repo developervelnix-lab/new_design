@@ -31,6 +31,7 @@ const GameSection = ({ title, games, id, layout = "slider", hideHeader = false }
 
   const popupParam = searchParams.get("show_all")
   const sectionId = id || (title ? title.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-") : "section")
+  const hasTitleIcon = /^[^\w\s]/.test(title || "")
   const gameList = Array.isArray(games) ? games : []
   const filteredPopupGames = gameList.filter((game) =>
     (game?.["Game Name"] || "").toLowerCase().includes(popupSearch.trim().toLowerCase())
@@ -192,14 +193,14 @@ const GameSection = ({ title, games, id, layout = "slider", hideHeader = false }
   }
 
   const cardGradients = [
-    'linear-gradient(145deg, #fda4af 0%, #fb7185 60%, #fca5a5 100%)',
-    'linear-gradient(145deg, #fdba74 0%, #f97316 60%, #fde68a 100%)',
-    'linear-gradient(145deg, #93c5fd 0%, #6366f1 60%, #a5b4fc 100%)',
-    'linear-gradient(145deg, #fde68a 0%, #facc15 60%, #fef9c3 100%)',
-    'linear-gradient(145deg, #c4b5fd 0%, #8b5cf6 60%, #ddd6fe 100%)',
-    'linear-gradient(145deg, #6ee7b7 0%, #10b981 60%, #a7f3d0 100%)',
-    'linear-gradient(145deg, #bfdbfe 0%, #818cf8 60%, #c7d2fe 100%)',
-    'linear-gradient(145deg, #fecdd3 0%, #f43f5e 60%, #fda4af 100%)',
+    'linear-gradient(180deg, #ead8ff 0%, #f6ecff 58%, #ffffff 100%)',
+    'linear-gradient(180deg, #ffe0b8 0%, #fff0d8 58%, #ffffff 100%)',
+    'linear-gradient(180deg, #c8edff 0%, #e7f8ff 58%, #ffffff 100%)',
+    'linear-gradient(180deg, #fff0a5 0%, #fff8d8 58%, #ffffff 100%)',
+    'linear-gradient(180deg, #ffd5e9 0%, #fff0f7 58%, #ffffff 100%)',
+    'linear-gradient(180deg, #b9f2d7 0%, #e4fbef 58%, #ffffff 100%)',
+    'linear-gradient(180deg, #d3ddff 0%, #eef2ff 58%, #ffffff 100%)',
+    'linear-gradient(180deg, #ffd7d7 0%, #fff1f1 58%, #ffffff 100%)',
   ];
 
   return (
@@ -210,7 +211,8 @@ const GameSection = ({ title, games, id, layout = "slider", hideHeader = false }
       {!hideHeader && (
         <div className="section-head">
           <div className="section-title">
-            <i className="ti ti-device-gamepad-2"></i> {title}
+            {!hasTitleIcon && <i className="ti ti-device-gamepad-2"></i>}
+            <span className="section-title-text">{title}</span>
             <span className="section-count-badge">{gameList.length}</span>
           </div>
           {layout !== "grid" && (
@@ -277,11 +279,11 @@ const GameSection = ({ title, games, id, layout = "slider", hideHeader = false }
             nextEl: `.next-${sectionId}`,
           }}
           breakpoints={{
-            320: { slidesPerView: 3.2, spaceBetween: 8 },
-            480: { slidesPerView: 4.2, spaceBetween: 9 },
-            768: { slidesPerView: 5, spaceBetween: 10 },
-            1024: { slidesPerView: 6, spaceBetween: 12 },
-            1280: { slidesPerView: 7, spaceBetween: 12 },
+            320: { slidesPerView: 3.25, spaceBetween: 8 },
+            480: { slidesPerView: 4.35, spaceBetween: 9 },
+            768: { slidesPerView: 5.45, spaceBetween: 10 },
+            1024: { slidesPerView: 6.7, spaceBetween: 12 },
+            1280: { slidesPerView: 8.05, spaceBetween: 14 },
           }}
         >
           {games && Array.isArray(games) && games.map((game, index) => (

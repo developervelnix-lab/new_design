@@ -37,8 +37,8 @@ export const lightTheme = {
 };
 
 export const FONTS = {
-  display: "'Sora', sans-serif",
-  ui: "'Inter', sans-serif",
+  display: "'Space Grotesk', sans-serif",
+  ui: "'Plus Jakarta Sans', sans-serif",
   head: "'Space Grotesk', sans-serif"
 };
 
