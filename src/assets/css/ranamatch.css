@@ -9838,6 +9838,27 @@ body.category-page-scroll #root {
   }
 }
 
+/* Final category rail stable colors */
+.rana-layout .sport-rail .sport-tab,
+.rana-layout .sport-rail .sport-tab:link,
+.rana-layout .sport-rail .sport-tab:visited,
+.rana-layout .sport-rail .sport-tab span:not(.sport-tab-emoji) {
+  color: #4f4965 !important;
+  -webkit-text-fill-color: #4f4965 !important;
+}
+
+.rana-layout .sport-rail .sport-tab:hover,
+.rana-layout .sport-rail .sport-tab.active,
+.rana-layout .sport-rail .sport-tab:hover span:not(.sport-tab-emoji),
+.rana-layout .sport-rail .sport-tab.active span:not(.sport-tab-emoji) {
+  color: #a77717 !important;
+  -webkit-text-fill-color: #a77717 !important;
+}
+
+.rana-layout .sport-rail .sport-tab-emoji {
+  -webkit-text-fill-color: initial !important;
+}
+
 /* Final full-width premium footer */
 .rana-layout.category-route .main-content > .rana-footer,
 .rana-layout .main-content > .rana-footer {
