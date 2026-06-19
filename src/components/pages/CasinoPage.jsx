@@ -136,8 +136,8 @@ const CasinoPage = () => {
   };
 
   useEffect(() => {
-    document.body.style.backgroundColor = '#06090f';
-    document.body.style.color = '#eef2ff';
+    document.body.style.backgroundColor = '#eef3f8';
+    document.body.style.color = '#071226';
     document.body.style.fontFamily = "'Rajdhani', sans-serif";
     document.documentElement.style.height = '100%';
     document.body.style.height = '100%';
@@ -305,7 +305,7 @@ const CasinoPage = () => {
   }
 
   return (
-    <div className="rana-layout" style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="rana-layout casino-route" style={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
       <AuthModalHost />
       <RanaHeader />
 
@@ -1004,6 +1004,10 @@ const CasinoPage = () => {
         .casino-shell{
           display:block;
           overflow:auto;
+          background:
+            radial-gradient(circle at 14% 8%, rgba(34, 211, 238, 0.16), transparent 28%),
+            radial-gradient(circle at 90% 0%, rgba(29, 78, 216, 0.12), transparent 30%),
+            linear-gradient(180deg, #eef3f8 0%, #e4eaf1 46%, #edf2f7 100%);
         }
 
         .casino-shell .sidebar{
@@ -1013,7 +1017,7 @@ const CasinoPage = () => {
         .content{
           max-width:1720px;
           margin:0 auto;
-          padding:22px clamp(24px, 4vw, 72px) 48px;
+          padding:8px clamp(24px, 4vw, 72px) 48px;
         }
 
         .content::before,
