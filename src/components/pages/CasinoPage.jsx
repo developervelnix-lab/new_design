@@ -452,10 +452,874 @@ const CasinoPage = () => {
         .c-sa{background:linear-gradient(150deg,#0a1020 0%,#0e2040 100%)}
         .c-rc{background:linear-gradient(150deg,#1a1000 0%,#3a2000 100%)}
 
+        /* FULL CASINO REDESIGN */
+        .casino-shell{
+          --bg0:#070713;
+          --bg1:rgba(255,255,255,.075);
+          --bg2:rgba(255,255,255,.10);
+          --bg3:rgba(255,255,255,.14);
+          --gold:#c59124;
+          --gold2:#ffd97d;
+          --gold-a:rgba(197,145,36,.18);
+          --hi:#fffaf0;
+          --mid:rgba(255,255,255,.72);
+          --lo:rgba(255,255,255,.45);
+          --border:rgba(255,255,255,.12);
+          min-height:100vh;
+          padding-top:0;
+          background:
+            radial-gradient(circle at 12% 2%, rgba(255,217,125,.18), transparent 30%),
+            radial-gradient(circle at 86% 8%, rgba(109,40,217,.20), transparent 34%),
+            linear-gradient(145deg,#080714 0%,#15112b 48%,#080714 100%);
+          color:var(--hi);
+        }
+
+        .casino-shell::before{
+          content:'';
+          position:fixed;
+          inset:0;
+          pointer-events:none;
+          opacity:.24;
+          background-image:
+            linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+          background-size:52px 52px;
+          mask-image:radial-gradient(circle at 50% 15%, #000 0%, transparent 72%);
+          z-index:0;
+        }
+
+        .sidebar,
+        .content{
+          position:relative;
+          z-index:1;
+        }
+
+        .sidebar{
+          width:292px;
+          margin:18px 0 22px 24px;
+          border:1px solid rgba(255,255,255,.14);
+          border-radius:24px;
+          background:
+            radial-gradient(circle at 12% 0%, rgba(255,217,125,.14), transparent 34%),
+            linear-gradient(180deg, rgba(255,255,255,.105), rgba(255,255,255,.045));
+          box-shadow:0 24px 60px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.12);
+          backdrop-filter:blur(22px);
+          overflow:hidden auto;
+        }
+
+        .s-head{
+          padding:22px 20px 10px;
+          color:var(--gold2);
+          font-size:11px;
+          letter-spacing:.24em;
+        }
+
+        .s-search{
+          padding:10px 18px 16px;
+          border-bottom-color:rgba(255,255,255,.10);
+        }
+
+        .s-search input,
+        .mobile-provider-toolbar input,
+        .mobile-provider-toolbar select,
+        .search-box input{
+          min-height:42px;
+          border-radius:14px;
+          border:1px solid rgba(255,255,255,.13);
+          background:rgba(255,255,255,.08);
+          color:#fff;
+          box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+        }
+
+        .s-search input::placeholder,
+        .search-box input::placeholder{
+          color:rgba(255,255,255,.48);
+        }
+
+        .s-search input:focus,
+        .search-box input:focus{
+          border-color:rgba(255,217,125,.46);
+          box-shadow:0 0 0 4px rgba(197,145,36,.12);
+        }
+
+        .s-item{
+          margin:5px 12px;
+          padding:11px 12px;
+          border-left:0;
+          border-radius:16px;
+          border:1px solid transparent;
+        }
+
+        .s-item:hover{
+          background:rgba(255,255,255,.08);
+          border-color:rgba(255,255,255,.10);
+        }
+
+        .s-item.on{
+          background:linear-gradient(135deg, rgba(197,145,36,.22), rgba(255,217,125,.08));
+          border-color:rgba(255,217,125,.28);
+          box-shadow:0 12px 28px rgba(197,145,36,.12), inset 0 1px 0 rgba(255,255,255,.12);
+        }
+
+        .s-ico{
+          width:36px;
+          height:36px;
+          border-radius:13px;
+          background:linear-gradient(145deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
+          color:#fff;
+          box-shadow:inset 0 1px 0 rgba(255,255,255,.12);
+        }
+
+        .s-name{
+          color:rgba(255,255,255,.72);
+          font-size:12px;
+          font-weight:800;
+        }
+
+        .s-item:hover .s-name,
+        .s-item.on .s-name{
+          color:#fff;
+        }
+
+        .s-item.on .s-name{
+          color:var(--gold2);
+        }
+
+        .s-ct{
+          background:rgba(255,255,255,.08);
+          border-color:rgba(255,255,255,.10);
+          color:rgba(255,255,255,.66);
+          font-size:10px;
+        }
+
+        .content{
+          padding:18px 28px 42px;
+        }
+
+        .content::before{
+          content:'Live Casino Lobby';
+          display:block;
+          margin:0 0 12px;
+          color:#fff;
+          font-family:var(--font-head);
+          font-size:34px;
+          font-weight:900;
+          letter-spacing:-.02em;
+          text-shadow:0 16px 34px rgba(0,0,0,.32);
+        }
+
+        .content::after{
+          content:'Explore providers, live tables, slots, crash games and premium casino titles from one redesigned lobby.';
+          display:block;
+          max-width:720px;
+          margin:-6px 0 18px;
+          color:rgba(255,255,255,.62);
+          font-size:14px;
+          line-height:1.55;
+        }
+
+        .jp-bar{
+          min-height:92px;
+          padding:18px 22px;
+          margin-bottom:16px;
+          border-radius:26px;
+          border:1px solid rgba(255,217,125,.24);
+          background:
+            radial-gradient(circle at 82% 0%, rgba(255,217,125,.30), transparent 32%),
+            linear-gradient(135deg, rgba(28,22,48,.96), rgba(87,57,8,.74));
+          box-shadow:0 28px 60px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.14);
+        }
+
+        .jp-bar::before{
+          background-image:linear-gradient(90deg, rgba(255,217,125,.08) 1px, transparent 1px);
+          background-size:28px 28px;
+        }
+
+        .jp-label{
+          color:#fff2bd !important;
+          font-size:12px;
+          letter-spacing:.22em;
+        }
+
+        .jp-sep{
+          background:rgba(255,217,125,.20);
+        }
+
+        .jp-val{
+          color:#fff !important;
+          font-size:32px;
+          text-shadow:0 0 28px rgba(255,217,125,.28);
+        }
+
+        .jp-btn{
+          min-height:42px;
+          padding:0 22px;
+          border-radius:999px;
+          background:linear-gradient(135deg,var(--gold) 0%, var(--gold2) 100%);
+          color:#201506 !important;
+          box-shadow:0 18px 34px rgba(197,145,36,.28);
+        }
+
+        .wins-bar{
+          padding:13px 18px;
+          border-radius:20px;
+          border:1px solid rgba(255,255,255,.12);
+          background:rgba(255,255,255,.075);
+          backdrop-filter:blur(16px);
+          box-shadow:inset 0 1px 0 rgba(255,255,255,.10);
+        }
+
+        .wins-label{
+          color:var(--gold2) !important;
+        }
+
+        .wavatar{
+          background:rgba(255,255,255,.12);
+          border-color:rgba(255,255,255,.16);
+        }
+
+        .wuser{color:#fff !important}
+        .wgame{color:rgba(255,255,255,.56) !important}
+        .wamt{color:#5cff9d !important}
+
+        .cat-row{
+          gap:10px;
+          margin-bottom:22px;
+          padding:4px 2px 8px;
+        }
+
+        .cat-pill{
+          min-height:42px;
+          padding:0 17px;
+          border-radius:999px;
+          border-color:rgba(255,255,255,.13);
+          background:rgba(255,255,255,.07);
+          color:rgba(255,255,255,.72) !important;
+          box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+        }
+
+        .cat-pill:hover{
+          color:#fff !important;
+          border-color:rgba(255,217,125,.28);
+          background:rgba(255,255,255,.10);
+          transform:translateY(-1px);
+        }
+
+        .cat-pill.on{
+          color:#201506 !important;
+          border-color:transparent;
+          background:linear-gradient(135deg,var(--gold),var(--gold2));
+          box-shadow:0 14px 28px rgba(197,145,36,.22);
+        }
+
+        .sec-row{
+          padding:14px 16px;
+          margin-bottom:16px;
+          border-radius:20px;
+          border:1px solid rgba(255,255,255,.12);
+          background:rgba(255,255,255,.07);
+        }
+
+        .sec-title{
+          color:#fff !important;
+          font-size:15px;
+        }
+
+        .sec-title::before{
+          height:20px;
+          background:linear-gradient(180deg,var(--gold2),var(--gold));
+          box-shadow:0 0 16px rgba(255,217,125,.34);
+        }
+
+        .search-box svg{
+          color:rgba(255,217,125,.8);
+        }
+
+        .game-grid{
+          grid-template-columns:repeat(auto-fill,minmax(178px,1fr));
+          gap:20px;
+        }
+
+        .gcard{
+          border-radius:22px;
+          border:1px solid rgba(255,255,255,.10);
+          background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.045));
+          box-shadow:0 18px 42px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.09);
+        }
+
+        .gcard::before{
+          border-radius:22px;
+          box-shadow:inset 0 0 0 1px rgba(255,255,255,.10);
+        }
+
+        .gcard:hover{
+          border-color:rgba(255,217,125,.42);
+          box-shadow:0 28px 62px rgba(0,0,0,.38), 0 0 0 1px rgba(255,217,125,.18);
+        }
+
+        .gthumb{
+          border-radius:20px 20px 0 0;
+        }
+
+        .gthumb-shade{
+          background:linear-gradient(180deg, rgba(0,0,0,.06), rgba(0,0,0,.72));
+        }
+
+        .gplay-btn{
+          background:linear-gradient(135deg,var(--gold),var(--gold2));
+          color:#201506;
+        }
+
+        .ginfo{
+          background:linear-gradient(180deg, rgba(12,10,24,.96), rgba(18,14,36,.98));
+          border-top:1px solid rgba(255,255,255,.08);
+        }
+
+        .gname{
+          color:#fff;
+          font-size:15px;
+        }
+
+        .gprov{
+          color:rgba(255,255,255,.54);
+        }
+
+        .gtag-hot,
+        .gtag-pop{
+          color:#fff1ba;
+          background:rgba(197,145,36,.16);
+          border-color:rgba(255,217,125,.25);
+        }
+
+        .gtag-live{
+          color:#ff8f9e;
+          background:rgba(224,20,60,.14);
+          border-color:rgba(224,20,60,.28);
+        }
+
+        /* LIGHT HOME-THEME CASINO VARIANT */
+        .casino-shell{
+          --bg0:#ffffff;
+          --bg1:rgba(255,255,255,.84);
+          --bg2:rgba(255,255,255,.72);
+          --bg3:#f1eff9;
+          --gold:#a77717;
+          --gold2:#c59124;
+          --gold-a:rgba(167,119,23,.12);
+          --hi:#0e0b25;
+          --mid:#4f4965;
+          --lo:#8b86a3;
+          --border:rgba(14,11,37,.08);
+          background:
+            radial-gradient(ellipse 90% 50% at 15% 0%, rgba(109,40,217,.055) 0%, transparent 60%),
+            radial-gradient(ellipse 80% 45% at 85% 5%, rgba(167,119,23,.06) 0%, transparent 55%),
+            radial-gradient(ellipse 60% 40% at 50% 100%, rgba(6,214,245,.04) 0%, transparent 55%),
+            linear-gradient(180deg,#fdfdff 0%,#f6f5fc 50%,#eeedf8 100%);
+          color:var(--hi);
+        }
+
+        .casino-shell::before{
+          opacity:.42;
+          background-image:
+            linear-gradient(rgba(109,40,217,.045) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(109,40,217,.04) 1px, transparent 1px);
+        }
+
+        .sidebar{
+          border-color:rgba(255,255,255,.82);
+          background:
+            radial-gradient(circle at 12% 0%, rgba(255,217,125,.18), transparent 34%),
+            linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.68));
+          box-shadow:0 22px 46px rgba(14,11,37,.10), inset 0 1px 0 rgba(255,255,255,.95);
+        }
+
+        .s-head{
+          color:#8b6a21;
+        }
+
+        .s-search{
+          border-bottom-color:rgba(14,11,37,.08);
+        }
+
+        .s-search input,
+        .mobile-provider-toolbar input,
+        .mobile-provider-toolbar select,
+        .search-box input{
+          border-color:rgba(14,11,37,.10);
+          background:rgba(255,255,255,.86);
+          color:#17142d;
+          box-shadow:inset 0 1px 0 rgba(255,255,255,.95);
+        }
+
+        .s-search input::placeholder,
+        .search-box input::placeholder{
+          color:#8b86a3;
+        }
+
+        .s-item:hover{
+          background:rgba(167,119,23,.07);
+          border-color:rgba(167,119,23,.12);
+        }
+
+        .s-item.on{
+          background:linear-gradient(135deg, rgba(167,119,23,.14), rgba(255,217,125,.12));
+          border-color:rgba(167,119,23,.24);
+          box-shadow:0 12px 28px rgba(167,119,23,.10), inset 0 1px 0 rgba(255,255,255,.96);
+        }
+
+        .s-ico{
+          background:linear-gradient(145deg, #fff, #fff6df);
+          color:#a77717;
+          box-shadow:inset 0 1px 0 #fff, 0 10px 18px rgba(167,119,23,.10);
+        }
+
+        .s-name,
+        .s-item:hover .s-name{
+          color:#302a43;
+        }
+
+        .s-item.on .s-name{
+          color:#a77717;
+        }
+
+        .s-ct{
+          background:rgba(255,255,255,.76);
+          border-color:rgba(167,119,23,.16);
+          color:#a77717;
+        }
+
+        .content::before{
+          color:#17142d;
+          text-shadow:0 14px 30px rgba(14,11,37,.08);
+        }
+
+        .content::after{
+          color:#645f85;
+        }
+
+        .jp-bar{
+          border-color:rgba(167,119,23,.18);
+          background:
+            radial-gradient(circle at 82% 0%, rgba(255,217,125,.24), transparent 32%),
+            linear-gradient(135deg, rgba(255,255,255,.96), rgba(255,247,226,.82));
+          box-shadow:0 20px 42px rgba(14,11,37,.08), inset 0 1px 0 rgba(255,255,255,.96);
+        }
+
+        .jp-label{
+          color:#a77717 !important;
+        }
+
+        .jp-sep{
+          background:rgba(167,119,23,.18);
+        }
+
+        .jp-val{
+          color:#17142d !important;
+          text-shadow:0 10px 22px rgba(167,119,23,.12);
+        }
+
+        .wins-bar,
+        .sec-row{
+          border-color:rgba(14,11,37,.08);
+          background:rgba(255,255,255,.68);
+          box-shadow:0 14px 30px rgba(14,11,37,.06), inset 0 1px 0 rgba(255,255,255,.92);
+        }
+
+        .wins-label{
+          color:#a77717 !important;
+        }
+
+        .wavatar{
+          background:#fff;
+          border-color:rgba(167,119,23,.16);
+        }
+
+        .wuser{color:#17142d !important}
+        .wgame{color:#645f85 !important}
+        .wamt{color:#059669 !important}
+
+        .cat-pill{
+          border-color:rgba(14,11,37,.09);
+          background:rgba(255,255,255,.72);
+          color:#4f4965 !important;
+          box-shadow:inset 0 1px 0 rgba(255,255,255,.94);
+        }
+
+        .cat-pill:hover{
+          color:#a77717 !important;
+          border-color:rgba(167,119,23,.22);
+          background:rgba(255,255,255,.94);
+        }
+
+        .cat-pill.on{
+          color:#fff !important;
+          background:linear-gradient(135deg,#a77717,#c59124);
+          box-shadow:0 14px 28px rgba(167,119,23,.18);
+        }
+
+        .sec-title{
+          color:#17142d !important;
+        }
+
+        .search-box svg{
+          color:#a77717;
+        }
+
+        .gcard{
+          border-color:rgba(14,11,37,.07);
+          background:linear-gradient(180deg, rgba(255,255,255,.98), rgba(250,248,255,.88));
+          box-shadow:0 18px 38px rgba(14,11,37,.09), inset 0 1px 0 rgba(255,255,255,.96);
+        }
+
+        .gcard::before{
+          box-shadow:inset 0 0 0 1px rgba(255,255,255,.55);
+        }
+
+        .gcard:hover{
+          border-color:rgba(167,119,23,.28);
+          box-shadow:0 26px 54px rgba(14,11,37,.14), 0 0 0 1px rgba(167,119,23,.12);
+        }
+
+        .ginfo{
+          background:linear-gradient(180deg, #ffffff, #faf8ff);
+          border-top:1px solid rgba(14,11,37,.06);
+        }
+
+        .gname{
+          color:#17142d;
+        }
+
+        .gprov{
+          color:#756f8f;
+        }
+
+        .gtag-hot,
+        .gtag-pop{
+          color:#a77717;
+          background:rgba(167,119,23,.10);
+          border-color:rgba(167,119,23,.18);
+        }
+
+        /* STRUCTURE REFRESH: top provider deck + command cards */
+        .casino-shell{
+          display:block;
+          overflow:auto;
+        }
+
+        .casino-shell .sidebar{
+          display:none;
+        }
+
+        .content{
+          max-width:1720px;
+          margin:0 auto;
+          padding:22px clamp(24px, 4vw, 72px) 48px;
+        }
+
+        .content::before,
+        .content::after{
+          display:none;
+        }
+
+        .casino-top-layout{
+          display:grid;
+          grid-template-columns:minmax(0,1fr) minmax(292px,360px);
+          gap:14px;
+          align-items:start;
+          margin-bottom:16px;
+        }
+
+        .casino-command{
+          display:grid;
+          grid-template-columns:minmax(0,1.08fr) minmax(210px,.52fr);
+          gap:12px;
+          margin-bottom:0;
+        }
+
+        .casino-hero-card{
+          min-height:134px;
+          padding:17px 19px;
+          border-radius:20px;
+          border:1px solid rgba(255,255,255,.76);
+          background:
+            radial-gradient(circle at 82% 16%, rgba(255,217,125,.30), transparent 34%),
+            radial-gradient(circle at 12% 92%, rgba(109,40,217,.12), transparent 42%),
+            linear-gradient(135deg, rgba(255,255,255,.98), rgba(246,242,255,.82));
+          box-shadow:0 24px 54px rgba(14,11,37,.10), inset 0 1px 0 rgba(255,255,255,.96);
+          position:relative;
+          overflow:hidden;
+        }
+
+        .casino-hero-card::after{
+          content:'CASINO';
+          position:absolute;
+          right:16px;
+          bottom:-9px;
+          color:rgba(167,119,23,.065);
+          font-family:var(--font-head);
+          font-size:52px;
+          font-weight:900;
+          line-height:1;
+          pointer-events:none;
+        }
+
+        .casino-kicker-line{
+          color:#a77717;
+          font-family:var(--font-mono);
+          font-size:8px;
+          font-weight:900;
+          letter-spacing:.22em;
+          text-transform:uppercase;
+          margin-bottom:7px;
+        }
+
+        .casino-hero-title{
+          max-width:460px;
+          color:#17142d;
+          font-family:var(--font-head);
+          font-size:clamp(24px, 2.35vw, 36px);
+          font-weight:900;
+          line-height:.95;
+          letter-spacing:0;
+          margin:0;
+        }
+
+        .casino-hero-copy{
+          max-width:460px;
+          margin-top:8px;
+          color:#645f85;
+          font-size:12px;
+          font-weight:600;
+          line-height:1.4;
+        }
+
+        .casino-hero-stats-new{
+          display:grid;
+          grid-template-columns:repeat(3,minmax(0,1fr));
+          gap:7px;
+          max-width:420px;
+          margin-top:12px;
+        }
+
+        .casino-hero-stats-new div{
+          padding:8px 10px;
+          border-radius:12px;
+          border:1px solid rgba(167,119,23,.14);
+          background:rgba(255,255,255,.68);
+        }
+
+        .casino-hero-stats-new strong{
+          display:block;
+          color:#a77717;
+          font-family:var(--font-head);
+          font-size:16px;
+          font-weight:900;
+          line-height:1;
+        }
+
+        .casino-hero-stats-new span{
+          display:block;
+          margin-top:4px;
+          color:#756f8f;
+          font-family:var(--font-mono);
+          font-size:7.5px;
+          font-weight:800;
+          letter-spacing:.12em;
+          text-transform:uppercase;
+        }
+
+        .casino-control-card{
+          display:grid;
+          gap:9px;
+          align-content:start;
+          padding:13px;
+          border-radius:20px;
+          border:1px solid rgba(255,255,255,.76);
+          background:linear-gradient(145deg, rgba(255,255,255,.96), rgba(255,249,235,.82));
+          box-shadow:0 24px 54px rgba(14,11,37,.09), inset 0 1px 0 rgba(255,255,255,.96);
+        }
+
+        .casino-control-title{
+          color:#17142d;
+          font-family:var(--font-head);
+          font-size:13px;
+          font-weight:900;
+        }
+
+        .casino-control-card .search-box input{
+          width:100%;
+          min-height:36px;
+          border-radius:12px;
+          font-size:11px;
+        }
+
+        .provider-deck{
+          margin-bottom:0;
+          padding:13px;
+          border-radius:20px;
+          border:1px solid rgba(255,255,255,.78);
+          background:rgba(255,255,255,.54);
+          box-shadow:0 18px 42px rgba(14,11,37,.07), inset 0 1px 0 rgba(255,255,255,.92);
+        }
+
+        .provider-deck-head{
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          gap:12px;
+          margin-bottom:9px;
+        }
+
+        .provider-deck-head strong{
+          color:#17142d;
+          font-family:var(--font-head);
+          font-size:14px;
+          font-weight:900;
+        }
+
+        .provider-deck-head span{
+          color:#a77717;
+          font-family:var(--font-mono);
+          font-size:8px;
+          font-weight:900;
+          letter-spacing:.14em;
+          text-transform:uppercase;
+        }
+
+        .provider-grid-top{
+          display:grid;
+          grid-template-columns:1fr;
+          gap:8px;
+          max-height:250px;
+          overflow:auto;
+          padding-right:4px;
+        }
+
+        .provider-chip-top{
+          min-height:52px;
+          display:flex;
+          align-items:center;
+          gap:8px;
+          padding:8px;
+          border:1px solid rgba(14,11,37,.08);
+          border-radius:14px;
+          background:rgba(255,255,255,.70);
+          cursor:pointer;
+          transition:.2s;
+        }
+
+        .provider-chip-top:hover,
+        .provider-chip-top.on{
+          border-color:rgba(167,119,23,.25);
+          background:linear-gradient(135deg, rgba(255,255,255,.96), rgba(255,246,223,.88));
+          transform:translateY(-2px);
+          box-shadow:0 12px 24px rgba(167,119,23,.10);
+        }
+
+        .provider-chip-top .s-ico{
+          flex:0 0 auto;
+          width:30px;
+          height:30px;
+          border-radius:10px;
+          font-size:13px;
+        }
+
+        .provider-chip-copy{
+          min-width:0;
+          display:grid;
+          gap:4px;
+        }
+
+        .provider-chip-copy strong{
+          color:#17142d;
+          font-size:11px;
+          font-weight:900;
+          white-space:nowrap;
+          overflow:hidden;
+          text-overflow:ellipsis;
+        }
+
+        .provider-chip-copy span{
+          color:#756f8f;
+          font-family:var(--font-mono);
+          font-size:8px;
+          font-weight:800;
+        }
+
+        .jp-bar{
+          min-height:74px;
+          display:grid;
+          grid-template-columns:auto 1px minmax(0,1fr) auto;
+          align-items:center;
+        }
+
+        .wins-bar{
+          margin-bottom:16px;
+        }
+
+        .cat-row{
+          padding:12px;
+          border-radius:24px;
+          border:1px solid rgba(255,255,255,.72);
+          background:rgba(255,255,255,.45);
+          box-shadow:inset 0 1px 0 rgba(255,255,255,.88);
+        }
+
+        .sec-row{
+          display:grid;
+          grid-template-columns:minmax(0,1fr);
+        }
+
+        .sec-row .search-box{
+          display:none;
+        }
+
+        .jp-bar,
+        .wins-bar{
+          display:none !important;
+        }
+
+        @media (max-width: 1180px){
+          .casino-top-layout{
+            grid-template-columns:1fr;
+          }
+
+          .casino-command{
+            grid-template-columns:minmax(0,1fr) minmax(220px,.42fr);
+          }
+
+          .provider-grid-top{
+            grid-template-columns:repeat(auto-fill,minmax(142px,1fr));
+            max-height:178px;
+          }
+        }
+
         @media (max-width: 820px){
           .casino-shell{display:block;overflow:auto;padding-bottom:92px}
           .sidebar{display:none}
           .content{padding:14px 12px 120px}
+          .casino-top-layout{
+            grid-template-columns:1fr;
+            gap:10px;
+            margin-bottom:12px;
+          }
+          .casino-command{
+            grid-template-columns:1fr;
+          }
+          .casino-hero-card{
+            min-height:0;
+            padding:20px;
+          }
+          .casino-hero-title{
+            font-size:32px;
+          }
+          .casino-hero-stats-new{
+            grid-template-columns:1fr;
+          }
+          .provider-grid-top{
+            grid-template-columns:1fr;
+            max-height:220px;
+          }
           .mobile-provider-toolbar{
             display:grid;
             grid-template-columns:1fr;
@@ -618,6 +1482,71 @@ const CasinoPage = () => {
               ))}
             </select>
           </div>
+
+          <section className="casino-top-layout">
+            <section className="casino-command">
+              <div className="casino-hero-card">
+                <div className="casino-kicker-line">Premium Casino Desk</div>
+                <h1 className="casino-hero-title">Live Casino Lobby</h1>
+                <p className="casino-hero-copy">
+                  Browse every provider, table, slot, crash title and live game from one light, fast casino command center.
+                </p>
+                <div className="casino-hero-stats-new">
+                  <div>
+                    <strong>{allGames.length}</strong>
+                    <span>Total Games</span>
+                  </div>
+                  <div>
+                    <strong>{providers.length}</strong>
+                    <span>Providers</span>
+                  </div>
+                  <div>
+                    <strong>{filteredGames.length}</strong>
+                    <span>Showing</span>
+                  </div>
+                </div>
+              </div>
+              <div className="casino-control-card">
+                <div className="casino-control-title">Find Your Table</div>
+                <div className="search-box">
+                  <FaSearch />
+                  <input type="text" placeholder="Search games..." value={gameSearch} onChange={e => setGameSearch(e.target.value)} />
+                </div>
+                <div className="search-box">
+                  <FaSearch />
+                  <input type="text" placeholder="Search providers..." value={providerSearch} onChange={e => setProviderSearch(e.target.value)} />
+                </div>
+              </div>
+            </section>
+
+            <section className="provider-deck">
+              <div className="provider-deck-head">
+                <strong>Provider Deck</strong>
+                <span>{activeProvider === 'all' ? 'All Studios' : activeProvider}</span>
+              </div>
+              <div className="provider-grid-top">
+                <button className={`provider-chip-top ${activeProvider === 'all' ? 'on' : ''}`} onClick={() => setActiveProvider('all')}>
+                  <div className="s-ico c-sa" style={{ fontSize: '11px' }}>ALL</div>
+                  <span className="provider-chip-copy">
+                    <strong>All Providers</strong>
+                    <span>{allGames.length} games</span>
+                  </span>
+                </button>
+                {providers.filter(p => p.toLowerCase().includes(providerSearch.toLowerCase())).map(p => {
+                  const info = getProviderIconInfo(p);
+                  return (
+                    <button key={p} className={`provider-chip-top ${activeProvider === p ? 'on' : ''}`} onClick={() => setActiveProvider(p)}>
+                      <div className={`s-ico ${info.cls}`}>{info.ico}</div>
+                      <span className="provider-chip-copy">
+                        <strong title={p}>{p}</strong>
+                        <span>{providerCounts[p]} games</span>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+          </section>
 
           {/* JACKPOT BAR */}
           <div className="jp-bar">
