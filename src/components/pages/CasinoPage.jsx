@@ -1036,6 +1036,12 @@ const CasinoPage = () => {
           margin-bottom:0;
         }
 
+        .casino-left-stack{
+          min-width:0;
+          display:grid;
+          gap:12px;
+        }
+
         .casino-hero-card{
           min-height:134px;
           padding:17px 19px;
@@ -1279,6 +1285,109 @@ const CasinoPage = () => {
           display:none !important;
         }
 
+        .cat-row{
+          display:grid;
+          grid-auto-flow:column;
+          grid-auto-columns:minmax(132px,1fr);
+          gap:0;
+          min-height:82px;
+          margin:0 0 18px;
+          padding:0;
+          border-radius:22px;
+          border:1px solid rgba(255,255,255,.82);
+          background:
+            radial-gradient(circle at 9% 0%, rgba(255,217,125,.22), transparent 30%),
+            radial-gradient(circle at 83% 100%, rgba(109,40,217,.10), transparent 34%),
+            linear-gradient(135deg, rgba(255,255,255,.98), rgba(255,249,235,.92) 52%, rgba(246,242,255,.92));
+          box-shadow:0 20px 42px rgba(14,11,37,.08), inset 0 1px 0 rgba(255,255,255,.98);
+          overflow-x:auto;
+          scrollbar-width:none;
+        }
+
+        .cat-row::-webkit-scrollbar{
+          display:none;
+        }
+
+        .cat-pill{
+          min-width:132px;
+          min-height:82px;
+          padding:12px 14px;
+          border:0;
+          border-right:1px solid rgba(167,119,23,.13);
+          border-radius:0;
+          background:transparent;
+          color:#17142d !important;
+          display:flex;
+          flex-direction:column;
+          align-items:center;
+          justify-content:center;
+          gap:7px;
+          font-family:var(--font-head);
+          font-size:13px;
+          font-weight:900;
+          letter-spacing:0;
+          text-align:center;
+          white-space:nowrap;
+          box-shadow:none;
+          position:relative;
+          overflow:hidden;
+        }
+
+        .cat-pill::before{
+          content:'';
+          position:absolute;
+          inset:8px;
+          border-radius:16px;
+          background:linear-gradient(135deg, rgba(197,145,36,.13), rgba(255,255,255,0));
+          opacity:0;
+          transition:.2s;
+        }
+
+        .cat-pill:hover::before,
+        .cat-pill.on::before{
+          opacity:1;
+        }
+
+        .cat-pill:hover{
+          color:#a77717 !important;
+          transform:none;
+          background:transparent;
+          border-color:rgba(167,119,23,.13);
+        }
+
+        .cat-pill.on{
+          color:#17142d !important;
+          border-color:rgba(167,119,23,.18);
+          background:linear-gradient(135deg, rgba(255,217,125,.42), rgba(255,255,255,.24));
+          box-shadow:inset 0 -3px 0 #c59124;
+        }
+
+        .cat-icon,
+        .cat-name{
+          position:relative;
+          z-index:1;
+        }
+
+        .cat-icon{
+          font-size:24px;
+          line-height:1;
+          filter:drop-shadow(0 8px 14px rgba(167,119,23,.18));
+        }
+
+        .cat-name{
+          color:#5f5a75;
+          font-family:var(--font-mono);
+          font-size:9.5px;
+          font-weight:900;
+          letter-spacing:.11em;
+          text-transform:uppercase;
+        }
+
+        .cat-pill.on .cat-name,
+        .cat-pill:hover .cat-name{
+          color:#a77717;
+        }
+
         @media (max-width: 1180px){
           .casino-top-layout{
             grid-template-columns:1fr;
@@ -1302,6 +1411,9 @@ const CasinoPage = () => {
             grid-template-columns:1fr;
             gap:10px;
             margin-bottom:12px;
+          }
+          .casino-left-stack{
+            gap:10px;
           }
           .casino-command{
             grid-template-columns:1fr;
@@ -1484,40 +1596,62 @@ const CasinoPage = () => {
           </div>
 
           <section className="casino-top-layout">
-            <section className="casino-command">
-              <div className="casino-hero-card">
-                <div className="casino-kicker-line">Premium Casino Desk</div>
-                <h1 className="casino-hero-title">Live Casino Lobby</h1>
-                <p className="casino-hero-copy">
-                  Browse every provider, table, slot, crash title and live game from one light, fast casino command center.
-                </p>
-                <div className="casino-hero-stats-new">
-                  <div>
-                    <strong>{allGames.length}</strong>
-                    <span>Total Games</span>
-                  </div>
-                  <div>
-                    <strong>{providers.length}</strong>
-                    <span>Providers</span>
-                  </div>
-                  <div>
-                    <strong>{filteredGames.length}</strong>
-                    <span>Showing</span>
+            <div className="casino-left-stack">
+              <section className="casino-command">
+                <div className="casino-hero-card">
+                  <div className="casino-kicker-line">Premium Casino Desk</div>
+                  <h1 className="casino-hero-title">Live Casino Lobby</h1>
+                  <p className="casino-hero-copy">
+                    Browse every provider, table, slot, crash title and live game from one light, fast casino command center.
+                  </p>
+                  <div className="casino-hero-stats-new">
+                    <div>
+                      <strong>{allGames.length}</strong>
+                      <span>Total Games</span>
+                    </div>
+                    <div>
+                      <strong>{providers.length}</strong>
+                      <span>Providers</span>
+                    </div>
+                    <div>
+                      <strong>{filteredGames.length}</strong>
+                      <span>Showing</span>
+                    </div>
                   </div>
                 </div>
+                <div className="casino-control-card">
+                  <div className="casino-control-title">Find Your Table</div>
+                  <div className="search-box">
+                    <FaSearch />
+                    <input type="text" placeholder="Search games..." value={gameSearch} onChange={e => setGameSearch(e.target.value)} />
+                  </div>
+                  <div className="search-box">
+                    <FaSearch />
+                    <input type="text" placeholder="Search providers..." value={providerSearch} onChange={e => setProviderSearch(e.target.value)} />
+                  </div>
+                </div>
+              </section>
+
+              <div
+                ref={scrollRef}
+                onMouseDown={handleMouseDown}
+                onMouseLeave={handleMouseLeave}
+                onMouseUp={handleMouseUp}
+                onMouseMove={handleMouseMove}
+                className={`cat-row ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
+              >
+                {GAME_TYPES.map(type => (
+                  <button
+                    key={type.id}
+                    className={`cat-pill ${activeType === type.id ? 'on' : ''}`}
+                    onClick={() => !isDragging && setActiveType(type.id)}
+                  >
+                    <span className="cat-icon">{type.icon}</span>
+                    <span className="cat-name">{type.label}</span>
+                  </button>
+                ))}
               </div>
-              <div className="casino-control-card">
-                <div className="casino-control-title">Find Your Table</div>
-                <div className="search-box">
-                  <FaSearch />
-                  <input type="text" placeholder="Search games..." value={gameSearch} onChange={e => setGameSearch(e.target.value)} />
-                </div>
-                <div className="search-box">
-                  <FaSearch />
-                  <input type="text" placeholder="Search providers..." value={providerSearch} onChange={e => setProviderSearch(e.target.value)} />
-                </div>
-              </div>
-            </section>
+            </div>
 
             <section className="provider-deck">
               <div className="provider-deck-head">
@@ -1577,26 +1711,6 @@ const CasinoPage = () => {
                 )}
               </div>
             </div>
-          </div>
-
-          {/* CATEGORY PILLS */}
-          <div
-            ref={scrollRef}
-            onMouseDown={handleMouseDown}
-            onMouseLeave={handleMouseLeave}
-            onMouseUp={handleMouseUp}
-            onMouseMove={handleMouseMove}
-            className={`cat-row ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}
-          >
-            {GAME_TYPES.map(type => (
-              <button
-                key={type.id}
-                className={`cat-pill ${activeType === type.id ? 'on' : ''}`}
-                onClick={() => !isDragging && setActiveType(type.id)}
-              >
-                {type.icon} {type.label}
-              </button>
-            ))}
           </div>
 
           <div className="sec-row">
