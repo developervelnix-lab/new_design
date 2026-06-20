@@ -22,6 +22,7 @@ function SupportPage() {
     <div className="rana-layout category-route support-route">
       <AuthModalHost />
       <RanaHeader />
+      <div className="support-header-gap" aria-hidden="true" />
       <main className="support-page-main">
         <div className="support-page-shell">
           {view === 'history' ? (
